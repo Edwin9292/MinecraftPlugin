@@ -1,0 +1,10 @@
+name: MafkeesPlugin
+version: 1.0
+main: me.mafkees92.Main
+author: mafkees92
+description: MafkeesPlugin
+commands:
+   rename:
+      description: Your description
+      usage: /<command> 
+softdepends: [MVdWPlaceholderAPI, PlaceholderAPI]
