@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.mafkees92.Main;
 import me.mafkees92.Utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
@@ -43,14 +44,15 @@ public class ActionBar implements Listener {
 				if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")
 						&& Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 					try {
-						//String health = PlaceholderAPI.replacePlaceholders(p, "{health}");
-						//int healthInt = (Integer.parseInt(health) * 5);
-						int healthInt = ((int) Math.ceil(p.getHealth()))*5;						
+						int healthInt = ((int) Math.ceil(p.getHealth()))*5;
 
-						String rating = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(p, "%islandrate_average_rating%").substring(0, 1);
+						String rating = PlaceholderAPI.setPlaceholders(p, "%islandrate_average_rating%").substring(0, 1);
+						String islandLevel = PlaceholderAPI.setPlaceholders(p, "%askyblock_level%");
+						
 						int ratingint = Integer.parseInt(rating);
 
-						String message = "&c " + healthInt + "/100❤&r     &e" + ratingint + "/5✰ Rating";
+						String message = "&c " + healthInt + "/100❤&r     &a" + islandLevel + "〣 Level     &e" + ratingint + "/5✰ Rating ";
+						
 
 						p.spigot().sendMessage(ChatMessageType.ACTION_BAR,
 								TextComponent.fromLegacyText(Utils.colorize(message)));
