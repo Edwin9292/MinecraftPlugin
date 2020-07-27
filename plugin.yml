@@ -5,6 +5,16 @@ author: mafkees92
 description: MafkeesPlugin
 commands:
    rename:
-      description: Your description
-      usage: /<command> 
+      description: Rename an item in your hand
+      usage: /<command>
+   givecustompotion:
+      description: Give a player a custom potion
+      usage: /<command>
+      aliases: [gcp, givecustom]
+   givevoucher:
+      description: Give a player a custom voucher
+      usage: /<command>
+   flytime:
+      description: Get the remaining flytime
+      usage: /<command>
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI]
