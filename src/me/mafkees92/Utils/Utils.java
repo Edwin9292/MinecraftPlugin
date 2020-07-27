@@ -1,6 +1,7 @@
 package me.mafkees92.Utils;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,5 +32,16 @@ public class Utils {
     	if(tagCompound == null) return null;
     	
     	return tagCompound.getString(tagKey);
+    }
+    
+    public static String LocationToString(Location loc) {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("X: ");
+    	sb.append((int)loc.getX());
+    	sb.append(" Y: ");
+    	sb.append((int)loc.getY());
+    	sb.append(" Z: ");
+    	sb.append((int)loc.getZ());
+    	return sb.toString();
     }
 }
