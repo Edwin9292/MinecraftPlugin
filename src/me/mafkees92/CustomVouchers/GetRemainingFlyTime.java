@@ -43,6 +43,9 @@ public class GetRemainingFlyTime implements CommandExecutor{
 				player.sendMessage(Util.colorize("&aYour flight will expire in &e" +  secondsToTimeString(remainingTime)));
 			}
 		}
+		else {
+			player.sendMessage(Util.colorize("&cYou have no remaining flight time left."));
+		}
 		return true;
 	}
 	
