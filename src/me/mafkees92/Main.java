@@ -4,34 +4,40 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.mafkees92.Commands.GetRemainingFlyTime;
-import me.mafkees92.Commands.GiveCustomPotion;
-import me.mafkees92.Commands.GiveVoucher;
-import me.mafkees92.Commands.RenameItem;
-import me.mafkees92.Events.ActionBar;
-import me.mafkees92.Events.CustomSplashPotions;
-import me.mafkees92.Events.LuckPermsListener;
-import me.mafkees92.Events.VoidDamage;
-import me.mafkees92.Events.VoucherUsageEvent;
-import me.mafkees92.Files.HopperData;
+import me.mafkees92.ActionBar.ActionBar;
+import me.mafkees92.CustomPotions.CustomSplashPotions;
+import me.mafkees92.CustomPotions.GiveCustomPotion;
+import me.mafkees92.CustomVouchers.FlyExpirationListener;
+import me.mafkees92.CustomVouchers.GetRemainingFlyTime;
+import me.mafkees92.CustomVouchers.GiveVoucher;
+import me.mafkees92.CustomVouchers.VoucherUsageEvent;
+import me.mafkees92.Files.Messages;
 import me.mafkees92.MVdWPlaceholders.mvdwPlaceholders;
+import me.mafkees92.RenameItems.RenameItem;
+import me.mafkees92.VoidTeleportation.VoidDamage;
 import net.luckperms.api.LuckPerms;
 
 public class Main extends JavaPlugin {
 	
-	private HopperData hopperData;
 	private LuckPerms luckperms;
 
 	public void onEnable() {
 		if(!getDataFolder().exists()) {
 			getDataFolder().mkdirs();
 		}
-		this.hopperData = new HopperData(this);
+		
+		saveDefaultConfig();
+		new Messages(this, "Messages.yml");
+		
+		
+		PluginConfig.LoadConfig(this);
+		getLogger().warning(Settings.testLine);
+		getLogger().warning(Settings.voidTestLine);
 		
 		getServer().getPluginManager().registerEvents(new VoidDamage(this), this);
 		getServer().getPluginManager().registerEvents(new CustomSplashPotions(this), this);
 		getServer().getPluginManager().registerEvents(new ActionBar(this), this);
-		getServer().getPluginManager().registerEvents(new VoucherUsageEvent(), this);
+		getServer().getPluginManager().registerEvents(new VoucherUsageEvent(this), this);
 		getCommand("rename").setExecutor(new RenameItem());
 		getCommand("givecustompotion").setExecutor(new GiveCustomPotion());
 		getCommand("givevoucher").setExecutor(new GiveVoucher());
@@ -44,13 +50,9 @@ public class Main extends JavaPlugin {
 		RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
 		if (provider != null) {
 		    luckperms = provider.getProvider();
-		    new LuckPermsListener(this, luckperms);
+		    new FlyExpirationListener(this, luckperms);
 		}
 		
-	}
-
-	public HopperData getHopperData() {
-		return hopperData;
 	}
 
 	public LuckPerms getLuckperms() {
