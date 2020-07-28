@@ -13,20 +13,36 @@ public abstract class BaseFile {
 	private File file;
 	protected FileConfiguration config;
 
-	public BaseFile(Main main, String fileName) {
+	public BaseFile(Main plugin, String fileName) {
 
-		this.plugin = main;
-		this.file = new File(main.getDataFolder(), fileName);
+		this.plugin = plugin;
+		this.file = new File(plugin.getDataFolder(), fileName);
 		
-		if(!file.exists()) {
-			try {
-				file.createNewFile();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-			}
+		if(file.exists()) {
+            try {
+                config = new YamlConfiguration();
+                config.load(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 		}
-		config = YamlConfiguration.loadConfiguration(file);
+		else {
+            // Create the missing file
+            config = new YamlConfiguration();
+            
+            try {
+                if (plugin.getResource(fileName) != null) {
+                    plugin.getLogger().info("Using default found in jar file.");
+                    plugin.saveResource(fileName, false);
+                    config = new YamlConfiguration();
+                    config.load(file);
+                } else {
+                    config.save(file);
+                }
+            } catch (Exception e) {
+                plugin.getLogger().severe("Could not create the " + file + " file!");
+            }
+		}
 	}
 	
 	public void save() {
