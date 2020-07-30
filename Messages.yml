@@ -9,6 +9,7 @@ General:
 ActionBar:
   normal:
     message: '&c {mafkees_player_health}/100❤ &a      %askyblock_level%〣 Level     &e {mafkees_average_island_rate}/5✰ Rating '
+    messageNoIsland:  '&c {mafkees_player_health}/100❤ &a &eYou have no island'
 
   
 #Messages for the Custom Voucher plugin
