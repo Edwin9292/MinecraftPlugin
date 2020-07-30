@@ -23,7 +23,8 @@ public class Messages extends BaseFile {
 		
 		
 		//action bar
-		Messages.ActionBarMessages.actionBarMessage = Utils.colorize(config.getString(ACTION_BAR_NORMAL + "message"));
+		Messages.ActionBarMessages.message = Utils.colorize(config.getString(ACTION_BAR_NORMAL + "message"));
+		Messages.ActionBarMessages.messageNoIsland = Utils.colorize(config.getString(ACTION_BAR_NORMAL + "messageNoIsland"));
 		
 		//custom voucher
 		Messages.CustomVoucherMessages.inventoryFull = Utils.colorize(config.getString(CUSTOM_VOUCHER_WARNINGS + "inventoryFull"));
@@ -48,7 +49,8 @@ public class Messages extends BaseFile {
 
 	//Action bar messages
 	public static class ActionBarMessages{
-		public static String actionBarMessage;
+		public static String message;
+		public static String messageNoIsland;
 	}
 	
 	//Custom voucher messages
