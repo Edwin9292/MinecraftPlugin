@@ -35,6 +35,7 @@ public class Messages extends BaseFile {
 
 		Messages.CustomVoucherMessages.firstVoucherUsed = Utils.colorize(config.getString(CUSTOM_VOUCHER_NORMAL + "firstVoucherUsed"));
 		Messages.CustomVoucherMessages.extentionVoucherUsed = Utils.colorize(config.getString(CUSTOM_VOUCHER_NORMAL + "extentionVoucherUsed"));
+		Messages.CustomVoucherMessages.youAreOP = Utils.colorize(config.getString(CUSTOM_VOUCHER_WARNINGS + "youAreOP"));
 		
 		//custom potions
 		
@@ -71,6 +72,7 @@ public class Messages extends BaseFile {
 		public static String invalidType; 
 		public static String alreadyHasPermanentFly; 
 		public static String nonStackableFlightDuration;
+		public static String youAreOP;
 	}
 	
 	public static class CustomPotionMessages{

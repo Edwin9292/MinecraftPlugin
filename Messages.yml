@@ -24,6 +24,7 @@ CustomVoucher:
     invalidVoucherType: '&cInvalid Voucher type, valid voucher types are {permission}'
     alreadyHasPermanentFly: '&cYou already have permanent fly. You should not be using fly items.'
     nonStackableFlightDuration: '&cThis item has non-stackable flight duration. You can use this when you run out of spare flight time.'
+    youAreOP: '&cYou already have all permissions because you are OP' 
 
 #Messages for the Custom Potions plugin
 CustomPotions:

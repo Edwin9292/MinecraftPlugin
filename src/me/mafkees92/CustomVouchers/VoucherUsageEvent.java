@@ -75,10 +75,8 @@ public class VoucherUsageEvent implements Listener {
 					player.sendMessage(Messages.CustomVoucherMessages.alreadyHasPermanentFly);
 					return false;
 				} 
-			///////////// TODO CREATE CUSTOM MESSAGE FOR OP 
-			///////////// OP DOES HAVE PERMISSION BUT NO NODE IN LUCKPERMS
 			}else {
-				player.sendMessage("You are OP, you dont need fly vouchers!");
+				player.sendMessage(Messages.CustomVoucherMessages.youAreOP);
 				return false;
 			}
 		}
