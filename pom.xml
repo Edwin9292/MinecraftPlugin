@@ -62,5 +62,11 @@
         <version>5.1</version>
         <scope>provided</scope>
     </dependency>
+    <dependency>
+        <groupId>xyz.xenondevs</groupId>
+        <artifactId>particle</artifactId>
+        <version>1.5.1</version>
+    </dependency>
+    
 </dependencies>
 </project>
