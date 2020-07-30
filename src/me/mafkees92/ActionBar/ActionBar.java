@@ -12,6 +12,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
+
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.mafkees92.Main;
 import me.mafkees92.Files.Messages;
@@ -44,8 +46,15 @@ public class ActionBar implements Listener {
 				if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")
 						&& Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 					try {
+						String message;
+						if(ASkyBlockAPI.getInstance().hasIsland(player.getUniqueId()) ||
+								ASkyBlockAPI.getInstance().inTeam(player.getUniqueId())) {
+							message = PlaceholderAPI.setPlaceholders(player, Messages.ActionBarMessages.message);
+						}
+						else {
+							message = PlaceholderAPI.setPlaceholders(player, Messages.ActionBarMessages.messageNoIsland);
+						}
 
-						String message = PlaceholderAPI.setPlaceholders(player, Messages.ActionBarMessages.actionBarMessage);
 						message = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, message);
 						
 						player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
