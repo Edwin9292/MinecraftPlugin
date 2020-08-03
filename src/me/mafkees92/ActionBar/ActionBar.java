@@ -49,10 +49,10 @@ public class ActionBar implements Listener {
 						String message;
 						if(ASkyBlockAPI.getInstance().hasIsland(player.getUniqueId()) ||
 								ASkyBlockAPI.getInstance().inTeam(player.getUniqueId())) {
-							message = PlaceholderAPI.setPlaceholders(player, Messages.ActionBarMessages.message);
+							message = PlaceholderAPI.setPlaceholders(player, Messages.actionBar);
 						}
 						else {
-							message = PlaceholderAPI.setPlaceholders(player, Messages.ActionBarMessages.messageNoIsland);
+							message = PlaceholderAPI.setPlaceholders(player, Messages.actionBarNoIsland);
 						}
 
 						message = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, message);
@@ -63,7 +63,7 @@ public class ActionBar implements Listener {
 					}
 				}
 			}
-		}, 5L, 5L); // will run 4x a second. Idk if it's needed to run it this often.
+		}, 10L, 10L); // will run 4x a second. Idk if it's needed to run it this often.
 
 	}
 
