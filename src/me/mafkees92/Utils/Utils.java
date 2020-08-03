@@ -44,4 +44,71 @@ public class Utils {
     	sb.append((int)loc.getZ());
     	return sb.toString();
     }
+    
+	public static String luckPermDurationToFullDuration(String duration) {
+		String tempString = duration;
+		if(duration.contains("s")) {
+			if(Integer.parseInt(tempString.replace("s", "")) == 1) {
+				tempString = tempString.replace("s", " Second");
+			}
+			else {
+				tempString = tempString.replace("s", " Seconds");
+			}
+		}
+		if(duration.contains("m")) {
+			if(Integer.parseInt(tempString.replace("m", "")) == 1) {
+				tempString = tempString.replace("m", " Minute");
+			}
+			else {
+				tempString = tempString.replace("m", " Minutes");
+			}
+		}
+		if(duration.contains("h")) {
+			if(Integer.parseInt(tempString.replace("h", "")) == 1) {
+				tempString = tempString.replace("h", " Hour");
+			}
+			else {
+			tempString = tempString.replace("h", " Hours");
+			}
+		}
+		if(duration.contains("d")) {
+			if(Integer.parseInt(tempString.replace("d", "")) == 1) {
+				tempString = tempString.replace("d", " Day");
+			}
+			else {
+			tempString = tempString.replace("d", " Days");
+			}
+		}
+		return tempString;
+	}
+	
+	public static String luckPermsDurationToRarityString(String duration) {
+
+		String tempString = duration;
+		String rarity;
+		long seconds = 0;
+		
+		if(duration.contains("s")) 
+			seconds = Integer.parseInt(tempString.replace("s", ""));
+		if(duration.contains("m")) 
+			seconds = Integer.parseInt(tempString.replace("m", ""))*60;
+		if(duration.contains("h")) 
+			seconds = Integer.parseInt(tempString.replace("h", ""))*3600;
+		if(duration.contains("d")) 
+			seconds = Integer.parseInt(tempString.replace("d", ""))*86400;
+		
+		if(seconds < 3600)
+			rarity = "&a&lCOMMON";
+		else if(seconds < 21600)
+			rarity = "&b&lUNCOMMON";
+		else if(seconds < 86400)
+			rarity = "&9&lRARE";
+		else if(seconds < 604800)
+			rarity = "&d&lEPIC";
+		else
+			rarity = "&6&lLEGENDARY";
+		
+		return Utils.colorize(rarity);
+		
+	}
 }

@@ -30,9 +30,6 @@ public class Main extends JavaPlugin {
 		new Messages(this, "Messages.yml");
 		
 		
-		//PluginConfig.LoadConfig(this);
-		//getLogger().warning(Settings.testLine);
-		//getLogger().warning(Settings.voidTestLine);
 		
 		getServer().getPluginManager().registerEvents(new VoidDamage(this), this);
 		getServer().getPluginManager().registerEvents(new CustomSplashPotions(this), this);

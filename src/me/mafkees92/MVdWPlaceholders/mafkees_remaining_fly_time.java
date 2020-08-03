@@ -23,57 +23,59 @@ public class mafkees_remaining_fly_time {
 			public String onPlaceholderReplace(PlaceholderReplaceEvent event) {
 				Player player = event.getPlayer();
 				if (player != null) {
-					
-					User user = plugin.getLuckperms().getUserManager().getUser(player.getUniqueId());
-					List<Node> nodes = user.resolveInheritedNodes(QueryOptions.nonContextual()).stream().filter(x -> x.getKey().contentEquals("essentials.fly")).collect(Collectors.toList());
-					if(nodes.size() == 1) {
-						if(nodes.get(0).hasExpiry()) {
-							return secondsToTimeString(nodes.get(0).getExpiryDuration().getSeconds());
-						}
-						else {
-							return "Permanent";
-						}
-					}
-					else if(nodes.size() > 1){
-						Node permNode = nodes.stream().filter(x -> (x.hasExpiry() == false)).findFirst().orElse(null);
-						if(permNode != null) {
-							return "Permanent";
-						}
-						else {
-							Node tempNode = nodes.stream().filter(x -> x.hasExpiry() == true).findFirst().orElse(null);
-							if(tempNode != null) {
-								return secondsToTimeString(tempNode.getExpiryDuration().getSeconds());
-							}else {
-								return "Error";
+					if (player.hasPermission("essentials.fly")) {
+						User user = plugin.getLuckperms().getUserManager().getUser(player.getUniqueId());
+						List<Node> nodes = user.resolveInheritedNodes(QueryOptions.nonContextual()).stream()
+								.filter(x -> x.getKey().contentEquals("essentials.fly")).collect(Collectors.toList());
+						if (nodes.size() == 1) {
+							if (nodes.get(0).hasExpiry()) {
+								return secondsToTimeString(nodes.get(0).getExpiryDuration().getSeconds());
+							} else {
+								return "Permanent";
 							}
+						} else if (nodes.size() > 1) {
+							Node permNode = nodes.stream().filter(x -> (x.hasExpiry() == false)).findFirst()
+									.orElse(null);
+							if (permNode != null) {
+								return "Permanent";
+							} else {
+								Node tempNode = nodes.stream().filter(x -> x.hasExpiry() == true).findFirst()
+										.orElse(null);
+								if (tempNode != null) {
+									return secondsToTimeString(tempNode.getExpiryDuration().getSeconds());
+								} else {
+									return "Error";
+								}
+							}
+						} else {
+							return "OP-Fly";
 						}
-					}
-					else {
+
+					}else {
 						return "None";
 					}
-					
 				}
 				return null;
 			}
 		});
 	}
-	
+
 	private String secondsToTimeString(long sec) {
 
-		int seconds = (int) sec%60;
-		int minutes = (int) TimeUnit.SECONDS.toMinutes(sec)%60;
-		int hours = (int) TimeUnit.SECONDS.toHours(sec)%24;
+		int seconds = (int) sec % 60;
+		int minutes = (int) TimeUnit.SECONDS.toMinutes(sec) % 60;
+		int hours = (int) TimeUnit.SECONDS.toHours(sec) % 24;
 		int days = (int) TimeUnit.SECONDS.toDays(sec);
-		
+
 		StringBuilder sb = new StringBuilder();
-		if(days > 0)
+		if (days > 0)
 			sb.append(days + "D ");
-		if(sec > 3600)
+		if (sec > 3600)
 			sb.append(hours + "H ");
-		if(sec > 60)
+		if (sec > 60)
 			sb.append(minutes + "M ");
 		sb.append(seconds + "S");
-		
+
 		return sb.toString();
 	}
 }

@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import me.mafkees92.Main;
@@ -25,8 +26,9 @@ public class VoucherUsageEvent implements Listener {
 	@EventHandler
 	public void onVoucherUsage(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if(e.getHand() == EquipmentSlot.OFF_HAND) return;
 			ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
-			if (!(item.getType().equals(Material.PAPER)))
+			if (!(item.getType().equals(Material.FEATHER)))
 				return;
 
 			String nbtTag = Utils.getNBTTag(item, "customVoucher");
@@ -36,7 +38,9 @@ public class VoucherUsageEvent implements Listener {
 
 				switch (permission) {
 				case "essentials.fly":
-					if(giveFlyPermission(player, 10, true)) {
+					String duration = Utils.getNBTTag(item, "duration");
+					String stackable = Utils.getNBTTag(item, "stackable");
+					if(giveFlyPermission(player, duration, stackable)) {
 						removeItemFromPlayerInventory(player, item);
 					}
 					break;
@@ -49,38 +53,38 @@ public class VoucherUsageEvent implements Listener {
 		}
 	}
 
-	private boolean giveFlyPermission(Player player, int durationInMinutes, boolean stackable) {
+	private boolean giveFlyPermission(Player player, String duration, String stackable) {
 		
 		//if player does not have the permission yet, give him the permission.
 		if (!player.hasPermission("essentials.fly")) {
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("lp user %s permission settemp essentials.fly %sm %s",
-					player.getName(), durationInMinutes, stackable ? "accumulate" : ""));
-			player.sendMessage(Messages.CustomVoucherMessages.firstVoucherUsed(durationInMinutes));
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("lp user %s permission settemp essentials.fly %s %s",
+					player.getName(), duration, stackable.equalsIgnoreCase("true") ? "accumulate" : ""));
+			player.sendMessage(Messages.firstVoucherUsed(Utils.luckPermDurationToFullDuration(duration)));
 			player.setAllowFlight(true);
 				return true;
 				
 		}
 		//player already has the permission
-		if(stackable) {
+		if(stackable.equalsIgnoreCase("true")) {
 			Node node = main.getLuckperms().getUserManager().getUser(player.getUniqueId()).resolveInheritedNodes(QueryOptions.nonContextual()).
 					stream().filter(x -> x.getKey().contentEquals("essentials.fly")).findFirst().orElse(null);
 			if(node != null) {
 				//if player does not have permanent fly
 				if(node.hasExpiry()) {
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("lp user %s permission settemp essentials.fly %sm accumulate", player.getName(), durationInMinutes));
-					player.sendMessage(Messages.CustomVoucherMessages.extentionVoucherUsed(durationInMinutes));
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), String.format("lp user %s permission settemp essentials.fly %s accumulate", player.getName(), duration));
+					player.sendMessage(Messages.extentionVoucherUsed(Utils.luckPermDurationToFullDuration(duration)));
 					player.setAllowFlight(true);
 					return true;
 				}else {
-					player.sendMessage(Messages.CustomVoucherMessages.alreadyHasPermanentFly);
+					player.sendMessage(Messages.alreadyHasPermanentFly);
 					return false;
 				} 
 			}else {
-				player.sendMessage(Messages.CustomVoucherMessages.youAreOP);
+				player.sendMessage(Messages.OPAlreadyHasPermissions);
 				return false;
 			}
 		}
-		player.sendMessage(Messages.CustomVoucherMessages.nonStackableFlightDuration);	
+		player.sendMessage(Messages.nonStackableFlightDuration);	
 		return false;
 	}
 	
