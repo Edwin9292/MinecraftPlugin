@@ -7,10 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.wasteofplastic.askyblock.util.Util;
-
 import me.mafkees92.Main;
-import me.mafkees92.Utils.Utils;
+import me.mafkees92.Files.Messages;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.query.QueryOptions;
 
@@ -36,19 +34,18 @@ public class GetRemainingFlyTime implements CommandExecutor{
 		
 		if(node != null) {
 			if(!node.hasExpiry()) {
-				player.sendMessage(Utils.colorize("&7You have permanent fly. Your fly will not expire."));
+				player.sendMessage(Messages.flightWontExpire);
 			}
 			else{
 				long remainingTime = node.getExpiryDuration().getSeconds();
-				player.sendMessage(Util.colorize("&aYour flight will expire in &e" +  secondsToTimeString(remainingTime)));
+				player.sendMessage(Messages.flightExpirationTime(secondsToTimeString(remainingTime)));
 			}
 		}
 		else {
-			player.sendMessage(Util.colorize("&cYou have no remaining flight time left."));
+			player.sendMessage(Messages.noFlightTimeLeft);
 		}
 		return true;
 	}
-	
 	
 
 	private String secondsToTimeString(long sec) {
