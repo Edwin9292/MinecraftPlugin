@@ -17,24 +17,28 @@ public class FlyExpirationListener {
 	public FlyExpirationListener(Main main, LuckPerms api) {
 		this.api = api;
 		this.main = main;
-		
-		EventBus eventBus = api.getEventBus();	
+
+		EventBus eventBus = api.getEventBus();
 		eventBus.subscribe(NodeRemoveEvent.class, this::onNodeRemoval);
-		
+
 	}
 
 	private void onNodeRemoval(NodeRemoveEvent event) {
 		// as we want to access the Bukkit API, we need to use the scheduler to jump
 		// back onto the main thread.
-		if(event.getTarget() instanceof User) {
-			User user = (User)event.getTarget();
 
-			Bukkit.getScheduler().runTask(main, () -> {				
-				if(event.getNode().getKey().equalsIgnoreCase("essentials.fly")) {
+		if (event.getTarget() instanceof User) {
+			User user = (User) event.getTarget();
+			if (event.getNode() == null)
+				return;
+			if (event.getNode().getKey().equalsIgnoreCase("essentials.fly")) {
+
+				Bukkit.getScheduler().runTask(main, () -> {
 					Player p = Bukkit.getPlayer(user.getUniqueId());
 					p.setAllowFlight(false);
-				}
-			});
+				});
+			}
 		}
+
 	}
 }
