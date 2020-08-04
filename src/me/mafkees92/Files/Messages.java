@@ -13,8 +13,8 @@ public class Messages extends BaseFile {
 		super(plugin, fileName);
 		
 		//general messages
-		Messages.noPermission = Utils.colorize("General.noPermission");
-		Messages.invalidTargetPlayer = Utils.colorize("General.invalidTargetPlayer");
+		Messages.noPermission = Utils.colorize(config.getString("General.noPermission"));
+		Messages.invalidTargetPlayer = Utils.colorize(config.getString("General.invalidTargetPlayer"));
 		Messages.inventoryFull = Utils.colorize(config.getString("General.inventoryFull"));
 		
 		//action bar
