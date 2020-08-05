@@ -5,12 +5,16 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.mafkees92.ActionBar.ActionBar;
+import me.mafkees92.CustomHoppers.AddHopperTest;
+import me.mafkees92.CustomHoppers.GetHopperTest;
+import me.mafkees92.CustomHoppers.HopperEvents;
 import me.mafkees92.CustomPotions.CustomSplashPotions;
 import me.mafkees92.CustomPotions.GiveCustomPotion;
 import me.mafkees92.CustomVouchers.FlyExpirationListener;
 import me.mafkees92.CustomVouchers.GetRemainingFlyTime;
 import me.mafkees92.CustomVouchers.GiveVoucher;
 import me.mafkees92.CustomVouchers.VoucherUsageEvent;
+import me.mafkees92.Files.HopperData;
 import me.mafkees92.Files.Messages;
 import me.mafkees92.MVdWPlaceholders.mvdwPlaceholders;
 import me.mafkees92.RenameItems.RenameItem;
@@ -20,6 +24,7 @@ import net.luckperms.api.LuckPerms;
 public class Main extends JavaPlugin {
 	
 	private LuckPerms luckperms;
+	private HopperData data;
 
 	public void onEnable() {
 		if(!getDataFolder().exists()) {
@@ -28,6 +33,7 @@ public class Main extends JavaPlugin {
 		
 		saveDefaultConfig();
 		new Messages(this, "Messages.yml");
+		data = new HopperData(this, "HopperData.yml");
 		
 		
 		
@@ -35,10 +41,13 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new CustomSplashPotions(this), this);
 		getServer().getPluginManager().registerEvents(new ActionBar(this), this);
 		getServer().getPluginManager().registerEvents(new VoucherUsageEvent(this), this);
+		getServer().getPluginManager().registerEvents(new HopperEvents(this), this);
 		getCommand("rename").setExecutor(new RenameItem());
 		getCommand("givecustompotion").setExecutor(new GiveCustomPotion());
 		getCommand("givevoucher").setExecutor(new GiveVoucher());
 		getCommand("flytime").setExecutor(new GetRemainingFlyTime(this));
+		getCommand("addhopper").setExecutor(new AddHopperTest(this));
+		getCommand("hashopper").setExecutor(new GetHopperTest(this));
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);
@@ -54,5 +63,9 @@ public class Main extends JavaPlugin {
 
 	public LuckPerms getLuckperms() {
 		return luckperms;
+	}
+	
+	public HopperData getHopperData() {
+		return data;
 	}
 }

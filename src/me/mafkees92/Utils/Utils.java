@@ -1,7 +1,9 @@
 package me.mafkees92.Utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -111,4 +113,46 @@ public class Utils {
 		return Utils.colorize(rarity);
 		
 	}
+	
+	public static Location StringToLocation(String loc) {
+		
+		//format = world|1123|30|4045  world|x|y|z
+		Bukkit.getLogger().warning(loc);
+		
+		String[] coords = loc.split("[|]");
+		Bukkit.getLogger().warning(coords.length + " length");
+		if(coords.length != 4)
+			return null;
+
+		
+		try {
+			World world = Bukkit.getWorld(coords[0]);
+			int x = Integer.parseInt(coords[1]);
+			int y = Integer.parseInt(coords[2]);
+			int z = Integer.parseInt(coords[3]);
+
+			return new Location(world, x, y, z);
+					
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
