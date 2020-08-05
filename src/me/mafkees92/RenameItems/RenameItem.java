@@ -29,7 +29,7 @@ public class RenameItem implements CommandExecutor{
 		}
 		
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(Utils.colorize(args[0]));
+		meta.setDisplayName(Utils.colorize("&f" + args[0]).replace("_", " "));
 		item.setItemMeta(meta);
 		
 		
