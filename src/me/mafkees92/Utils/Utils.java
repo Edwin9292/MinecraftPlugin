@@ -141,7 +141,17 @@ public class Utils {
 		
 	}
 	
+	public static String LocationToChunkString(Location location) {
+		return location.getBlockX()/16 + ":" + location.getBlockZ()/16;
+	}
 	
+	public static int tryParseInt(String value) {
+		try {
+			return Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
 	
 	
 	

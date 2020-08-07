@@ -17,10 +17,8 @@ commands:
    flytime:
       description: Get the remaining flytime
       usage: /<command>
-   addhopper:
+   givecustomhopper:
       description: Add Hopper test
       usage: /<command>
-   hasHopper:
-      description: check if chunk has a hopper TEST
-      usage: /<command>
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI]
+depend: [Multiverse-Core]

@@ -16,6 +16,7 @@ public class Messages extends BaseFile {
 		Messages.noPermission = Utils.colorize(config.getString("General.noPermission"));
 		Messages.invalidTargetPlayer = Utils.colorize(config.getString("General.invalidTargetPlayer"));
 		Messages.inventoryFull = Utils.colorize(config.getString("General.inventoryFull"));
+		Messages.invalidAmount = Utils.colorize(config.getString("General.invalidAmount"));
 		
 		//action bar
 		Messages.actionBar = Utils.colorize(config.getString("ActionBar.message"));
@@ -36,6 +37,9 @@ public class Messages extends BaseFile {
 		Messages.flyVoucherName = Utils.colorize(config.getString("CustomVoucher.flyVoucherName"));
 		Messages.flyVoucherLore = config.getStringList("CustomVoucher.flyVoucherLore");
     	Messages.invalidFlyVoucherArguments = Utils.colorize(config.getString("CustomVoucher.invalidFlyVoucherArguments"));
+    	
+    	//custom Hoppers
+    	Messages.invalidChunkHopperArguments = Utils.colorize(config.getString("CustomHoppers.invalidArguments"));
 	
 	}
 	
@@ -45,6 +49,7 @@ public class Messages extends BaseFile {
 	private static String inventoryFull;
 	public static String inventoryFull(Player player){
 		return Messages.inventoryFull.replace("%playername%", player.getName());}
+	public static String invalidAmount;
 
 	//Action bar messages
 	public static String actionBar;
@@ -74,7 +79,8 @@ public class Messages extends BaseFile {
 	public static String flightExpirationTime(String remainingTime) {
 		return Messages.flightExpirationTime.replace("%remainingtime%", remainingTime);	}
 	
-	
+	//custom ChunkHopper messages
+	public static String invalidChunkHopperArguments;
 	
 	
 }

@@ -1,6 +1,7 @@
 General:
     noPermission: '&cYou dont have permission to use this command'
     invalidTargetPlayer: '&cTarget player is either invalid or not online'
+    invalidAmount: '&cYou have entered an invalid amount'
     inventoryFull: '&cItem could not be given to %playername% due to a full inventory'
 
 
@@ -12,25 +13,27 @@ ActionBar:
   
 #Messages for the Custom Voucher plugin
 CustomVoucher:
-    invalidVoucherArguments: '&cInvalid Arguments. Try /givevoucher <playername> <vouchertype> <args>'
-    invalidVoucherType: '&cInvalid Voucher type, valid voucher types are {permission}'
-    OPAlreadyHasPermissions: '&cYou already have all permissions because you are OP' 
-    firstVoucherUsed: '&aYou have received &e%duration%&a of flight time. Check your spare flytime with /flytime'
-    extentionVoucherUsed: '&aYour spare flight time has been increased by &e%duration%&a.'
-    flightWontExpire: '&7You have permanent fly. Your fly will not expire.'
-    alreadyHasPermanentFly: '&cYou already have permanent fly. You should not be using fly items.'
-    nonStackableFlightDuration: '&cThis item has non-stackable flight duration. You can use this when you run out of spare flight time.'
-    flightExpirationTime:  '&aYour flight will expire in &e%remainingtime%'
-    noFlightTimeLeft: '&cYou have no remaining flight time left.'
-    flyVoucherName:  '&eFeather of Flight' 
-    flyVoucherLore:
-     - '&7Right-click this glowing feather'
-     - '&7to activate flight for &e%duration%&7.'
-     - '&f'
-     - '%rarity%'
-    invalidFlyVoucherArguments:  '&cInvalid arguments. /givevoucher <playername> permission essentials.fly <duration(ex. 10s/m/h/d)> <stackable(true/false)>' 
+  invalidVoucherArguments: '&cInvalid Arguments. Try /givevoucher <playername> <vouchertype> <args>'
+  invalidVoucherType: '&cInvalid Voucher type, valid voucher types are {permission}'
+  OPAlreadyHasPermissions: '&cYou already have all permissions because you are OP' 
+  firstVoucherUsed: '&aYou have received &e%duration%&a of flight time. Check your spare flytime with /flytime'
+  extentionVoucherUsed: '&aYour spare flight time has been increased by &e%duration%&a.'
+  flightWontExpire: '&7You have permanent fly. Your fly will not expire.'
+  alreadyHasPermanentFly: '&cYou already have permanent fly. You should not be using fly items.'
+  nonStackableFlightDuration: '&cThis item has non-stackable flight duration. You can use this when you run out of spare flight time.'
+  flightExpirationTime:  '&aYour flight will expire in &e%remainingtime%'
+  noFlightTimeLeft: '&cYou have no remaining flight time left.'
+  flyVoucherName:  '&eFeather of Flight' 
+  flyVoucherLore:
+   - '&7Right-click this glowing feather'
+   - '&7to activate flight for &e%duration%&7.'
+   - '&f'
+   - '%rarity%'
+  invalidFlyVoucherArguments:  '&cInvalid arguments. /givevoucher <playername> permission essentials.fly <duration(ex. 10s/m/h/d)> <stackable(true/false)>' 
 
 #Messages for the Custom Potions plugin
-CustomPotions:
+CustomHoppers:
+  invalidArguments: '&cInvalid Arguments. Try /givechunkhopper <playername> <amount>'
+  
   
   

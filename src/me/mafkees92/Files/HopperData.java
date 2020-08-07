@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Chunk;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import me.mafkees92.Main;
 import me.mafkees92.CustomHoppers.CustomHopper;
@@ -20,7 +19,6 @@ public class HopperData extends BaseFile {
 
 	public HopperData(Main plugin, String fileName) {
 		super(plugin, fileName);
-		
 		LoadHopperData();
 	}
 	
@@ -28,13 +26,13 @@ public class HopperData extends BaseFile {
 	public void AddHopperData(CustomHopper hopper) {
 
 		if(customHoppers != null) {
-			if(customHoppers.containsKey(hopper.getChunk().toString())) {
-				customHoppers.get(hopper.getChunk().toString()).add(hopper);
+			if(customHoppers.containsKey(hopper.getChunkLocationString())) {
+				customHoppers.get(hopper.getChunkLocationString()).add(hopper);
 			}
 			else{
 				List<CustomHopper> hopperList = new ArrayList<CustomHopper>();
 				hopperList.add(hopper);
-				customHoppers.put(hopper.getChunk().toString(), hopperList);
+				customHoppers.put(hopper.getChunkLocationString(), hopperList);
 			}
 		}
 		config.set("hoppers."+ hopper.toString(), "");
@@ -48,23 +46,24 @@ public class HopperData extends BaseFile {
             config.createSection("hoppers"); 
         }
         
-        if(customHoppers == null) customHoppers = new HashMap<String, List<CustomHopper>>();
+        if(customHoppers == null) 
+        	customHoppers = new HashMap<String, List<CustomHopper>>();
         
     	HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("hoppers").getValues(false);
     	try {
-    		
+			Bukkit.getLogger().warning("size of map: " + map.size());
     		for (String line : map.keySet()) {
 				Location loc = Utils.StringToLocation(line);
 				if(loc != null) {
-					Chunk chunk = loc.getChunk();
 					CustomHopper hopper = new CustomHopper(loc);
-					if(customHoppers.containsKey(chunk.toString())) {
-						customHoppers.get(chunk.toString()).add(hopper);
+					Bukkit.getLogger().warning(hopper.getChunkLocationString());
+					if(customHoppers.containsKey(hopper.getChunkLocationString())) {
+						customHoppers.get(hopper.getChunkLocationString()).add(hopper);
 					}
 					else {
 						List<CustomHopper> hopperList = new ArrayList<CustomHopper>();
 						hopperList.add(hopper);
-						customHoppers.put(chunk.toString(), hopperList);
+						customHoppers.put(hopper.getChunkLocationString(), hopperList);
 					}
 					
 				}
@@ -75,10 +74,10 @@ public class HopperData extends BaseFile {
 		}
 	}
 	
-	public boolean containsHopperInChunk(Chunk chunk, Player player) {
+	public boolean containsHopperInChunk(Location location) {
 		if(customHoppers == null) 
 			return false;
-		if(customHoppers.containsKey(chunk.toString()))
+		if(customHoppers.containsKey(Utils.LocationToChunkString(location)))
 			return true;
 		return false;
 	}
@@ -86,8 +85,8 @@ public class HopperData extends BaseFile {
 	public boolean isChunkHopper(Location location) {
 		if(customHoppers == null) return false;
 		
-		if(customHoppers.containsKey(location.getChunk().toString())) {
-			List<CustomHopper> hoppers = customHoppers.get(location.getChunk().toString());
+		if(customHoppers.containsKey(Utils.LocationToChunkString(location) )) {
+			List<CustomHopper> hoppers = customHoppers.get(Utils.LocationToChunkString(location) );
 			CustomHopper hopper = hoppers.stream().filter(x -> x.getLocation().equals(location)).findFirst().orElse(null);
 			if(hopper == null) 
 				return false;
@@ -97,24 +96,36 @@ public class HopperData extends BaseFile {
 		return false;
 	}
 	
-	public boolean removeHopper(Location hopperLocation) {
+	public boolean removeHopper(CustomHopper hopperToRemove) {
 		if(customHoppers == null)
 			return false;
 		
-		List<CustomHopper> hoppers = customHoppers.get(hopperLocation.getChunk().toString());
-		CustomHopper hopper = hoppers.stream().filter(x -> x.getLocation().equals(hopperLocation)).findFirst().orElse(null);
+		List<CustomHopper> hoppers = customHoppers.get(hopperToRemove.getChunkLocationString());
+		CustomHopper hopper = hoppers.stream().filter(x -> x.getLocation().equals(hopperToRemove.getLocation())).findFirst().orElse(null);
 		if(hopper == null)
 			return false;
 		else {
 			if(hoppers.size() == 1) 
-				customHoppers.remove(hopperLocation.getChunk().toString());
+				customHoppers.remove(hopperToRemove.getChunkLocationString());
 			else 
-				customHoppers.get(hopperLocation.getChunk().toString()).removeIf(x -> x.getLocation().equals(hopperLocation));
+				customHoppers.get(hopperToRemove.getChunkLocationString()).removeIf(x -> x.getLocation().equals(hopperToRemove.getLocation()));
 			
 			config.set("hoppers." + hopper.toString(), null);
 			save();
 			return true;
 		}
+	}
+	
+	public List<CustomHopper> getHoppersInChunk(Location location){
+		
+		if(customHoppers == null) return null;
+		if(!customHoppers.containsKey(Utils.LocationToChunkString(location))) return null;
+		List<CustomHopper> hoppersInChunk = customHoppers.get(Utils.LocationToChunkString(location));
+		return hoppersInChunk;
+	}
+	
+	public void printChunkHoppers() {
+		Bukkit.broadcastMessage(customHoppers.toString());
 	}
 }
 
