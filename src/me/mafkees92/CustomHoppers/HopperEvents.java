@@ -103,7 +103,6 @@ public class HopperEvents implements Listener{
 			CustomHopper hopper = new CustomHopper(event.getBlock().getLocation());
 			plugin.getHopperData().AddHopperData(hopper);
 			event.getPlayer().sendMessage("added custom hopper");
-			
 		}
 	}
 	
@@ -123,4 +122,5 @@ public class HopperEvents implements Listener{
 			}
 		}
 	}
+	
 }

@@ -21,4 +21,4 @@ commands:
       description: Add Hopper test
       usage: /<command>
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI]
-depend: [Multiverse-Core]
+depend: [Multiverse-Core, HolographicDisplays]

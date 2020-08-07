@@ -25,10 +25,12 @@ public class CustomHopper {
 	
 	private Location location;
 	private Chunk chunk;
+	private Location hologramLocation;
 	
 	public CustomHopper(Location location) {
 		this.location = location;
 		this.chunk = location.getChunk();
+		this.hologramLocation = location.clone().add(0.5D, 1.7D, 0.5D);
 	}
 	
 	public Location getLocation() {
@@ -58,6 +60,9 @@ public class CustomHopper {
 		}
 	}
 	
+	public Location getHologramLocation() {
+		return this.hologramLocation;
+	}
 	
 	
 	public static ItemStack CreateCustomHopper() {
@@ -96,4 +101,5 @@ public class CustomHopper {
 		return sb.toString();
 	}
 
+	
 }
