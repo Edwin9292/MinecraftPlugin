@@ -26,11 +26,15 @@
 		  <id>mvdw-software</id>
 		  <name>MVdW Public Repositories</name>
 		  <url>http://repo.mvdw-software.be/content/groups/public/</url>
-		</repository>
-        <repository>
-            <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
+	</repository>
+    <repository>
+        <id>placeholderapi</id>
+        <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+    </repository>
+    <repository>
+   		<id>codemc-repo</id>
+   		<url>https://repo.codemc.io/repository/maven-public/</url>
+	</repository>
 </repositories>
 <dependencies>
     <!--This adds the Spigot API artifact to the build -->
@@ -50,12 +54,12 @@
 		  <artifactId>mafskyblock</artifactId>
 		  <version>3.0.9.4</version>
 	</dependency>
-        <dependency>
+    <dependency>
           <groupId>me.clip</groupId>
           <artifactId>placeholderapi</artifactId>
           <version>2.10.6</version>
          <scope>provided</scope>
-        </dependency>
+    </dependency>
     <dependency>
         <groupId>net.luckperms</groupId>
         <artifactId>api</artifactId>
@@ -67,6 +71,11 @@
         <artifactId>particle</artifactId>
         <version>1.5.1</version>
     </dependency>
-    
+    <dependency>
+    	<groupId>com.gmail.filoghost.holographicdisplays</groupId>
+   	 	<artifactId>holographicdisplays-api</artifactId>
+    	<version>2.4.0</version>
+    <scope>provided</scope>
+</dependency>
 </dependencies>
 </project>
