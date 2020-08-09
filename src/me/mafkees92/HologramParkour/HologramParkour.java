@@ -38,9 +38,11 @@ public class HologramParkour {
 		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), 3.5D, 76.9D, 1810.5D));
 		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), 3.5D, 76.9D, 1802.5D));
 		
-		Hologram holo = HologramsAPI.createHologram(plugin, locationsToSpawn.poll());
-		holo.appendTextLine(Utils.colorize("&3&lPICK THIS DIAMOND!!"));
-		ItemLine itemline = holo.appendItemLine(new ItemStack(Material.DIAMOND));
+		Hologram hologram = HologramsAPI.createHologram(plugin, locationsToSpawn.poll());
+		hologram.appendTextLine(Utils.colorize("&3&lPICK THIS DIAMOND!!"));
+		ItemLine itemline = hologram.appendItemLine(new ItemStack(Material.DIAMOND));
+		
+		hologram.getVisibilityManager().setVisibleByDefault(false);
 		
 		PickupHandler handler = new PickupHandler() {
 			
@@ -51,22 +53,14 @@ public class HologramParkour {
 				Location locToTeleport = locationsToSpawn.poll();
 				if(locToTeleport == null) {
 					player.sendMessage("You got them all!");
-					holo.delete();
+					hologram.delete();
 					return;
 				}
-				holo.teleport(locToTeleport);
+				hologram.teleport(locToTeleport);
 			}
 		};
 		itemline.setPickupHandler(handler);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
