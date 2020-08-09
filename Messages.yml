@@ -1,9 +1,12 @@
 General:
-    noPermission: '&cYou dont have permission to use this command'
-    invalidTargetPlayer: '&cTarget player is either invalid or not online'
-    invalidAmount: '&cYou have entered an invalid amount'
-    inventoryFull: '&cItem could not be given to %playername% due to a full inventory'
+  noPermission: '&cYou dont have permission to use this command'
+  invalidTargetPlayer: '&cTarget player is either invalid or not online'
+  invalidAmount: '&cYou have entered an invalid amount'
+  inventoryFull: '&cItem could not be given to %playername% due to a full inventory'
 
+SetLore:
+  noArguments: '&eYou can set the lore with /setlore <lore text> use the / character to start a new line'
+  succes: '&eYou have successfully edited the lore of the item in your hand' 
 
 #messages for the actionbar plugin
 ActionBar:
