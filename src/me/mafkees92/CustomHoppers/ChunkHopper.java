@@ -19,7 +19,7 @@ import com.wasteofplastic.askyblock.util.Util;
 
 import me.mafkees92.Utils.Utils;
 
-public class CustomHopper {
+public class ChunkHopper {
 
 	String locationSeparator = "|";
 	
@@ -27,7 +27,7 @@ public class CustomHopper {
 	private Chunk chunk;
 	private Location hologramLocation;
 	
-	public CustomHopper(Location location) {
+	public ChunkHopper(Location location) {
 		this.location = location;
 		this.chunk = location.getChunk();
 		this.hologramLocation = location.clone().add(0.5D, 1.7D, 0.5D);
@@ -65,7 +65,7 @@ public class CustomHopper {
 	}
 	
 	
-	public static ItemStack CreateCustomHopper() {
+	public static ItemStack CreateChunkHopperItem() {
 
 		ItemStack item = new ItemStack(Material.HOPPER);
 		ItemMeta meta = item.getItemMeta();
