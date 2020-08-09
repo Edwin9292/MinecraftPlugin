@@ -18,6 +18,10 @@ public class Messages extends BaseFile {
 		Messages.inventoryFull = Utils.colorize(config.getString("General.inventoryFull"));
 		Messages.invalidAmount = Utils.colorize(config.getString("General.invalidAmount"));
 		
+		//set lore
+		Messages.noSetLoreArguments = Utils.colorize(config.getString("SetLore.noArguments"));
+		Messages.succeededSettingLore = Utils.colorize(config.getString("SetLore.succes"));
+		
 		//action bar
 		Messages.actionBar = Utils.colorize(config.getString("ActionBar.message"));
 		Messages.actionBarNoIsland = Utils.colorize(config.getString("ActionBar.messageNoIsland"));
@@ -51,6 +55,10 @@ public class Messages extends BaseFile {
 		return Messages.inventoryFull.replace("%playername%", player.getName());}
 	public static String invalidAmount;
 
+	//Set lore messages
+	public static String noSetLoreArguments;
+	public static String succeededSettingLore;
+	
 	//Action bar messages
 	public static String actionBar;
 	public static String actionBarNoIsland;
