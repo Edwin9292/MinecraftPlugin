@@ -2,6 +2,7 @@ package me.mafkees92.Utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
@@ -140,11 +141,19 @@ public class Utils {
 		}
 		
 	}
-	
+
 	public static String LocationToChunkString(Location location) {
 		return location.getBlockX()/16 + ":" + location.getBlockZ()/16;
 	}
 	
+	public static String ChunkToString(Chunk chunk) {
+		return chunk.getX() + ":" + chunk.getZ();
+	}
+	
+	/**
+	* Parse a string to an integer.
+	* If the string is not an integer, it returns -1.
+	*/
 	public static int tryParseInt(String value) {
 		try {
 			return Integer.parseInt(value);
