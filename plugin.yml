@@ -7,6 +7,9 @@ commands:
    rename:
       description: Rename an item in your hand
       usage: /<command>
+   setlore:
+      description: Set the lore of the item in your hand
+      usage: /<command>
    givecustompotion:
       description: Give a player a custom potion
       usage: /<command>
@@ -20,5 +23,5 @@ commands:
    givecustomhopper:
       description: Add Hopper test
       usage: /<command>
-softdepends: [MVdWPlaceholderAPI, PlaceholderAPI]
-depend: [Multiverse-Core, HolographicDisplays]
+softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
+depend: [Multiverse-Core, ProtocolLib, HolographicDisplays]
