@@ -33,6 +33,7 @@ public class CustomHoppers {
 		hopperHolograms.LoadHopperHologram(hopper);
 	}
 	
+	
 	public boolean removeHopper(ChunkHopper hopper) {
 		if(hopperLocations.removeHopper(hopper) &&
 				hopperHolograms.RemoveHopperHologram(hopper)) {
