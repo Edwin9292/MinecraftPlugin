@@ -23,5 +23,17 @@ commands:
    givecustomhopper:
       description: Add Hopper test
       usage: /<command>
+   startparkour:
+      description: Start the parkour at spawn
+      usage: /<command>
+   islandchest:
+      description: Open island chest
+      usage: /<command>
+   islandinvsee:
+      description: invsee island chests
+      usage: /<command>
+   upgradeislandchestsize:
+      description: upgrade the size of islands chests (console only)
+      usage: /<command>
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
 depend: [Multiverse-Core, ProtocolLib, HolographicDisplays]
