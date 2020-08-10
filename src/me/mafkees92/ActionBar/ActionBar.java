@@ -1,6 +1,7 @@
 package me.mafkees92.ActionBar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ public class ActionBar implements Listener {
 
 	Plugin plugin;
 	private List<UUID> toSend = new ArrayList<>();
+	private HashMap<UUID, String> customizedMessages = new HashMap<UUID, String>();
 
 	public ActionBar(Main plugin) {
 		this.plugin = plugin;
@@ -39,6 +41,15 @@ public class ActionBar implements Listener {
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
 		toSend.remove(event.getPlayer().getUniqueId());
 	}
+	
+	public void setCustomActionBar(UUID uuid, String message) {
+		this.customizedMessages.put(uuid, message);
+	}
+	public void removeCustomActionBar(UUID uuid) {
+		this.customizedMessages.remove(uuid);
+	}
+	
+	
 
 	private void runActionBarScheduler() {
 		Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -47,7 +58,10 @@ public class ActionBar implements Listener {
 						&& Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 					try {
 						String message;
-						if(ASkyBlockAPI.getInstance().hasIsland(player.getUniqueId()) ||
+						if(customizedMessages.containsKey(player.getUniqueId())) {
+							message = customizedMessages.get(player.getUniqueId());
+						}
+						else if(ASkyBlockAPI.getInstance().hasIsland(player.getUniqueId()) ||
 								ASkyBlockAPI.getInstance().inTeam(player.getUniqueId())) {
 							message = PlaceholderAPI.setPlaceholders(player, Messages.actionBar);
 						}
@@ -63,7 +77,7 @@ public class ActionBar implements Listener {
 					}
 				}
 			}
-		}, 10L, 10L); // will run 4x a second. Idk if it's needed to run it this often.
+		}, 10L, 10L); // will run 2x a second. Idk if it's needed to run it this often.
 
 	}
 
