@@ -18,7 +18,11 @@ import me.mafkees92.CustomVouchers.GetRemainingFlyTime;
 import me.mafkees92.CustomVouchers.GiveVoucher;
 import me.mafkees92.CustomVouchers.VoucherUsageEvent;
 import me.mafkees92.Files.Messages;
-import me.mafkees92.HologramParkour.HologramParkour;
+import me.mafkees92.HologramParkour.StartParkour;
+import me.mafkees92.IslandChests.IslandChests;
+import me.mafkees92.IslandChests.IslandInvSee;
+import me.mafkees92.IslandChests.OpenIslandChest;
+import me.mafkees92.IslandChests.UpgradeIslandChestSize;
 import me.mafkees92.MVdWPlaceholders.mvdwPlaceholders;
 import me.mafkees92.RenameItems.RenameItem;
 import me.mafkees92.RenameItems.SetLore;
@@ -32,6 +36,8 @@ public class Main extends JavaPlugin {
 	private boolean shopGuiPlusApiEnabled = false;
 	public static Economy econ = null;
 	private CustomHoppers customHoppers;
+	private ActionBar actionBar;
+	private IslandChests isChests;
 
 	public void onEnable() {
 
@@ -41,15 +47,21 @@ public class Main extends JavaPlugin {
 
 		getServer().getPluginManager().registerEvents(new VoidDamage(this), this);
 		getServer().getPluginManager().registerEvents(new CustomSplashPotions(this), this);
-		getServer().getPluginManager().registerEvents(new ActionBar(this), this);
+		getServer().getPluginManager().registerEvents(actionBar = new ActionBar(this), this);
 		getServer().getPluginManager().registerEvents(new VoucherUsageEvent(this), this);
 		getServer().getPluginManager().registerEvents(new HopperEvents(customHoppers), this);
+		getServer().getPluginManager().registerEvents(new DisableCraftingValueBlocks(this), this);
+		getServer().getPluginManager().registerEvents(isChests = new IslandChests(this), this);
 		getCommand("rename").setExecutor(new RenameItem());
 		getCommand("setlore").setExecutor(new SetLore());
 		getCommand("givecustompotion").setExecutor(new GiveCustomPotion());
 		getCommand("givevoucher").setExecutor(new GiveVoucher());
 		getCommand("flytime").setExecutor(new GetRemainingFlyTime(this));
 		getCommand("givecustomhopper").setExecutor(new GiveChunkHopper(this));
+		getCommand("startparkour").setExecutor(new StartParkour(this));
+		getCommand("islandchest").setExecutor(new OpenIslandChest(this));
+		getCommand("islandinvsee").setExecutor(new IslandInvSee(this));
+		getCommand("upgradeislandchestsize").setExecutor(new UpgradeIslandChestSize(this));
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);
@@ -75,13 +87,13 @@ public class Main extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
-		new HologramParkour(this);
 
 	}
 
 	public void onDisable() {
 		if (customHoppers != null)
 			customHoppers.onDisable();
+		isChests.saveChests();
 	}
 
 	private boolean setupEconomy() {
@@ -101,7 +113,15 @@ public class Main extends JavaPlugin {
 		return customHoppers;
 	}
 
+	public ActionBar getActionBar() {
+		return actionBar;
+	}
+	
 	public boolean isShopGuiPlusEnabled() {
 		return shopGuiPlusApiEnabled;
+	}
+	
+	public IslandChests getIslandChests() {
+		return this.isChests;
 	}
 }
