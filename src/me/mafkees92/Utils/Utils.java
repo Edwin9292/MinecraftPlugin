@@ -1,5 +1,7 @@
 package me.mafkees92.Utils;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -7,6 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
 
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.NBTTagString;
@@ -162,7 +166,15 @@ public class Utils {
 		}
 	}
 	
-	
+	public static UUID getTeamOrIslandOwner(UUID player) {
+		if(ASkyBlockAPI.getInstance().inTeam(player)){
+			return ASkyBlockAPI.getInstance().getTeamLeader(player);
+		}
+		else if(ASkyBlockAPI.getInstance().hasIsland(player)) {
+			return player;
+		}
+		else return null;
+	}
 	
 	
 	
