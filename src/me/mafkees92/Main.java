@@ -8,6 +8,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.wasteofplastic.askyblock.ASkyBlock;
 
 import me.mafkees92.ActionBar.ActionBar;
+import me.mafkees92.ChunkLoaders.ChunkLoaderEvents;
+import me.mafkees92.ChunkLoaders.ChunkLoaders;
+import me.mafkees92.ChunkLoaders.GiveChunkLoader;
 import me.mafkees92.CustomHoppers.CustomHoppers;
 import me.mafkees92.CustomHoppers.GiveChunkHopper;
 import me.mafkees92.CustomHoppers.HopperEvents;
@@ -38,12 +41,14 @@ public class Main extends JavaPlugin {
 	private CustomHoppers customHoppers;
 	private ActionBar actionBar;
 	private IslandChests isChests;
+	private ChunkLoaders chunkLoaders;
 
 	public void onEnable() {
 
 		// saveDefaultConfig();
 		new Messages(this, "Messages.yml");
 		customHoppers = new CustomHoppers(this);
+		//chunkLoaders = new ChunkLoaders(this);
 
 		getServer().getPluginManager().registerEvents(new VoidDamage(this), this);
 		getServer().getPluginManager().registerEvents(new CustomSplashPotions(this), this);
@@ -52,6 +57,7 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new HopperEvents(customHoppers), this);
 		getServer().getPluginManager().registerEvents(new DisableCraftingValueBlocks(this), this);
 		getServer().getPluginManager().registerEvents(isChests = new IslandChests(this), this);
+		//getServer().getPluginManager().registerEvents(new ChunkLoaderEvents(this), this);
 		getCommand("rename").setExecutor(new RenameItem());
 		getCommand("setlore").setExecutor(new SetLore());
 		getCommand("givecustompotion").setExecutor(new GiveCustomPotion());
@@ -62,6 +68,7 @@ public class Main extends JavaPlugin {
 		getCommand("islandchest").setExecutor(new OpenIslandChest(this));
 		getCommand("islandinvsee").setExecutor(new IslandInvSee(this));
 		getCommand("upgradeislandchestsize").setExecutor(new UpgradeIslandChestSize(this));
+		getCommand("givechunkloader").setExecutor(new GiveChunkLoader(this));
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);
@@ -120,8 +127,12 @@ public class Main extends JavaPlugin {
 	public boolean isShopGuiPlusEnabled() {
 		return shopGuiPlusApiEnabled;
 	}
-	
+
 	public IslandChests getIslandChests() {
 		return this.isChests;
+	}
+	
+	public ChunkLoaders getChunkLoaders() {
+		return this.chunkLoaders;
 	}
 }

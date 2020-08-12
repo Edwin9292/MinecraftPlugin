@@ -35,5 +35,8 @@ commands:
    upgradeislandchestsize:
       description: upgrade the size of islands chests (console only)
       usage: /<command>
+   givechunkloader:
+      description: give a chunkloader to a player
+      usage: /<command>
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
 depend: [Multiverse-Core, ProtocolLib, HolographicDisplays]
