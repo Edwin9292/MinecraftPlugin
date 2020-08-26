@@ -12,7 +12,7 @@ import me.mafkees92.Utils.Utils;
 
 public class ChunkHopper {
 
-	private final Vector hologramOffset = new Vector(0.5D, 1.7D, 0.5D);
+	private final Vector hologramOffset = new Vector(0.5D, 1.99D, 0.5D);
 	
 	private final Location location;
 	private final Chunk chunk;

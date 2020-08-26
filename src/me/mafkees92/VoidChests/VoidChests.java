@@ -1,19 +1,20 @@
 package me.mafkees92.VoidChests;
 
-import me.arcaniax.hdb.api.DatabaseLoadEvent;
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
-import me.arcaniax.hdb.enums.CategoryEnum;
-import me.mafkees92.Files.BaseFile;
-import me.mafkees92.Files.Messages;
-import me.mafkees92.Holograms;
-import me.mafkees92.Main;
-import me.mafkees92.Utils.Utils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,7 +24,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import me.arcaniax.hdb.api.DatabaseLoadEvent;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import me.arcaniax.hdb.enums.CategoryEnum;
+import me.mafkees92.Holograms;
+import me.mafkees92.Main;
+import me.mafkees92.Files.BaseFile;
+import me.mafkees92.Files.Messages;
+import me.mafkees92.Utils.Utils;
 
 public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 
@@ -40,7 +48,6 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		
 		loadVoidChests();
 
-		Bukkit.getScheduler().runTaskTimer(plugin, this::sellAllVoidChestsContents, 100L, 100L);
 		Bukkit.getScheduler().runTaskTimer(plugin, this::payOutAllVoidChests, 100L, 600L);
 	}
 	
@@ -51,19 +58,10 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		}
 		
 		HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("voidchests").getValues(false);
-		try {
-			for (Map.Entry<String, Object> entry : map.entrySet()) {
-				VoidChest chest = new VoidChest(entry.getKey(), (String)entry.getValue());
-				voidChestList.add(chest);
-				if(hdb.getHeads(CategoryEnum.ALPHABET).size() > 0) {
-					addHologram(chest);
-				}
-				else {
-					hologramsToAdd.add(chest);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		for (Map.Entry<String, Object> entry : map.entrySet()) {
+			VoidChest chest = new VoidChest(entry.getKey(), (String)entry.getValue());
+			this.addVoidChest(chest);
 		}
 	}
 
@@ -78,12 +76,19 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 	public void addVoidChest(VoidChest chest) {
 		this.voidChestList.add(chest);
 		this.config.set("voidchests." + chest.getLocationString(), chest.getDataString());
-		addHologram(chest);
+		
+		if(hdb.getHeads(CategoryEnum.ALPHABET).size() > 0) {
+			addHologram(chest);
+		}
+		else {
+			hologramsToAdd.add(chest);
+		}
 		this.save();
 	}
 	
 	public void removeVoidChest(VoidChest chest) {
 		this.voidChestList.remove(chest);
+		chest.destroy();
 		this.config.set("voidchests." + chest.getLocationString(), null);
 		Holograms.RemoveHologram(chest.getLocation().add(hologramOffset));
 		this.save();
@@ -92,7 +97,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 	private void addHologram(VoidChest chest) {
 		chest.setHologramTextLines(Holograms.AddHologram(chest.getLocation().clone().add(hologramOffset), 
 				hdb.getItemHead("35106") , 
-				Utils.colorize("&6&lVoid Chest"), 
+				Utils.colorize("&6&lVoid Chest &e[&6&l" + chest.getChestGrade() + "&e]"), 
 				Utils.colorize(chest.getMoneyInChestTextLine())));
 	}
 	
@@ -164,23 +169,54 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 				this.getVoidChestAt(locWest) != null;
 	}
 	
+
+	// 0,5 second sell timer boost per grade, max 3 second boost
+	private ItemStack createVoidChestItemStack(int amount, int grade) {
+		ItemStack chest = new ItemStack(Material.CHEST);
+		
+		ItemMeta meta = chest.getItemMeta();
+		meta.setDisplayName(Utils.colorize("&o&3&lVoid Chest &2(Grade "+ grade +")"));
+		
+		List<String> lore = new ArrayList<>();
+		lore.add(Utils.colorize("&7When placed, this chest will sell"));
+		lore.add(Utils.colorize("&7all of it's contents "));
+		lore.add(Utils.colorize("&7every " + ((5.5D - 0.5D * grade ) > 2D ? (5.5D - 0.5D * grade ) : 2D) + " seconds."));
+		lore.add(Utils.colorize("&o"));
+		lore.add(Utils.colorize("&d&lEPIC"));
+		meta.setLore(lore);
+		
+		chest.setItemMeta(meta);
+		chest.setAmount(amount);
+		chest = Utils.setNBTTag(chest, "voidchest", Integer.toString(grade));
+
+		return chest;
+	}
+
+
+	//
+	//
+	//  **** EVENTS ****
+	//
+	//
 	
 	
-  @EventHandler
-   public void onDatabaseLoad(DatabaseLoadEvent e){
-       try{
-           if(hologramsToAdd.size() > 0) {
-        	   Iterator<VoidChest> it = hologramsToAdd.iterator();
-        	   while(it.hasNext()) {
-                   addHologram(it.next());
-                   it.remove();
-        	   }
-           }
-       }
-       catch(NullPointerException nullpointer){
-          Bukkit.getLogger().info( "could not find the head you were looking for" );
-       }
-   }
+	
+	
+	@EventHandler
+	public void onDatabaseLoad(DatabaseLoadEvent e){
+		try{
+		   if(hologramsToAdd.size() > 0) {
+			   Iterator<VoidChest> it = hologramsToAdd.iterator();
+			   while(it.hasNext()) {
+				   addHologram(it.next());
+				   it.remove();
+				   }
+			   }
+		   }
+		catch(NullPointerException nullpointer){
+			Bukkit.getLogger().info( "could not find the head you were looking for" );
+		}
+	}
 	  
 	//void chest break event
 	@EventHandler
@@ -224,6 +260,11 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 	}
 	
 	
+	//
+	//
+	//  **** COMMANDS ****
+	//
+	//
 	
 	
 	//give voidchest   
@@ -235,17 +276,21 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		
 		Player player = (Player) sender;
 		if(player.isOp() || player.hasPermission("mafkeesplugin.voidchest.give")) {
-			if(args.length == 2) {
+			if(args.length == 3) {
 				Player targetPlayer = Bukkit.getPlayer(args[0]);
 				if(targetPlayer != null) {
-					int amount = Utils.tryParseInt(args[1]);
+					int amount = Utils.tryParseInt(args[2]);
 					if(amount != -1) {
-						if(targetPlayer.getInventory().firstEmpty() != -1) {
-							targetPlayer.getInventory().addItem(this.createVoidChestItemStack(amount, 21));  //give the targetplayer the itemstack
+						int grade = Utils.tryParseInt(args[1]);
+						if(grade != -1) {
+							if(targetPlayer.getInventory().firstEmpty() != -1) {
+								targetPlayer.getInventory().addItem(this.createVoidChestItemStack(amount, grade));  //give the targetplayer the itemstack
+								return true;
+							}
+							player.sendMessage(Messages.inventoryFull(targetPlayer));
 							return true;
 						}
-						player.sendMessage(Messages.inventoryFull(targetPlayer));
-						return true;
+						player.sendMessage(Utils.colorize("&cINVALID ITEM GRADE, try /givevoidchest <player> <grade> <amount>"));
 					}
 					player.sendMessage(Messages.invalidAmount);
 					return true;
@@ -253,7 +298,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 				player.sendMessage(Messages.invalidTargetPlayer);
 				return true;
 			}
-			player.sendMessage(Utils.colorize("&cINVALID ARGUMENTS"));
+			player.sendMessage(Utils.colorize("&cINVALID ARGUMENTS, TRY /givevoidchest <player> <grade> <amount>"));
 			return true;
 		}
 		player.sendMessage(Messages.noPermission);
@@ -261,32 +306,5 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 	}
 	
 	
-	
-	private ItemStack createVoidChestItemStack(int amount, int grade) {
-		ItemStack chest = new ItemStack(Material.CHEST);
-		
-		ItemMeta meta = chest.getItemMeta();
-		meta.setDisplayName(Utils.colorize("&o&3&lVoid Chest"));
-		
-		List<String> lore = new ArrayList<>();
-		lore.add(Utils.colorize("&7When placed, this chest will sell"));
-		lore.add(Utils.colorize("&7all of it's contents "));
-		lore.add(Utils.colorize("&7every 5 seconds."));
-		lore.add(Utils.colorize("&o"));
-		lore.add(Utils.colorize("&d&lEPIC"));
-		meta.setLore(lore);
-		
-		chest.setItemMeta(meta);
-		chest.setAmount(amount);
-		chest = Utils.setNBTTag(chest, "voidchest", Integer.toString(grade));
-
-		return chest;
-	}
-
-
-	
-	
-	
 }
-
 

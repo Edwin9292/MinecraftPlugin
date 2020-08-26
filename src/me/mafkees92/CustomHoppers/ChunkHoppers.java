@@ -45,11 +45,11 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 	
 	
 	private void loadChunkHoppers() {
-		if(config.getConfigurationSection("void chests") == null){
-			config.createSection("void chests");
+		if(config.getConfigurationSection("hoppers") == null){
+			config.createSection("hoppers");
 		}
 		
-		HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("void chests").getValues(false);
+		HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("hoppers").getValues(false);
 		try {
 			for (Map.Entry<String, Object> entry : map.entrySet()) {
 				ChunkHopper hopper = new ChunkHopper(entry.getKey(), (String)entry.getValue());
@@ -67,7 +67,6 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 		else {
 			this.chunkHopperList.put(hopper.getChunkLocationString(), new ArrayList<>(Collections.singletonList(hopper)));
 		}
-		
 		
 		this.addHologram(hopper);
 		this.config.set("hoppers." + hopper.getLocationString(), hopper.getDataString());
@@ -197,6 +196,7 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 		if(event.getBlock().getType().equals(Material.HOPPER)){
 			ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
 			String tag = Utils.getNBTTag(item, "chunk hopper");
+			event.getPlayer().sendMessage("DEBUG: "+ tag);
 			if(tag == null) return;
 			if(tag.equals("")) return;
 			
@@ -231,7 +231,7 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 					
 				}
 				else {
-					player.getInventory().addItem(CustomHoppers.getChunkHopperItemStack());
+					player.getInventory().addItem(this.createChunkHopperItemStack());
 				}
 				
 			}
@@ -265,7 +265,7 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 			int amount = Utils.tryParseInt(args[1]);
 			if(amount != -1) {
 				if(targetPlayer.getInventory().firstEmpty() != -1) {
-					ItemStack customHopper = CustomHoppers.getChunkHopperItemStack();
+					ItemStack customHopper = this.createChunkHopperItemStack();
 					customHopper.setAmount(amount);
 					targetPlayer.getInventory().addItem(customHopper);
 					targetPlayer.sendMessage("You have received a custom hopper");

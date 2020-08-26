@@ -1,8 +1,10 @@
 package me.mafkees92.VoidChests;
 
-import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
-import me.mafkees92.Utils.Utils;
-import net.brcdev.shopgui.ShopGuiPlusApi;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,11 +13,13 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+
+import me.mafkees92.Main;
+import me.mafkees92.Utils.Utils;
+import net.brcdev.shopgui.ShopGuiPlusApi;
 
 public class VoidChest {
 	
@@ -28,6 +32,8 @@ public class VoidChest {
 	private int chestGrade;
 	private List<TextLine> hologramTextLines = new ArrayList<>();
 	private boolean areTextLinesSet = false;
+	private int sellTimeInterval;
+	private BukkitTask sellIntervalTask;
 
 	public VoidChest(String location, String data) {
 		
@@ -44,12 +50,17 @@ public class VoidChest {
 			if(this.inventoryOwner == null || this.moneyToPayOut == -1 || this.chestGrade == -1) {
 				Bukkit.getLogger().warning(Utils.colorize("FAILED PARSING DATA TO VOIDCHEST"));
 			}
+			this.sellTimeInterval = 110 - this.chestGrade * 10 > 40 ? 100 - this.chestGrade * 10 : 40;
+			if(this.sellTimeInterval > 0) {
+				this.sellIntervalTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), () -> this.sellContents(), sellTimeInterval, sellTimeInterval);
+			}
 			
 		}
 		if (this.location != null) {
 			this.chest = (Chest) this.location.getBlock().getState();
 			this.inventory = this.chest.getInventory();
 		}
+		this.inventoryOwner.getPlayer().sendMessage("timer " + this.sellTimeInterval);
 	}
 	
 	public VoidChest(Location location, Player inventoryOwner, int chestGrade) {
@@ -59,8 +70,18 @@ public class VoidChest {
 		this.inventoryOwner = inventoryOwner;
 		this.moneyToPayOut = 0d;
 		this.chestGrade = chestGrade;
+		this.sellTimeInterval = 110 - this.chestGrade * 10 > 40 ? 100 - this.chestGrade * 10 : 40;
+		if(this.sellTimeInterval > 0) {
+			this.sellIntervalTask = Bukkit.getScheduler().runTaskTimer(Main.getInstance(), () -> this.sellContents(), sellTimeInterval, sellTimeInterval);
+		}
+		this.inventoryOwner.getPlayer().sendMessage("timer " + this.sellTimeInterval);
 	}
 	
+	public void destroy() {
+		if(this.sellIntervalTask != null) {
+			this.sellIntervalTask.cancel();
+		}
+	}
 	
 	public void setHologramTextLines(List<TextLine> textLines) {
 		this.hologramTextLines = textLines;
@@ -134,4 +155,5 @@ public class VoidChest {
 		String moneyInChestTextLine = "&eStored money: &2{money}";
 		return moneyInChestTextLine.replace("{money}", formatter.format(this.moneyToPayOut));
 	}
+	
 }
