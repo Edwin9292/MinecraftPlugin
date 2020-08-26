@@ -44,18 +44,10 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		Bukkit.getScheduler().runTaskTimer(plugin, this::payOutAllVoidChests, 100L, 600L);
 	}
 	
-	public void onDisable() {
-		for (VoidChest voidChest : voidChestList) {
-			config.set("voidchests." + voidChest.getLocationString(), voidChest.getDataString());
-		}
-		this.save();
-	}
-
-
 	//load void chests from config
 	public void loadVoidChests() {
-		if(config.getConfigurationSection("voidchests") == null){
-			config.createSection("voidchests");
+		if(config.getConfigurationSection("chunkloaders") == null){
+			config.createSection("chunkloaders");
 		}
 		
 		HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("voidchests").getValues(false);
@@ -74,6 +66,14 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 			e.printStackTrace();
 		}
 	}
+
+	public void onDisable() {
+		for (VoidChest voidChest : voidChestList) {
+			config.set("voidchests." + voidChest.getLocationString(), voidChest.getDataString());
+		}
+		this.save();
+	}
+	
 	
 	public void addVoidChest(VoidChest chest) {
 		this.voidChestList.add(chest);

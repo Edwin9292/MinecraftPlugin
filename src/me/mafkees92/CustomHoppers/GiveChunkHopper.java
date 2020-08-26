@@ -37,7 +37,7 @@ public class GiveChunkHopper implements CommandExecutor {
 			int amount = Utils.tryParseInt(args[1]);
 			if(amount != -1) {
 				if(targetPlayer.getInventory().firstEmpty() != -1) {
-					ItemStack customHopper = ChunkHopper.CreateChunkHopperItem();
+					ItemStack customHopper = CustomHoppers.getChunkHopperItemStack();
 					customHopper.setAmount(amount);
 					targetPlayer.getInventory().addItem(customHopper);
 					targetPlayer.sendMessage("You have received a custom hopper");

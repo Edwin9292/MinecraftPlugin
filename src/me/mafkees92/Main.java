@@ -1,12 +1,16 @@
 package me.mafkees92;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.wasteofplastic.askyblock.ASkyBlock;
+
 import me.mafkees92.ActionBar.ActionBar;
 import me.mafkees92.ChunkLoadersNotUSED.ChunkLoaders;
 import me.mafkees92.ChunkLoadersNotUSED.GiveChunkLoader;
-import me.mafkees92.CustomHoppers.CustomHoppers;
-import me.mafkees92.CustomHoppers.GiveChunkHopper;
-import me.mafkees92.CustomHoppers.HopperEvents;
+import me.mafkees92.CustomHoppers.ChunkHoppers;
 import me.mafkees92.CustomPotions.CustomSplashPotions;
 import me.mafkees92.CustomPotions.GiveCustomPotion;
 import me.mafkees92.CustomVouchers.FlyExpirationListener;
@@ -26,21 +30,17 @@ import me.mafkees92.VoidChests.VoidChests;
 import me.mafkees92.VoidTeleportation.VoidDamage;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
 	private static Main instance;
 	private LuckPerms luckperms;
 	public static Economy econ = null;
-	private CustomHoppers customHoppers;
 	private ActionBar actionBar;
 	private IslandChests isChests;
 	private VoidChests voidChestsInstance;
 	private ChunkLoaders chunkLoadersInstance;
+	private ChunkHoppers chunkHoppersInstance;
 
 	public void onEnable() {
 		
@@ -50,31 +50,31 @@ public class Main extends JavaPlugin {
 
 		// saveDefaultConfig();
 		new Messages(this, "Messages.yml");
-		customHoppers = new CustomHoppers(this);
 		//chunkLoadersInstance = new ChunkLoaders(this);
-		voidChestsInstance = new VoidChests(this, "VoidChests.yml");
+		this.voidChestsInstance = new VoidChests(this, "VoidChests.yml");
+		this.chunkHoppersInstance = new ChunkHoppers(this, "HopperData.yml");
 
 		getServer().getPluginManager().registerEvents(new VoidDamage(this), this);
 		getServer().getPluginManager().registerEvents(new CustomSplashPotions(this), this);
 		getServer().getPluginManager().registerEvents(actionBar = new ActionBar(this), this);
 		getServer().getPluginManager().registerEvents(new VoucherUsageEvent(this), this);
-		getServer().getPluginManager().registerEvents(new HopperEvents(customHoppers), this);
 		getServer().getPluginManager().registerEvents(new DisableCraftingValueBlocks(this), this);
 		getServer().getPluginManager().registerEvents(isChests = new IslandChests(this), this);
-		getServer().getPluginManager().registerEvents(voidChestsInstance, this);
+		getServer().getPluginManager().registerEvents(this.voidChestsInstance, this);
+		getServer().getPluginManager().registerEvents(this.chunkHoppersInstance, this);
 		//getServer().getPluginManager().registerEvents(new ChunkLoaderEvents(this), this);
 		getCommand("rename").setExecutor(new RenameItem());
 		getCommand("setlore").setExecutor(new SetLore());
 		getCommand("givecustompotion").setExecutor(new GiveCustomPotion());
 		getCommand("givevoucher").setExecutor(new GiveVoucher());
 		getCommand("flytime").setExecutor(new GetRemainingFlyTime(this));
-		getCommand("givecustomhopper").setExecutor(new GiveChunkHopper(this));
 		getCommand("startparkour").setExecutor(new StartParkour(this));
 		getCommand("islandchest").setExecutor(new OpenIslandChest(this));
 		getCommand("islandinvsee").setExecutor(new IslandInvSee(this));
 		getCommand("upgradeislandchestsize").setExecutor(new UpgradeIslandChestSize(this));
 		getCommand("givechunkloader").setExecutor(new GiveChunkLoader(this));
-		getCommand("givevoidchest").setExecutor(voidChestsInstance);
+		getCommand("givevoidchest").setExecutor(this.voidChestsInstance);
+		getCommand("givecustomhopper").setExecutor(this.chunkHoppersInstance);
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);
@@ -107,10 +107,10 @@ public class Main extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		if (customHoppers != null)
-			customHoppers.onDisable();
+		Holograms.RemoveAllHolograms();
 		isChests.saveChests();
 		voidChestsInstance.onDisable();
+		chunkHoppersInstance.onDisable();
 	}
 	private boolean setupEconomy() {
 		RegisteredServiceProvider<Economy> economyProvider =  ASkyBlock.getPlugin().getServer().getServicesManager()
@@ -127,10 +127,6 @@ public class Main extends JavaPlugin {
 	
 	public LuckPerms getLuckperms() {
 		return luckperms;
-	}
-
-	public CustomHoppers getCustomHoppers() {
-		return customHoppers;
 	}
 
 	public ActionBar getActionBar() {

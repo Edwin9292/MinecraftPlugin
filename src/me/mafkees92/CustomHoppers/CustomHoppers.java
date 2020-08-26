@@ -1,10 +1,14 @@
 package me.mafkees92.CustomHoppers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import me.mafkees92.Holograms;
 import me.mafkees92.Main;
@@ -58,6 +62,24 @@ public class CustomHoppers {
 	}
 	
 
+	public static ItemStack getChunkHopperItemStack() {
+
+		ItemStack item = new ItemStack(Material.HOPPER);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(Utils.colorize("&o&3&lChunkHopper"));
+		List<String> lore = new ArrayList<>();
+		lore.add(Utils.colorize("&7When placed, this hopper will suck"));
+		lore.add(Utils.colorize("&7up every item that drops inside"));
+		lore.add(Utils.colorize("&7its chunk."));
+		lore.add(Utils.colorize("&o"));
+		lore.add(Utils.colorize("&d&lEPIC"));
+		meta.setLore(lore);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		meta.addEnchant(Enchantment.DURABILITY, 1, false);
+		item.setItemMeta(meta);
+		item = Utils.setNBTTag(item, "chunkhopper", "hopper");
+		return item;
+	}
 }
 
 

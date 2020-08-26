@@ -107,7 +107,7 @@ public class HopperEvents implements Listener{
 				if(customHoppers.removeHopper(new ChunkHopper(event.getBlock().getLocation()))) {
 					Player player = event.getPlayer();
 					event.setDropItems(false);
-					ItemStack chunkHopper = ChunkHopper.CreateChunkHopperItem();
+					ItemStack chunkHopper = CustomHoppers.getChunkHopperItemStack();
 					if(player.getInventory().firstEmpty() == -1) {
 						//check if player already has the item
 						List<ItemStack> items = Arrays.asList(player.getInventory().getContents());
@@ -124,7 +124,7 @@ public class HopperEvents implements Listener{
 						
 					}
 					else {
-						player.getInventory().addItem(ChunkHopper.CreateChunkHopperItem());
+						player.getInventory().addItem(CustomHoppers.getChunkHopperItemStack());
 					}
 				}
 			}
