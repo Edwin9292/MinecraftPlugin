@@ -9,7 +9,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 
 import me.mafkees92.Main;
-import me.mafkees92.ChunkLoaders.ChunkLoader;
+import me.mafkees92.ChunkLoadersNotUSED.ChunkLoader;
 import me.mafkees92.Utils.Utils;
 
 public class ChunkLoaderLocations extends BaseFile{

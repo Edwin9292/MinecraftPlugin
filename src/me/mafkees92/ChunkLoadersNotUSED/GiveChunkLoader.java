@@ -1,4 +1,4 @@
-package me.mafkees92.ChunkLoaders;
+package me.mafkees92.ChunkLoadersNotUSED;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

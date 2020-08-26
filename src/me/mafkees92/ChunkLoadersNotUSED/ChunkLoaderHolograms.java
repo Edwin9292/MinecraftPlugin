@@ -1,4 +1,4 @@
-package me.mafkees92.ChunkLoaders;
+package me.mafkees92.ChunkLoadersNotUSED;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;

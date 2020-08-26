@@ -2,8 +2,8 @@ package me.mafkees92;
 
 import com.wasteofplastic.askyblock.ASkyBlock;
 import me.mafkees92.ActionBar.ActionBar;
-import me.mafkees92.ChunkLoaders.ChunkLoaders;
-import me.mafkees92.ChunkLoaders.GiveChunkLoader;
+import me.mafkees92.ChunkLoadersNotUSED.ChunkLoaders;
+import me.mafkees92.ChunkLoadersNotUSED.GiveChunkLoader;
 import me.mafkees92.CustomHoppers.CustomHoppers;
 import me.mafkees92.CustomHoppers.GiveChunkHopper;
 import me.mafkees92.CustomHoppers.HopperEvents;
