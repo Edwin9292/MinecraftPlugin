@@ -26,7 +26,7 @@ public class ChunkLoaderEvents implements Listener{
 	
 	@EventHandler
 	public void chunkUnloadEvent(ChunkUnloadEvent event) {
-		if(plugin.getChunkLoaders().containsChunkLoader(event.getChunk())) {
+		if(plugin.getChunkLoadersInstance().containsChunkLoader(event.getChunk())) {
 			Bukkit.broadcastMessage("Keeping a chunk loaded at X:" + event.getChunk().getX() + " Z:" + event.getChunk().getZ());
 			event.setCancelled(true);
 		}
@@ -41,7 +41,7 @@ public class ChunkLoaderEvents implements Listener{
 				Bukkit.getPlayer("Mafkees92").sendMessage("this is the right skull");
 				String nbt = Utils.getNBTTag(item, "chunkloader");
 				if(nbt == "loader") {
-					plugin.getChunkLoaders().addChunkLoader(new ChunkLoader(event.getBlock().getLocation()));
+					plugin.getChunkLoadersInstance().addChunkLoader(new ChunkLoader(event.getBlock().getLocation()));
 					Bukkit.getPlayer("Mafkees92").sendMessage("added chunkloader");
 					return;
 				}
@@ -54,8 +54,8 @@ public class ChunkLoaderEvents implements Listener{
 	@EventHandler
 	public void chunkLoaderBreakEvent(BlockBreakEvent event) {
 		if(event.getBlock().getType().equals(Material.SKULL)) {
-			if(plugin.getChunkLoaders().isChunkLoader(event.getBlock().getLocation())){
-				plugin.getChunkLoaders().removeChunkLoader(new ChunkLoader(event.getBlock().getLocation()));		
+			if(plugin.getChunkLoadersInstance().isChunkLoader(event.getBlock().getLocation())){
+				plugin.getChunkLoadersInstance().removeChunkLoader(new ChunkLoader(event.getBlock().getLocation()));		
 				event.setDropItems(false);
 				event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), ChunkLoader.CreateChunkLoaderItem());
 			}

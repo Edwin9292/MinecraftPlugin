@@ -32,7 +32,7 @@ public class CustomSplashPotions implements Listener {
 
 	final String CustomPotionNBTKey = "customPotions";
 	final String freezePotionNBTTag = "freezePotion";
-	ArrayList<Block> changedBlocks = new ArrayList<Block>();
+	ArrayList<Block> changedBlocks = new ArrayList<>();
 
 	@EventHandler
 	public void onSplashPotion(PotionSplashEvent e) {
@@ -41,7 +41,7 @@ public class CustomSplashPotions implements Listener {
 		ItemStack item = potion.getItem();
 
 		String nbtTag = Utils.getNBTTag(item, CustomPotionNBTKey);
-		if (nbtTag.equals(freezePotionNBTTag)) {
+		if (nbtTag != null && nbtTag.equals(freezePotionNBTTag)) {
 			e.setCancelled(true);
 			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 80, 10);
 			for (LivingEntity entity : e.getAffectedEntities()) {
@@ -60,7 +60,7 @@ public class CustomSplashPotions implements Listener {
 	}
 
 	private void setBlocks(Location location) {
-		ArrayList<Block> changed = new ArrayList<Block>();
+		ArrayList<Block> changed = new ArrayList<>();
 		int radius = 4;
 		Block block = location.getBlock();
 		for (int x = -(radius); x <= radius; x++) {

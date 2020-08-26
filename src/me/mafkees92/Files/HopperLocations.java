@@ -1,16 +1,14 @@
 package me.mafkees92.Files;
 
+import me.mafkees92.CustomHoppers.ChunkHopper;
+import me.mafkees92.Main;
+import me.mafkees92.Utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-
-import me.mafkees92.Main;
-import me.mafkees92.CustomHoppers.ChunkHopper;
-import me.mafkees92.Utils.Utils;
 
 public class HopperLocations extends BaseFile{
 	
@@ -30,7 +28,7 @@ public class HopperLocations extends BaseFile{
         }
         
         if(customHopperLocations == null) 
-        	customHopperLocations = new HashMap<String, List<ChunkHopper>>();
+        	customHopperLocations = new HashMap<>();
         
     	HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("hoppers").getValues(false);
     	try {
@@ -54,7 +52,7 @@ public class HopperLocations extends BaseFile{
 				customHopperLocations.get(hopper.getChunkLocationString()).add(hopper);
 			}
 			else{
-				List<ChunkHopper> hopperList = new ArrayList<ChunkHopper>();
+				List<ChunkHopper> hopperList = new ArrayList<>();
 				hopperList.add(hopper);
 				customHopperLocations.put(hopper.getChunkLocationString(), hopperList);
 			}
@@ -83,41 +81,18 @@ public class HopperLocations extends BaseFile{
 			return true;
 		}
 	}
-	
-	public boolean containsCustomHopper(Chunk chunk) {
-		if(customHopperLocations == null) return false;
-		if(customHopperLocations.containsKey(Utils.ChunkToString(chunk)))
-			return true;
-		return false;			
-	}
-	
-	public boolean containsCustomHopper(Location location) {
-		if(customHopperLocations == null) return false;
-		if(customHopperLocations.containsKey(Utils.LocationToChunkString(location)))
-			return true;
-		return false;
-	}
-	
+
 	public boolean isCustomHopper(Location location) {
 		if(customHopperLocations == null) return false;
 		
 		if(customHopperLocations.containsKey(Utils.LocationToChunkString(location) )) {
 			List<ChunkHopper> hoppers = customHopperLocations.get(Utils.LocationToChunkString(location) );
 			ChunkHopper hopper = hoppers.stream().filter(x -> x.getLocation().equals(location)).findFirst().orElse(null);
-			if(hopper == null) 
-				return false;
-			else 
-				return true;
+			return hopper != null;
 		}
 		return false;
 	}
-	
-	public List<ChunkHopper> getHoppersInChunk(Chunk chunk){
-		if(customHopperLocations == null) return null;
-		if(!customHopperLocations.containsKey(Utils.ChunkToString(chunk))) return null;
-		return customHopperLocations.get(Utils.ChunkToString(chunk));
-	}
-	
+
 	public List<ChunkHopper> getHoppersInChunk(Location location) {
 		if(customHopperLocations == null) return null;
 		if(!customHopperLocations.containsKey(Utils.LocationToChunkString(location))) return null;
@@ -126,8 +101,8 @@ public class HopperLocations extends BaseFile{
 	
 	public List<ChunkHopper> getAllChunkHoppers(){
 		if(customHopperLocations == null) return null;
-		List<ChunkHopper> hoppers = new ArrayList<ChunkHopper>();
-		customHopperLocations.values().forEach(x -> x.forEach(y -> hoppers.add(y)));
+		List<ChunkHopper> hoppers = new ArrayList<>();
+		customHopperLocations.values().forEach(hoppers::addAll);
 		return hoppers;
 	}
 	

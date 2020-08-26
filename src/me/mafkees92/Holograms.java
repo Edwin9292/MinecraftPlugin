@@ -1,0 +1,38 @@
+package me.mafkees92;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
+
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+
+import me.mafkees92.Utils.Utils;
+
+public class Holograms {
+	
+;	//make a way to update a specific textline
+	public static List<TextLine> AddHologram(Location location, ItemStack item, String... lines) {
+		List<TextLine> textLines = new ArrayList<>();
+
+		Hologram holo = HologramsAPI.createHologram(Main.getInstance(), location);
+		for (String string : lines) {
+			textLines.add(holo.appendTextLine(Utils.colorize(string)));
+		}
+		holo.appendItemLine(item);
+		return textLines;
+	}
+
+	public static void RemoveHologram(Location location) {
+		HologramsAPI.getHolograms(Main.getInstance()).stream()
+				.filter(x -> x.getLocation().equals(location)).findFirst().ifPresent(Hologram::delete);
+	}
+	public static void RemoveAllHolograms() {
+		HologramsAPI.getHolograms(Main.getInstance()).forEach(Hologram::delete);
+	}
+	
+	
+}

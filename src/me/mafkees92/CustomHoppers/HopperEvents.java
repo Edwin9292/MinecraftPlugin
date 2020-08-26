@@ -16,7 +16,7 @@ import me.mafkees92.Utils.Utils;
 
 public class HopperEvents implements Listener{
 	
-	private CustomHoppers customHoppers;
+	private final CustomHoppers customHoppers;
 	public HopperEvents(CustomHoppers customHoppers) {
 		this.customHoppers = customHoppers;
 	}
@@ -34,7 +34,7 @@ public class HopperEvents implements Listener{
 		//loop trough all hoppers
 		for (ChunkHopper customHopper : hoppers) {
 			//get all itemstacks in the hopper
-			List<ItemStack> itemsInHopper = Arrays.asList(customHopper.getInventory().getContents());
+			ItemStack[] itemsInHopper = customHopper.getInventory().getContents();
 
 			//loop trough all items in the hopper
 			for (ItemStack itemInHopper : itemsInHopper) {			
@@ -58,7 +58,6 @@ public class HopperEvents implements Listener{
 					itemInHopper.setAmount(maxStack);
 					customHopper.updateInventoryViewers();
 					amountToAdd -= possibleToAdd;
-					continue;
 				}
 			}
 			//if we reach this part, all occupied slots are either a different item or full stacks, so we need to add to empty slots. 
@@ -73,9 +72,7 @@ public class HopperEvents implements Listener{
 					customHopper.getInventory().addItem(item);
 					customHopper.updateInventoryViewers();
 					amountToAdd -= maxStack;
-					continue;
 				}
-				
 				// amounttoadd is less than a maxStack so we can add an item to the hopper with the amount to add. then we are done, cancel dropping the item and return. 
 				else {
 					item.setAmount(amountToAdd);
@@ -88,8 +85,6 @@ public class HopperEvents implements Listener{
 		}
 		//if we reach this part, it means all hoppers are full; Drop the items on the ground.
 		event.getEntity().getItemStack().setAmount(amountToAdd);
-		return;
-		
 	}
 	
 	@EventHandler
@@ -98,11 +93,10 @@ public class HopperEvents implements Listener{
 			ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
 			String tag = Utils.getNBTTag(item, "chunkhopper");
 			if(tag == null) return;
-			if(tag == "") return;
+			if(tag.equals("")) return;
 			
 			ChunkHopper hopper = new ChunkHopper(event.getBlock().getLocation());
 			customHoppers.addHopper(hopper);
-			event.getPlayer().sendMessage("added custom hopper");
 		}
 	}
 	
@@ -112,32 +106,25 @@ public class HopperEvents implements Listener{
 			if(customHoppers.isChunkHopper(event.getBlock().getLocation())) {
 				if(customHoppers.removeHopper(new ChunkHopper(event.getBlock().getLocation()))) {
 					Player player = event.getPlayer();
-					player.sendMessage("Removed custom hopper");
 					event.setDropItems(false);
 					ItemStack chunkHopper = ChunkHopper.CreateChunkHopperItem();
 					if(player.getInventory().firstEmpty() == -1) {
 						//check if player already has the item
 						List<ItemStack> items = Arrays.asList(player.getInventory().getContents());
-						player.sendMessage("is items null? " + Boolean.toString(items == null));
 						ItemStack item = items.stream().filter(x -> x != null && x.isSimilar(chunkHopper)).findFirst().orElse(null);
 						//item is in inventory
 						if(item != null) {
-							player.sendMessage("hopper found in inventory");
 							//if itemstack is not full, add item
 							if(item.getAmount() < item.getMaxStackSize()) {
 								player.getInventory().addItem(chunkHopper);
 								return;
 							}
 						}
-						player.sendMessage("dropping naturally");
 						event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), chunkHopper);
-						return;	
 						
 					}
 					else {
-						player.sendMessage("inventory not full");
 						player.getInventory().addItem(ChunkHopper.CreateChunkHopperItem());
-						return;
 					}
 				}
 			}

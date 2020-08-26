@@ -18,7 +18,6 @@ public class GiveChunkHopper implements CommandExecutor {
 	public GiveChunkHopper(Main plugin) {
 		this.plugin = plugin;
 	}
-	
 	//givechunkhopper <Player> <Amount>
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] args) {
@@ -45,10 +44,15 @@ public class GiveChunkHopper implements CommandExecutor {
 					player.sendMessage("Gave "+ targetPlayer.getName() + " " + amount + " custom hopper(s)");
 					return true;
 					
-				} else {	player.sendMessage(Messages.inventoryFull(targetPlayer)); return true;}
-			} else {	player.sendMessage(Messages.invalidAmount);	return true;}
-		} else {	player.sendMessage(Messages.invalidTargetPlayer); return true;}
-
+				} 
+				player.sendMessage(Messages.inventoryFull(targetPlayer)); 
+				return true;
+			} 	
+			player.sendMessage(Messages.invalidAmount);	
+			return true;
+		} 
+		player.sendMessage(Messages.invalidTargetPlayer); 
+		return true;
 	}
 
 	

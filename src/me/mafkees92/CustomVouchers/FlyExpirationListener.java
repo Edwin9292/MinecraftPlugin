@@ -29,8 +29,6 @@ public class FlyExpirationListener {
 
 		if (event.getTarget() instanceof User) {
 			User user = (User) event.getTarget();
-			if (event.getNode() == null)
-				return;
 			if (event.getNode().getKey().equalsIgnoreCase("essentials.fly")) {
 
 				Bukkit.getScheduler().runTask(main, () -> {

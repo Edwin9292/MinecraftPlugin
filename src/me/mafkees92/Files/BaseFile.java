@@ -10,7 +10,7 @@ import me.mafkees92.Main;
 public abstract class BaseFile {
 
 	protected Main plugin;
-	private File file;
+	private final File file;
 	protected FileConfiguration config;
 
 	public BaseFile(Main plugin, String fileName) {

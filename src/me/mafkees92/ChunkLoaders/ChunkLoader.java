@@ -10,8 +10,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.wasteofplastic.askyblock.util.Util;
-
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import me.mafkees92.Utils.Utils;
 
@@ -19,9 +17,9 @@ public class ChunkLoader {
 
 	String locationSeparator = "|";
 	
-	private Location location;
-	private Chunk chunk;
-	private Location hologramLocation;
+	private final Location location;
+	private final Chunk chunk;
+	private final Location hologramLocation;
 	
 	public ChunkLoader(Location location) {
 		this.location = location;
@@ -53,12 +51,12 @@ public class ChunkLoader {
 		ItemStack item = new HeadDatabaseAPI().getItemHead("25842");
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(Utils.colorize("&o&3&lChunkLoader"));
-		List<String> lore = new ArrayList<String>();
-		lore.add(Util.colorize("&7When placed, this block will keep"));
-		lore.add(Util.colorize("&7its chunk loaded if nobody"));
-		lore.add(Util.colorize("&7is there to load it."));
-		lore.add(Util.colorize("&o"));
-		lore.add(Util.colorize("&d&lEPIC"));
+		List<String> lore = new ArrayList<>();
+		lore.add(Utils.colorize("&7When placed, this block will keep"));
+		lore.add(Utils.colorize("&7its chunk loaded if nobody"));
+		lore.add(Utils.colorize("&7is there to load it."));
+		lore.add(Utils.colorize("&o"));
+		lore.add(Utils.colorize("&d&lEPIC"));
 		meta.setLore(lore);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.addEnchant(Enchantment.DURABILITY, 1, false);
@@ -72,16 +70,14 @@ public class ChunkLoader {
 	@Override
 	public String toString() {
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(location.getWorld().getName());
-		sb.append(locationSeparator);
-		sb.append(location.getBlockX());
-		sb.append(locationSeparator);
-		sb.append(location.getBlockY());
-		sb.append(locationSeparator);
-		sb.append(location.getBlockZ());
-		
-		return sb.toString();
+		String sb = location.getWorld().getName() +
+				locationSeparator +
+				location.getBlockX() +
+				locationSeparator +
+				location.getBlockY() +
+				locationSeparator +
+				location.getBlockZ();
+		return sb;
 	}
 
 	

@@ -37,7 +37,7 @@ public class IslandInvSee implements CommandExecutor{
 				//Check if it's a valid playername
 				if(Bukkit.getOfflinePlayer(args[0]) != null) {
 					UUID target = Bukkit.getOfflinePlayer(args[0]).getUniqueId();
-					IslandChest chest = null;
+					IslandChest chest;
 					if(ASkyBlockAPI.getInstance().inTeam(target)) {
 						UUID teamLeader = ASkyBlockAPI.getInstance().getTeamLeader(target);
 						chest = plugin.getIslandChests().getIslandChest(teamLeader);

@@ -15,14 +15,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.wasteofplastic.askyblock.util.Util;
-
 import me.mafkees92.Files.Messages;
 import me.mafkees92.Utils.Utils;
 
 public class GiveVoucher implements CommandExecutor {
-
-	private final String permission = "mafkeesplugin.givevoucher";
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -30,6 +26,7 @@ public class GiveVoucher implements CommandExecutor {
 			return false;
 		Player commandExecutor = (Player) sender;
 
+		String permission = "mafkeesplugin.givevoucher";
 		if (commandExecutor.isOp() || commandExecutor.hasPermission(permission)) {
 			if (args.length >= 2) {
 				Player targetPlayer = Bukkit.getPlayer(args[0]);
@@ -64,17 +61,16 @@ public class GiveVoucher implements CommandExecutor {
 		return true;
 	}
 	
-	private boolean giveFlyVoucher(Player targetPlayer, String permission, String duration, String stackable, Player commandExector) {
+	private void giveFlyVoucher(Player targetPlayer, String permission, String duration, String stackable, Player commandExector) {
 		ItemStack item = new ItemStack(Material.FEATHER);
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(Messages.flyVoucherName);
-		
-		List<String> lore = new ArrayList<String>();
-		lore.addAll(Messages.flyVoucherLore);
+
+		List<String> lore = new ArrayList<>(Messages.flyVoucherLore);
         for (ListIterator<String> i = lore.listIterator(); i.hasNext(); )   {
         	String loreLine = i.next().replace("%duration%", Utils.luckPermDurationToFullDuration(duration));
         	loreLine = loreLine.replace("%rarity%", Utils.luckPermsDurationToRarityString(duration));
-            i.set(Util.colorize(loreLine));
+            i.set(Utils.colorize(loreLine));
         }
 		
 		meta.setLore(lore);
@@ -93,7 +89,6 @@ public class GiveVoucher implements CommandExecutor {
 		else {
 			targetPlayer.getInventory().addItem(item);
 		}
-		return true;			
 	}
 	
 }

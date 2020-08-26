@@ -31,7 +31,7 @@ public class ChunkLoaderLocations extends BaseFile{
         }
         
         if(customChunkLoaderLocations == null) 
-        	customChunkLoaderLocations = new HashMap<String, List<ChunkLoader>>();
+        	customChunkLoaderLocations = new HashMap<>();
         
     	HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("chunkloaders").getValues(false);
     	try {
@@ -55,7 +55,7 @@ public class ChunkLoaderLocations extends BaseFile{
 				customChunkLoaderLocations.get(loader.getChunkLocationString()).add(loader);
 			}
 			else{
-				List<ChunkLoader> chunkLoaderList = new ArrayList<ChunkLoader>();
+				List<ChunkLoader> chunkLoaderList = new ArrayList<>();
 				chunkLoaderList.add(loader);
 				customChunkLoaderLocations.put(loader.getChunkLocationString(), chunkLoaderList);
 			}
@@ -88,9 +88,7 @@ public class ChunkLoaderLocations extends BaseFile{
 	
 	public boolean containsChunkLoader(Chunk chunk) {
 		if(customChunkLoaderLocations == null) return false;
-		if(customChunkLoaderLocations.containsKey(Utils.ChunkToString(chunk)))
-			return true;
-		return false;			
+		return customChunkLoaderLocations.containsKey(Utils.ChunkToString(chunk));
 	}
 	
 	public boolean isChunkLoader(Location location) {
@@ -99,18 +97,15 @@ public class ChunkLoaderLocations extends BaseFile{
 		if(customChunkLoaderLocations.containsKey(Utils.LocationToChunkString(location) )) {
 			List<ChunkLoader> loaders = customChunkLoaderLocations.get(Utils.LocationToChunkString(location) );
 			ChunkLoader hopper = loaders.stream().filter(x -> x.getLocation().equals(location)).findFirst().orElse(null);
-			if(hopper == null) 
-				return false;
-			else 
-				return true;
+			return hopper != null;
 		}
 		return false;
 	}
 	
 	public List<ChunkLoader> getAllChunkLoaders(){
 		if(customChunkLoaderLocations == null) return null;
-		List<ChunkLoader> loaders = new ArrayList<ChunkLoader>();
-		customChunkLoaderLocations.values().forEach(x -> x.forEach(y -> loaders.add(y)));
+		List<ChunkLoader> loaders = new ArrayList<>();
+		customChunkLoaderLocations.values().forEach(loaders::addAll);
 		return loaders;
 	}
 	

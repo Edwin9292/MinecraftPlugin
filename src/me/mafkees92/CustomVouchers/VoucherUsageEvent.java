@@ -16,6 +16,8 @@ import me.mafkees92.Utils.Utils;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.query.QueryOptions;
 
+import java.util.Objects;
+
 public class VoucherUsageEvent implements Listener {
 	
 	Main main;
@@ -32,21 +34,23 @@ public class VoucherUsageEvent implements Listener {
 				return;
 
 			String nbtTag = Utils.getNBTTag(item, "customVoucher");
-			if (nbtTag.equals("permission")) {
+			if (nbtTag != null && nbtTag.equals("permission")) {
 				String permission = Utils.getNBTTag(item, "permission");
 				Player player = e.getPlayer();
 
-				switch (permission) {
-				case "essentials.fly":
-					String duration = Utils.getNBTTag(item, "duration");
-					String stackable = Utils.getNBTTag(item, "stackable");
-					if(giveFlyPermission(player, duration, stackable)) {
-						removeItemFromPlayerInventory(player, item);
-					}
-					break;
+				if (permission != null) {
+					switch (permission) {
+						case "essentials.fly":
+							String duration = Utils.getNBTTag(item, "duration");
+							String stackable = Utils.getNBTTag(item, "stackable");
+							if (giveFlyPermission(player, duration, stackable)) {
+								removeItemFromPlayerInventory(player, item);
+							}
+							break;
 
-				default:
-					break;
+						default:
+							break;
+					}
 				}
 
 			}
@@ -66,7 +70,7 @@ public class VoucherUsageEvent implements Listener {
 		}
 		//player already has the permission
 		if(stackable.equalsIgnoreCase("true")) {
-			Node node = main.getLuckperms().getUserManager().getUser(player.getUniqueId()).resolveInheritedNodes(QueryOptions.nonContextual()).
+			Node node = Objects.requireNonNull(main.getLuckperms().getUserManager().getUser(player.getUniqueId())).resolveInheritedNodes(QueryOptions.nonContextual()).
 					stream().filter(x -> x.getKey().contentEquals("essentials.fly")).findFirst().orElse(null);
 			if(node != null) {
 				//if player does not have permanent fly

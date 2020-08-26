@@ -34,12 +34,17 @@ public class UpgradeIslandChestSize implements CommandExecutor
 		if(args.length == 1) {
 			if(Bukkit.getOfflinePlayer(args[0]) != null) {
 				UUID islandOwner = Utils.getTeamOrIslandOwner(Bukkit.getOfflinePlayer(args[0]).getUniqueId());
-				IslandChest chest = plugin.getIslandChests().getIslandChest(islandOwner);
-				if(chest.setInventorySize(chest.getInventory().getSize() + 9)) {
-					sender.sendMessage("Succesfully increased the size of the islandChest to " + chest.getInventory().getSize());
+				IslandChest chest = null;
+				if (islandOwner != null) {
+					chest = plugin.getIslandChests().getIslandChest(islandOwner);
 				}
-				else {
-					sender.sendMessage("Players island chest is already on max size");
+				if (chest != null) {
+					if(chest.setInventorySize(chest.getInventory().getSize() + 9)) {
+						sender.sendMessage("Succesfully increased the size of the islandChest to " + chest.getInventory().getSize());
+					}
+					else {
+						sender.sendMessage("Players island chest is already on max size");
+					}
 				}
 			}
 		}

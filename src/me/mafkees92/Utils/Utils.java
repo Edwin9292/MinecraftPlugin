@@ -1,32 +1,28 @@
 package me.mafkees92.Utils;
 
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagString;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
-
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagString;
+import java.util.UUID;
 
 public class Utils {
 	
 	
     public static String colorize(String message){  
-    	return message =  ChatColor.translateAlternateColorCodes('&', message);
+    	return ChatColor.translateAlternateColorCodes('&', message);
    }
     
     public static ItemStack setNBTTag(ItemStack item, String tagName, String tagValue) {
     	net.minecraft.server.v1_12_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
     	NBTTagCompound tag = nmsItem.hasTag() ? nmsItem.getTag() : new NBTTagCompound();
-    	tag.set(tagName, new NBTTagString(tagValue));
-    	nmsItem.setTag(tag);
+		if (tag != null) {
+			tag.set(tagName, new NBTTagString(tagValue));
+		}
+		nmsItem.setTag(tag);
     	item = CraftItemStack.asBukkitCopy(nmsItem);
     	
     	return item;
@@ -41,15 +37,15 @@ public class Utils {
     	return tagCompound.getString(tagKey);
     }
     
-    public static String LocationToString(Location loc) {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("X: ");
-    	sb.append((int)loc.getX());
-    	sb.append(" Y: ");
-    	sb.append((int)loc.getY());
-    	sb.append(" Z: ");
-    	sb.append((int)loc.getZ());
-    	return sb.toString();
+    public static String LocationToString(Location location) {
+
+		return location.getWorld().getName() +
+				"|" +
+				location.getBlockX() +
+				"|" +
+				location.getBlockY() +
+				"|" +
+				location.getBlockZ();
     }
     
 	public static String luckPermDurationToFullDuration(String duration) {
@@ -91,18 +87,17 @@ public class Utils {
 	
 	public static String luckPermsDurationToRarityString(String duration) {
 
-		String tempString = duration;
 		String rarity;
 		long seconds = 0;
 		
 		if(duration.contains("s")) 
-			seconds = Integer.parseInt(tempString.replace("s", ""));
+			seconds = Integer.parseInt(duration.replace("s", ""));
 		if(duration.contains("m")) 
-			seconds = Integer.parseInt(tempString.replace("m", ""))*60;
+			seconds = Integer.parseInt(duration.replace("m", ""))*60;
 		if(duration.contains("h")) 
-			seconds = Integer.parseInt(tempString.replace("h", ""))*3600;
+			seconds = Integer.parseInt(duration.replace("h", ""))*3600;
 		if(duration.contains("d")) 
-			seconds = Integer.parseInt(tempString.replace("d", ""))*86400;
+			seconds = Integer.parseInt(duration.replace("d", ""))*86400;
 		
 		if(seconds < 3600)
 			rarity = "&a&lCOMMON";
@@ -161,6 +156,18 @@ public class Utils {
 	public static int tryParseInt(String value) {
 		try {
 			return Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
+	
+	/**
+	* Parse a string to a double.
+	* If the string is not a double, it returns -1.
+	*/
+	public static double tryParseDouble(String value) {
+		try {
+			return Double.parseDouble(value);
 		} catch (NumberFormatException e) {
 			return -1;
 		}

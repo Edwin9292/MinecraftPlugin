@@ -38,5 +38,8 @@ commands:
    givechunkloader:
       description: give a chunkloader to a player
       usage: /<command>
+   givevoidchest:
+      description: give a voidchest to a player
+      usage: /<command>
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
-depend: [Multiverse-Core, ProtocolLib, HolographicDisplays]
+depend: [Multiverse-Core, ProtocolLib, HolographicDisplays, HeadDatabase]

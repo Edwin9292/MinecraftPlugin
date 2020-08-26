@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
-import com.wasteofplastic.askyblock.util.Util;
 
 import me.mafkees92.Utils.Utils;
 
@@ -33,15 +32,15 @@ public class GiveCustomPotion implements CommandExecutor {
 						if (args[1].equalsIgnoreCase("freeze")) {
 							ItemStack item = new ItemStack(Material.SPLASH_POTION);
 							PotionMeta meta = (PotionMeta)item.getItemMeta();
-							meta.setDisplayName(Util.colorize("&bFreeze Potion"));
+							meta.setDisplayName(Utils.colorize("&bFreeze Potion"));
 							meta.setColor(Color.BLUE);
 							meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
 							meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 							meta.addEnchant(Enchantment.FROST_WALKER, 1, false);
 
-							List<String> lore = new ArrayList<String>();
-							lore.add(Util.colorize("&9Freeze your opponents in a 4 block Radius!"));
-							lore.add(Util.colorize("&9Duration: 4 seconds "));
+							List<String> lore = new ArrayList<>();
+							lore.add(Utils.colorize("&9Freeze your opponents in a 4 block Radius!"));
+							lore.add(Utils.colorize("&9Duration: 4 seconds "));
 							meta.setLore(lore);
 							item.setItemMeta(meta);
 							item = Utils.setNBTTag(item, "customPotions", "freezePotion");
@@ -70,11 +69,11 @@ public class GiveCustomPotion implements CommandExecutor {
 							
 						}
 						else {
-							player.sendMessage(Util.colorize("&cInvalid Potion type, Valid potion types are {freeze}"));
+							player.sendMessage(Utils.colorize("&cInvalid Potion type, Valid potion types are {freeze}"));
 							return true;
 						}
 					} else {
-						player.sendMessage(Util.colorize("&cTarget player is either invalid or not online"));
+						player.sendMessage(Utils.colorize("&cTarget player is either invalid or not online"));
 						return true;
 					}
 				} else {

@@ -29,7 +29,7 @@ public class HologramParkour {
 	public HologramParkour(Player player, Main plugin) {
 		this.plugin = plugin;
 		
-		locationsToSpawn = new LinkedList<Location>();
+		locationsToSpawn = new LinkedList<>();
 
 		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -598.5D, 73.9D, -2.5D));
 		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -591.5D, 70.9D, -13.5D));
@@ -58,28 +58,24 @@ public class HologramParkour {
 		hologram.getVisibilityManager().showTo(player);
 		
 		//setup what happends if a hologram is picked up
-		PickupHandler handler = new PickupHandler() {
-			
-			@Override
-			public void onPickup(Player player) {
-				if(runningTask != null) runningTask.cancel();
-				timer = 7;
-				counter ++;
-				Location locToTeleport = locationsToSpawn.poll();
-				
-				//if its the last waypoint, set it as a nether star
-				if(locationsToSpawn.size() == 0) {
-					itemline.setItemStack(new ItemStack(Material.NETHER_STAR));
-				}
-				//if there is no more waypoint location left it means we have finished
-				if(locToTeleport == null) {
-					endParkour(player, hologram, true);
-					return;
-				}
-			
-				hologram.teleport(locToTeleport);
-				runningTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> update(player, hologram), 0L , 20L);
+		PickupHandler handler = player1 -> {
+			if(runningTask != null) runningTask.cancel();
+			timer = 7;
+			counter ++;
+			Location locToTeleport = locationsToSpawn.poll();
+
+			//if its the last waypoint, set it as a nether star
+			if(locationsToSpawn.size() == 0) {
+				itemline.setItemStack(new ItemStack(Material.NETHER_STAR));
 			}
+			//if there is no more waypoint location left it means we have finished
+			if(locToTeleport == null) {
+				endParkour(player1, hologram, true);
+				return;
+			}
+
+			hologram.teleport(locToTeleport);
+			runningTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> update(player1, hologram), 0L , 20L);
 		};
 		itemline.setPickupHandler(handler);
 	}
@@ -97,7 +93,6 @@ public class HologramParkour {
 		}
 		else {
 			endParkour(player, hologram, false);
-			return;
 		}
 	}
 	

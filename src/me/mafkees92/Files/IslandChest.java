@@ -58,7 +58,7 @@ public class IslandChest extends BaseFile{
 	}
 	
 	public void setInventoryContents(ItemStack[] items) {
-		this.chestInventory.setContents(items);;
+		this.chestInventory.setContents(items);
 		saveIslandChest();
 	}
 	

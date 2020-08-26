@@ -68,8 +68,6 @@ public class ActionBar implements Listener {
 						else {
 							message = PlaceholderAPI.setPlaceholders(player, Messages.actionBarNoIsland);
 						}
-
-						message = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player, message);
 						
 						player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 					} catch (Exception e) {

@@ -21,7 +21,7 @@ import me.mafkees92.Utils.Utils;
 
 public class IslandChests implements Listener {
 
-	private HashMap<String, IslandChest> loadedIslandChests = new HashMap<String, IslandChest>();
+	private final HashMap<String, IslandChest> loadedIslandChests = new HashMap<>();
 	
 	Main plugin;
 	ASkyBlockAPI skyBlockApi;
@@ -126,7 +126,6 @@ public class IslandChests implements Listener {
 				return;
 			}
 			this.unloadIslandChest(event.getPlayer().getUniqueId());
-			return;
 		}
 	}
 

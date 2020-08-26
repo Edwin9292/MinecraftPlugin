@@ -1,5 +1,6 @@
 package me.mafkees92.CustomVouchers;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.command.Command;
@@ -29,7 +30,7 @@ public class GetRemainingFlyTime implements CommandExecutor{
 		Player player = (Player)sender;
 
 		//List<Node> nodes = main.getLuckperms().getUserManager().getUser(player.getUniqueId()).getNodes().stream().filter(x -> x.getKey().equals("essentials.fly")).collect(Collectors.toList());
-		Node node = main.getLuckperms().getUserManager().getUser(player.getUniqueId()).resolveInheritedNodes(QueryOptions.nonContextual()).
+		Node node = Objects.requireNonNull(main.getLuckperms().getUserManager().getUser(player.getUniqueId())).resolveInheritedNodes(QueryOptions.nonContextual()).
 				stream().filter(x -> x.getKey().contentEquals("essentials.fly")).findFirst().orElse(null);
 		
 		if(node != null) {
@@ -37,7 +38,7 @@ public class GetRemainingFlyTime implements CommandExecutor{
 				player.sendMessage(Messages.flightWontExpire);
 			}
 			else{
-				long remainingTime = node.getExpiryDuration().getSeconds();
+				long remainingTime = Objects.requireNonNull(node.getExpiryDuration()).getSeconds();
 				player.sendMessage(Messages.flightExpirationTime(secondsToTimeString(remainingTime)));
 			}
 		}
@@ -57,12 +58,12 @@ public class GetRemainingFlyTime implements CommandExecutor{
 		
 		StringBuilder sb = new StringBuilder();
 		if(days > 0)
-			sb.append(days + " Days, ");
+			sb.append(days).append(" Days, ");
 		if(sec > 3600)
-			sb.append(hours + " Hours, ");
+			sb.append(hours).append(" Hours, ");
 		if(sec > 60)
-			sb.append(minutes + " Minutes &aand&e ");
-		sb.append(seconds + " Seconds&a.");
+			sb.append(minutes).append(" Minutes &aand&e ");
+		sb.append(seconds).append(" Seconds&a.");
 		
 		return sb.toString();
 	}

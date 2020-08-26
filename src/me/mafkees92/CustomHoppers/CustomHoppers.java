@@ -3,19 +3,21 @@ package me.mafkees92.CustomHoppers;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
+import me.mafkees92.Holograms;
 import me.mafkees92.Main;
 import me.mafkees92.Files.HopperLocations;
+import me.mafkees92.Utils.Utils;
 
 public class CustomHoppers {
 	
 	Main plugin;
 	HopperLocations hopperLocations;
-	ChunkHopperHolograms hopperHolograms;
 	
 	public CustomHoppers(Main plugin) {
 		this.plugin = plugin;
-		this.hopperHolograms = new ChunkHopperHolograms(plugin);
 		
 		loadHoppers();
 	}
@@ -24,19 +26,24 @@ public class CustomHoppers {
 		hopperLocations = new HopperLocations(plugin, "HopperData.yml");
 		List<ChunkHopper> hoppers = hopperLocations.getAllChunkHoppers();
 		for(ChunkHopper hopper : hoppers){
-			hopperHolograms.LoadHopperHologram(hopper);
+			//hopperHolograms.LoadHopperHologram(hopper);
+			Holograms.AddHologram(hopper.getHologramLocation().clone().add(0,0.29d,0), new ItemStack(Material.HOPPER),  Utils.colorize("&b&lChunk Hopper"), "");
 		}
+	}
+
+	public void onDisable() {
+		hopperLocations.save();
+		Holograms.RemoveAllHolograms();
 	}
 	
 	public void addHopper(ChunkHopper hopper) {
 		hopperLocations.addHopper(hopper);
-		hopperHolograms.LoadHopperHologram(hopper);
+		Holograms.AddHologram(hopper.getHologramLocation().clone().add(0,0.29d,0), new ItemStack(Material.HOPPER),  Utils.colorize("&b&lChunk Hopper"), "");
 	}
 	
-	
 	public boolean removeHopper(ChunkHopper hopper) {
-		if(hopperLocations.removeHopper(hopper) &&
-				hopperHolograms.RemoveHopperHologram(hopper)) {
+		if(hopperLocations.removeHopper(hopper)) {
+			Holograms.RemoveHologram(hopper.getHologramLocation().clone().add(0,0.29d,0));
 			return true;
 		}
 		return false;
@@ -50,34 +57,7 @@ public class CustomHoppers {
 		return hopperLocations.getHoppersInChunk(location);
 	}
 	
-	public void onDisable() {
-		hopperLocations.save();
-		hopperHolograms.RemoveAllHopperHolograms();
-	}
-	
 
-	
-	/*
-	private void SellItemsInHopper(CustomHopper hopper) {
-		double moneyMade = 0.0d;
-		
-		ItemStack[] items = hopper.getInventory().getContents();
-		if(!plugin.isShopGuiPlusEnabled()) return;
-		for (ItemStack itemStack : items) {
-			if(itemStack.hasItemMeta()) continue;
-			double stackValue = ShopGuiPlusApi.getItemStackPriceSell(itemStack);
-			if(stackValue > 0) {
-				moneyMade += stackValue;
-				hopper.getInventory().remove(itemStack);
-			}
-		}
-		if(moneyMade > 0.0d) {
-			Player mafkees = Bukkit.getPlayer("Mafkees92");
-			Main.econ.depositPlayer(mafkees, moneyMade);
-			mafkees.sendMessage("You have made " + moneyMade + "&");
-		}
-	}
-	*/
 }
 
 

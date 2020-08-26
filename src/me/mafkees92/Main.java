@@ -1,14 +1,7 @@
 package me.mafkees92;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.wasteofplastic.askyblock.ASkyBlock;
-
 import me.mafkees92.ActionBar.ActionBar;
-import me.mafkees92.ChunkLoaders.ChunkLoaderEvents;
 import me.mafkees92.ChunkLoaders.ChunkLoaders;
 import me.mafkees92.ChunkLoaders.GiveChunkLoader;
 import me.mafkees92.CustomHoppers.CustomHoppers;
@@ -29,26 +22,37 @@ import me.mafkees92.IslandChests.UpgradeIslandChestSize;
 import me.mafkees92.MVdWPlaceholders.mvdwPlaceholders;
 import me.mafkees92.RenameItems.RenameItem;
 import me.mafkees92.RenameItems.SetLore;
+import me.mafkees92.VoidChests.VoidChests;
 import me.mafkees92.VoidTeleportation.VoidDamage;
 import net.luckperms.api.LuckPerms;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
+	private static Main instance;
 	private LuckPerms luckperms;
-	private boolean shopGuiPlusApiEnabled = false;
 	public static Economy econ = null;
 	private CustomHoppers customHoppers;
 	private ActionBar actionBar;
 	private IslandChests isChests;
-	private ChunkLoaders chunkLoaders;
+	private VoidChests voidChestsInstance;
+	private ChunkLoaders chunkLoadersInstance;
 
 	public void onEnable() {
+		
+		if(Main.instance == null) {
+			Main.instance = this;
+		}
 
 		// saveDefaultConfig();
 		new Messages(this, "Messages.yml");
 		customHoppers = new CustomHoppers(this);
-		//chunkLoaders = new ChunkLoaders(this);
+		//chunkLoadersInstance = new ChunkLoaders(this);
+		voidChestsInstance = new VoidChests(this, "VoidChests.yml");
 
 		getServer().getPluginManager().registerEvents(new VoidDamage(this), this);
 		getServer().getPluginManager().registerEvents(new CustomSplashPotions(this), this);
@@ -57,6 +61,7 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new HopperEvents(customHoppers), this);
 		getServer().getPluginManager().registerEvents(new DisableCraftingValueBlocks(this), this);
 		getServer().getPluginManager().registerEvents(isChests = new IslandChests(this), this);
+		getServer().getPluginManager().registerEvents(voidChestsInstance, this);
 		//getServer().getPluginManager().registerEvents(new ChunkLoaderEvents(this), this);
 		getCommand("rename").setExecutor(new RenameItem());
 		getCommand("setlore").setExecutor(new SetLore());
@@ -69,6 +74,7 @@ public class Main extends JavaPlugin {
 		getCommand("islandinvsee").setExecutor(new IslandInvSee(this));
 		getCommand("upgradeislandchestsize").setExecutor(new UpgradeIslandChestSize(this));
 		getCommand("givechunkloader").setExecutor(new GiveChunkLoader(this));
+		getCommand("givevoidchest").setExecutor(voidChestsInstance);
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);
@@ -83,7 +89,6 @@ public class Main extends JavaPlugin {
 
 		if (Bukkit.getPluginManager().getPlugin("ShopGUIPlus") != null) {
 			Bukkit.getLogger().info("Hooked into ShopGUI+");
-			shopGuiPlusApiEnabled = true;
 		}
 
 		if (!setupEconomy()) {
@@ -94,6 +99,10 @@ public class Main extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
+		if (Bukkit.getPluginManager().getPlugin("HeadDatabase") == null) {
+			System.out.println("Timeout > You need HeadDatabase in order to use this plugin");
+			Bukkit.getPluginManager().disablePlugin(this);
+		}
 
 	}
 
@@ -101,10 +110,10 @@ public class Main extends JavaPlugin {
 		if (customHoppers != null)
 			customHoppers.onDisable();
 		isChests.saveChests();
+		voidChestsInstance.onDisable();
 	}
-
 	private boolean setupEconomy() {
-		RegisteredServiceProvider<Economy> economyProvider = ASkyBlock.getPlugin().getServer().getServicesManager()
+		RegisteredServiceProvider<Economy> economyProvider =  ASkyBlock.getPlugin().getServer().getServicesManager()
 				.getRegistration(net.milkbowl.vault.economy.Economy.class);
 		if (economyProvider != null) {
 			econ = economyProvider.getProvider();
@@ -112,6 +121,10 @@ public class Main extends JavaPlugin {
 		return econ != null;
 	}
 
+	public static Main getInstance() {
+		return Main.instance;
+	}
+	
 	public LuckPerms getLuckperms() {
 		return luckperms;
 	}
@@ -123,16 +136,13 @@ public class Main extends JavaPlugin {
 	public ActionBar getActionBar() {
 		return actionBar;
 	}
-	
-	public boolean isShopGuiPlusEnabled() {
-		return shopGuiPlusApiEnabled;
-	}
 
 	public IslandChests getIslandChests() {
 		return this.isChests;
 	}
-	
-	public ChunkLoaders getChunkLoaders() {
-		return this.chunkLoaders;
+
+	public ChunkLoaders getChunkLoadersInstance() {
+		return this.chunkLoadersInstance;
 	}
+
 }
