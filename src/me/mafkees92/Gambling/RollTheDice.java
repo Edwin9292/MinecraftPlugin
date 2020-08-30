@@ -132,17 +132,17 @@ public class RollTheDice implements Listener{
 	private void createPickANumberInventory() {
 		if(hdb.getHeads(CategoryEnum.ALPHABET).size() > 0) {
 			this.pickANumberInventory = Bukkit.createInventory(null, 45, Utils.colorize("&6&lTOOT&e&lMC &7: &eSelect A Number"));
-			this.pickANumberInventory.setItem(13, Utils.setNBTTag(Utils.createCustomHeadItem("9270", Utils.colorize("&6&lNumber 1"),
+			this.pickANumberInventory.setItem(4, Utils.setNBTTag(Utils.createCustomHeadItem("9270", Utils.colorize("&6&lNumber 1"),
 					Utils.colorize("&eClick to pick number 1")), "pickanumber", "1"));
-			this.pickANumberInventory.setItem(21, Utils.setNBTTag(Utils.createCustomHeadItem("9269", Utils.colorize("&6&lNumber 2"),
+			this.pickANumberInventory.setItem(15, Utils.setNBTTag(Utils.createCustomHeadItem("9269", Utils.colorize("&6&lNumber 2"),
 					Utils.colorize("&eClick to pick number 2")), "pickanumber", "2"));
-			this.pickANumberInventory.setItem(23, Utils.setNBTTag(Utils.createCustomHeadItem("9268", Utils.colorize("&6&lNumber 3"),
+			this.pickANumberInventory.setItem(33, Utils.setNBTTag(Utils.createCustomHeadItem("9268", Utils.colorize("&6&lNumber 3"),
 					Utils.colorize("&eClick to pick number 3")), "pickanumber", "3"));
-			this.pickANumberInventory.setItem(29, Utils.setNBTTag(Utils.createCustomHeadItem("9267", Utils.colorize("&6&lNumber 4"),
+			this.pickANumberInventory.setItem(40, Utils.setNBTTag(Utils.createCustomHeadItem("9267", Utils.colorize("&6&lNumber 4"),
 					Utils.colorize("&eClick to pick number 4")), "pickanumber", "4"));
-			this.pickANumberInventory.setItem(31, Utils.setNBTTag(Utils.createCustomHeadItem("9266", Utils.colorize("&6&lNumber 5"),
+			this.pickANumberInventory.setItem(29, Utils.setNBTTag(Utils.createCustomHeadItem("9266", Utils.colorize("&6&lNumber 5"),
 					Utils.colorize("&eClick to pick number 5")), "pickanumber", "5"));
-			this.pickANumberInventory.setItem(33, Utils.setNBTTag(Utils.createCustomHeadItem("9265", Utils.colorize("&6&lNumber 6"),
+			this.pickANumberInventory.setItem(11, Utils.setNBTTag(Utils.createCustomHeadItem("9265", Utils.colorize("&6&lNumber 6"),
 					Utils.colorize("&eClick to pick number 6")), "pickanumber", "6"));
 			this.pickANumbeInventoryCreated = true;
 		}
