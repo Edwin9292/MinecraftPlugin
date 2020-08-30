@@ -152,22 +152,22 @@ public class RollTheDice implements Listener{
 		this.pickABetInventory = Bukkit.createInventory(null, 54, Utils.colorize("&6&lTOOT&e&lMC &7: &eSelect Your Bet"));
 		
 
-		this.pickABetInventory.setItem(10, Utils.createCustomItem(Material.PAPER, 
-				"&6Pick Your Bet", 
-				"&o",
-				"&7Choose your bet by clicking",
-				"&7one of the diamonds below."));
+		//this.pickABetInventory.setItem(49-9, Utils.createCustomItem(Material.PAPER, 
+		//		"&6Pick Your Bet", 
+		//		"&o",
+		//		"&7Choose your bet by clicking",
+		//		"&7one of the diamonds below."));
 		
-		this.pickABetInventory.setItem(13, Utils.setNBTTag(Utils.createCustomItem(Material.EMERALD, "&eBet &6$500,000", "", ""), "bet", "500000"));
-		this.pickABetInventory.setItem(21, Utils.setNBTTag(Utils.createCustomItem(Material.DIAMOND, "&eBet &6$100,000", "", ""), "bet", "100000"));
-		this.pickABetInventory.setItem(23, Utils.setNBTTag(Utils.createCustomItem(Material.DIAMOND, "&eBet &6$200,000", "", ""), "bet", "200000"));
-		this.pickABetInventory.setItem(29, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$10,000", "", ""), "bet", "10000"));
-		this.pickABetInventory.setItem(31, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$25,000", "", ""), "bet", "25000"));
-		this.pickABetInventory.setItem(33, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$50,000", "", ""), "bet", "50000"));
-		this.pickABetInventory.setItem(37, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$1,000", "", ""), "bet", "1000"));
-		this.pickABetInventory.setItem(39, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$2,500", "", ""), "bet", "2500"));
-		this.pickABetInventory.setItem(41, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$5,000", "", ""), "bet", "5000"));
-		this.pickABetInventory.setItem(43, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$7,500", "", ""), "bet", "7500"));
+		this.pickABetInventory.setItem(13, Utils.setNBTTag(Utils.createCustomItem(Material.EMERALD, "&eBet &6$500,000", ""), "bet", "500000"));
+		this.pickABetInventory.setItem(21, Utils.setNBTTag(Utils.createCustomItem(Material.DIAMOND, "&eBet &6$100,000", ""), "bet", "100000"));
+		this.pickABetInventory.setItem(23, Utils.setNBTTag(Utils.createCustomItem(Material.DIAMOND, "&eBet &6$200,000", ""), "bet", "200000"));
+		this.pickABetInventory.setItem(29, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$10,000", ""), "bet", "10000"));
+		this.pickABetInventory.setItem(31, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$25,000", ""), "bet", "25000"));
+		this.pickABetInventory.setItem(33, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$50,000", ""), "bet", "50000"));
+		this.pickABetInventory.setItem(37, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$1,000", ""), "bet", "1000"));
+		this.pickABetInventory.setItem(39, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$2,500", ""), "bet", "2500"));
+		this.pickABetInventory.setItem(41, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$5,000", ""), "bet", "5000"));
+		this.pickABetInventory.setItem(43, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$7,500", ""), "bet", "7500"));
 		
 	}
 	
