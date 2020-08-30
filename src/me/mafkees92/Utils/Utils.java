@@ -17,6 +17,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.NBTTagString;
 
@@ -244,6 +248,20 @@ public class Utils {
 		item.setItemMeta(meta);
 		return item;
 	}
+	
+	
+	public static BaseComponent[] createTextComponentCommand(String text, String hoverText, String clickCommand) {
+		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, clickCommand);
+		HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create());
+		return new ComponentBuilder(text).event(clickEvent).event(hoverEvent).create();
+	}
+	
+	public static BaseComponent[] createTextComponentLink(String text, String hoverText, String link) {
+		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.OPEN_URL, link);
+		HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create());
+		return new ComponentBuilder(text).event(clickEvent).event(hoverEvent).create();
+	}
+	
 	
 	
 	

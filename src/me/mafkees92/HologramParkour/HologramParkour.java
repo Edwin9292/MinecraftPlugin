@@ -6,6 +6,9 @@ import java.util.Queue;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -27,6 +30,7 @@ public class HologramParkour {
 	int timer = 7;
 	
 	public HologramParkour(Player player, Main plugin) {
+		
 		this.plugin = plugin;
 		
 		locationsToSpawn = new LinkedList<>();
@@ -108,7 +112,6 @@ public class HologramParkour {
 		if(runningTask != null) runningTask.cancel();
 		hologram.delete();
 	}
-	
-	
 
+	
 }

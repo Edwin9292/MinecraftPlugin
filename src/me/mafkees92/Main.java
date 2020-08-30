@@ -19,6 +19,7 @@ import me.mafkees92.CustomVouchers.GiveVoucher;
 import me.mafkees92.CustomVouchers.VoucherUsageEvent;
 import me.mafkees92.Files.Messages;
 import me.mafkees92.Gambling.GameMasterHandler;
+import me.mafkees92.HologramParkour.Parkour;
 import me.mafkees92.HologramParkour.StartParkour;
 import me.mafkees92.IslandChests.IslandChests;
 import me.mafkees92.IslandChests.IslandInvSee;
@@ -81,6 +82,7 @@ public class Main extends JavaPlugin {
 		getCommand("givecustomhopper").setExecutor(this.chunkHoppersInstance);
 		getCommand("help").setExecutor(new OverrideHelpCommand());
 		getCommand("gamble").setExecutor(this.gamblerHandlerInstance);
+		getCommand("parkour").setExecutor(new Parkour(this));
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);

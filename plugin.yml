@@ -47,5 +47,8 @@ commands:
    help:
       description: override help command
       usage: /<command>
+   parkour:
+      description: show parkour information
+      usage: /<command>
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
 depend: [Multiverse-Core, ProtocolLib, HolographicDisplays, HeadDatabase]
