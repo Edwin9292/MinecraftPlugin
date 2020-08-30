@@ -40,7 +40,7 @@ public class GameMasterHandler implements CommandExecutor, Listener {
 
 	private void createGameMasterInventory() {
 
-		this.gameMasterInventory = Bukkit.createInventory(null, 45,
+		this.gameMasterInventory = Bukkit.createInventory(null, 27,
 				Utils.colorize("&6&lTOOT&e&lMC &7: &e&lGame Master"));
 
 		ItemStack rollTheDice = Utils.createCustomItem(Material.DIAMOND, "&6Roll The Dice",
@@ -49,7 +49,7 @@ public class GameMasterHandler implements CommandExecutor, Listener {
 				"&7If you loose, &4i will keep it all&7!");
 		rollTheDice = Utils.setNBTTag(rollTheDice, "gamemaster", "rollthedice");
 
-		this.gameMasterInventory.setItem(22, rollTheDice);
+		this.gameMasterInventory.setItem(13, rollTheDice);
 	}
 
 	@Override
