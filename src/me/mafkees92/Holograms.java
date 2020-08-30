@@ -30,9 +30,14 @@ public class Holograms {
 		HologramsAPI.getHolograms(Main.getInstance()).stream()
 				.filter(x -> x.getLocation().equals(location)).findFirst().ifPresent(Hologram::delete);
 	}
+	
 	public static void RemoveAllHolograms() {
 		HologramsAPI.getHolograms(Main.getInstance()).forEach(Hologram::delete);
 	}
 	
+	public static Hologram GetHologram(Location location) {
+		return HologramsAPI.getHolograms(Main.getInstance()).stream()
+		.filter(x -> x.getLocation().equals(location)).findFirst().orElse(null);
+	}
 	
 }

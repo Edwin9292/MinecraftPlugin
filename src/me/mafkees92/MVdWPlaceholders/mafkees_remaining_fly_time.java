@@ -1,16 +1,17 @@
 package me.mafkees92.MVdWPlaceholders;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.bukkit.entity.Player;
+
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import me.mafkees92.Main;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.query.QueryOptions;
-import org.bukkit.entity.Player;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public class mafkees_remaining_fly_time {
 

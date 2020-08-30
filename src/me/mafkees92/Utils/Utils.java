@@ -1,13 +1,24 @@
 package me.mafkees92.Utils;
 
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagString;
-import org.bukkit.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.UUID;
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
+
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagString;
 
 public class Utils {
 	
@@ -142,11 +153,11 @@ public class Utils {
 	}
 
 	public static String LocationToChunkString(Location location) {
-		return location.getBlockX()/16 + ":" + location.getBlockZ()/16;
+		return location.getWorld().getName() + ":" + location.getBlockX()/16 + ":" + location.getBlockZ()/16;
 	}
 	
 	public static String ChunkToString(Chunk chunk) {
-		return chunk.getX() + ":" + chunk.getZ();
+		return chunk.getWorld().getName() + ":" + chunk.getX() + ":" + chunk.getZ();
 	}
 	
 	/**
@@ -182,9 +193,57 @@ public class Utils {
 		}
 		else return null;
 	}
+
+	public static ItemStack createCustomItem(Material material, String displayName, String... loreLines ) {
+		
+		ItemStack item = new ItemStack(material);
+		ItemMeta meta = item.getItemMeta();
+		
+		meta.setDisplayName(Utils.colorize(displayName));
+		List<String> lore = new ArrayList<>();
+		
+		for(String loreLine : loreLines) {
+			lore.add(Utils.colorize(loreLine));
+		}
+		
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+		return item;
+	}
+
+	public static ItemStack createCustomItem(Material material, int data, String displayName, String... loreLines ) {
+		
+		ItemStack item = new ItemStack(material, 1 , (byte) data);
+		ItemMeta meta = item.getItemMeta();
+		
+		meta.setDisplayName(Utils.colorize(displayName));
+		List<String> lore = new ArrayList<>();
+		
+		for(String loreLine : loreLines) {
+			lore.add(Utils.colorize(loreLine));
+		}
+		
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+		return item;
+	}
 	
-	
-	
+	public static ItemStack createCustomHeadItem(String headID, String displayName, String... loreLines ) {
+		
+		ItemStack item = new HeadDatabaseAPI().getItemHead(headID);
+		ItemMeta meta = item.getItemMeta();
+		
+		meta.setDisplayName(Utils.colorize(displayName));
+		List<String> lore = new ArrayList<>();
+		
+		for(String loreLine : loreLines) {
+			lore.add(Utils.colorize(loreLine));
+		}
+		
+		meta.setLore(lore);
+		item.setItemMeta(meta);
+		return item;
+	}
 	
 	
 	

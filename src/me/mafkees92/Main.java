@@ -18,6 +18,7 @@ import me.mafkees92.CustomVouchers.GetRemainingFlyTime;
 import me.mafkees92.CustomVouchers.GiveVoucher;
 import me.mafkees92.CustomVouchers.VoucherUsageEvent;
 import me.mafkees92.Files.Messages;
+import me.mafkees92.Gambling.GameMasterHandler;
 import me.mafkees92.HologramParkour.StartParkour;
 import me.mafkees92.IslandChests.IslandChests;
 import me.mafkees92.IslandChests.IslandInvSee;
@@ -41,6 +42,7 @@ public class Main extends JavaPlugin {
 	private VoidChests voidChestsInstance;
 	private ChunkLoaders chunkLoadersInstance;
 	private ChunkHoppers chunkHoppersInstance;
+	private GameMasterHandler gamblerHandlerInstance;
 
 	public void onEnable() {
 		
@@ -53,6 +55,7 @@ public class Main extends JavaPlugin {
 		//chunkLoadersInstance = new ChunkLoaders(this);
 		this.voidChestsInstance = new VoidChests(this, "VoidChests.yml");
 		this.chunkHoppersInstance = new ChunkHoppers(this, "HopperData.yml");
+		this.gamblerHandlerInstance = new GameMasterHandler(this);
 
 		getServer().getPluginManager().registerEvents(new VoidDamage(this), this);
 		getServer().getPluginManager().registerEvents(new CustomSplashPotions(this), this);
@@ -62,6 +65,7 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(isChests = new IslandChests(this), this);
 		getServer().getPluginManager().registerEvents(this.voidChestsInstance, this);
 		getServer().getPluginManager().registerEvents(this.chunkHoppersInstance, this);
+		getServer().getPluginManager().registerEvents(this.gamblerHandlerInstance, this);
 		//getServer().getPluginManager().registerEvents(new ChunkLoaderEvents(this), this);
 		getCommand("rename").setExecutor(new RenameItem());
 		getCommand("setlore").setExecutor(new SetLore());
@@ -75,6 +79,8 @@ public class Main extends JavaPlugin {
 		getCommand("givechunkloader").setExecutor(new GiveChunkLoader(this));
 		getCommand("givevoidchest").setExecutor(this.voidChestsInstance);
 		getCommand("givecustomhopper").setExecutor(this.chunkHoppersInstance);
+		getCommand("help").setExecutor(new OverrideHelpCommand());
+		getCommand("gamble").setExecutor(this.gamblerHandlerInstance);
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);

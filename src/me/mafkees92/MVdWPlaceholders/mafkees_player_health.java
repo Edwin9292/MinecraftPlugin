@@ -1,8 +1,9 @@
 package me.mafkees92.MVdWPlaceholders;
 
+import org.bukkit.entity.Player;
+
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import me.mafkees92.Main;
-import org.bukkit.entity.Player;
 
 public class mafkees_player_health {
 

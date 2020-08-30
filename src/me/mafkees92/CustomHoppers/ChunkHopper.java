@@ -53,7 +53,7 @@ public class ChunkHopper {
 	}
 	
 	public String getChunkLocationString() {
-		return location.getBlockX()/16 + ":" + location.getBlockZ()/16;
+		return Utils.LocationToChunkString(this.location);
 	}
 	
 	public String getDataString() {

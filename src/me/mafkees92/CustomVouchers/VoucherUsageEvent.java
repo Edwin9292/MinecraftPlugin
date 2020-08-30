@@ -1,5 +1,7 @@
 package me.mafkees92.CustomVouchers;
 
+import java.util.Objects;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,8 +17,6 @@ import me.mafkees92.Files.Messages;
 import me.mafkees92.Utils.Utils;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.query.QueryOptions;
-
-import java.util.Objects;
 
 public class VoucherUsageEvent implements Listener {
 	

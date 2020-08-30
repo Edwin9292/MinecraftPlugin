@@ -1,12 +1,14 @@
 package me.mafkees92.MVdWPlaceholders;
 
-import be.maximvdw.placeholderapi.PlaceholderAPI;
-import com.wasteofplastic.askyblock.ASkyBlockAPI;
-import com.wasteofplastic.askyblock.Island;
-import me.mafkees92.Main;
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
+import com.wasteofplastic.askyblock.Island;
+
+import be.maximvdw.placeholderapi.PlaceholderAPI;
+import me.mafkees92.Main;
 
 public class mafkees_island_size {
 	

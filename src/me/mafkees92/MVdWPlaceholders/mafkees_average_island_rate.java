@@ -1,12 +1,13 @@
 package me.mafkees92.MVdWPlaceholders;
 
-import be.maximvdw.placeholderapi.PlaceholderAPI;
-import me.mafkees92.Files.IslandChest;
-import me.mafkees92.Main;
-import me.mafkees92.Utils.Utils;
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import be.maximvdw.placeholderapi.PlaceholderAPI;
+import me.mafkees92.Main;
+import me.mafkees92.Files.IslandChest;
+import me.mafkees92.Utils.Utils;
 
 public class mafkees_average_island_rate {
 

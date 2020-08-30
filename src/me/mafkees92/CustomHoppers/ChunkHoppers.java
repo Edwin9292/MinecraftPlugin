@@ -1,10 +1,12 @@
 package me.mafkees92.CustomHoppers;
 
-import me.mafkees92.Files.BaseFile;
-import me.mafkees92.Files.Messages;
-import me.mafkees92.Holograms;
-import me.mafkees92.Main;
-import me.mafkees92.Utils.Utils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +24,11 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import me.mafkees92.Holograms;
+import me.mafkees92.Main;
+import me.mafkees92.Files.BaseFile;
+import me.mafkees92.Files.Messages;
+import me.mafkees92.Utils.Utils;
 
 public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 
@@ -93,8 +99,8 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 	
 	
 	private ChunkHopper getChunkHopperAt(Location location) {
-		if(this.chunkHopperList.containsKey(Utils.ChunkToString(location.getChunk()))) {
-			return this.chunkHopperList.get(Utils.ChunkToString(location.getChunk())).stream()
+		if(this.chunkHopperList.containsKey(Utils.LocationToChunkString(location))) {
+			return this.chunkHopperList.get(Utils.LocationToChunkString(location)).stream()
 			 	.filter(x -> x.getLocation().equals(location)).findFirst().orElse(null);
 		}
 		return null;
@@ -196,7 +202,6 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 		if(event.getBlock().getType().equals(Material.HOPPER)){
 			ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
 			String tag = Utils.getNBTTag(item, "chunk hopper");
-			event.getPlayer().sendMessage("DEBUG: "+ tag);
 			if(tag == null) return;
 			if(tag.equals("")) return;
 			

@@ -41,5 +41,11 @@ commands:
    givevoidchest:
       description: give a voidchest to a player
       usage: /<command>
+   gamble:
+      description: open the gambler inventory
+      usage: /<command>
+   help:
+      description: override help command
+      usage: /<command>
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
 depend: [Multiverse-Core, ProtocolLib, HolographicDisplays, HeadDatabase]
