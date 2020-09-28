@@ -1,6 +1,7 @@
 package me.mafkees92;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -14,13 +15,26 @@ import me.mafkees92.Utils.Utils;
 
 public class Holograms {
 	
-;	//make a way to update a specific textline
+	//make a way to update a specific textline
 	public static List<TextLine> AddHologram(Location location, ItemStack item, String... lines) {
 		List<TextLine> textLines = new ArrayList<>();
-
+	
 		Hologram holo = HologramsAPI.createHologram(Main.getInstance(), location);
 		for (String string : lines) {
 			textLines.add(holo.appendTextLine(Utils.colorize(string)));
+		}
+		holo.appendItemLine(item);
+		return textLines;
+	}
+	
+	public static List<TextLine> AddHologram(Location location, ItemStack item, List<String> lore) {
+		List<TextLine> textLines = new ArrayList<>();
+	
+		Hologram holo = HologramsAPI.createHologram(Main.getInstance(), location);
+		Iterator<String> it = lore.iterator();
+		while(it.hasNext()) {
+			String loreLine = it.next();
+			textLines.add(holo.appendTextLine(Utils.colorize(loreLine)));
 		}
 		holo.appendItemLine(item);
 		return textLines;
