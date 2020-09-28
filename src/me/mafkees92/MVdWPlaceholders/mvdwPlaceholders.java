@@ -12,6 +12,7 @@ public class mvdwPlaceholders {
 		new mafkees_player_health(plugin);
 		new mafkees_remaining_fly_time(plugin);
 		new mafkees_island_chest_size(plugin);
+		new mafkees_max_team_members(plugin);
 	}
 	
 	
