@@ -14,7 +14,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
+import com.wasteofplastic.askyblock.Island;
 
+import bin.com.wasteofplastic.askyblock.events.IslandEnterEvent;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.mafkees92.Main;
 import me.mafkees92.Files.Messages;
@@ -79,4 +81,21 @@ public class ActionBar implements Listener {
 
 	}
 
+	@EventHandler
+	public void enterIslandEvent(IslandEnterEvent event) {
+		//on entering island
+		Island island = event.getIsland();
+		if(island.isSpawn()) {
+			Main.getInstance().getActionBar().setCustomActionBar(event.getPlayer(), Messages.actionBarSpawnEnter);
+		}
+		else {
+			Main.getInstance().getActionBar().setCustomActionBar(event.getPlayer(), Messages.actionBarIslandEnter.
+					replace("[islandname]", ASkyBlockAPI.getInstance().getIslandName(event.getIslandOwner())));
+		}
+		
+		//remove island visit message after 4 seconds
+		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+			Main.getInstance().getActionBar().removeCustomActionBar(event.getPlayer());
+		}, 80);
+	}
 }
