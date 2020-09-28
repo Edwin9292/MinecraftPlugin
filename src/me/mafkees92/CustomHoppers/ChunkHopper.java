@@ -1,7 +1,11 @@
 package me.mafkees92.CustomHoppers;
 
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Hopper;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -17,20 +21,38 @@ public class ChunkHopper {
 	private final Location location;
 	private final Chunk chunk;
 	private final Location hologramLocation;
+	private final OfflinePlayer hopperOwner;
+	private final int hopperGrade;
 	
 	//for now data is empty, may be added in the future;
 	public ChunkHopper(String location, String data) {
+		String[] splitData = data.split("[|]");
+		this.hopperOwner = Bukkit.getOfflinePlayer(UUID.fromString(splitData[0]));
 		this.location = Utils.StringToLocation(location);
 		this.chunk = this.location.getChunk();
 		this.hologramLocation = this.location.clone().add(hologramOffset);
+		this.hopperGrade = 1;
 	}
 	
 	
-	public ChunkHopper(Location location) {
+	public ChunkHopper(Location location, Player player) {
 		this.location = location;
 		this.chunk = location.getChunk();
 		this.hologramLocation = location.clone().add(hologramOffset);
+		this.hopperOwner = player;
+		this.hopperGrade = 1;
 	}
+	
+	public boolean isChunkHopper() {
+		return this.location.getBlock().getState() instanceof Hopper;
+	}
+	
+
+	public String getDataString() {
+
+		return this.hopperOwner.getUniqueId().toString();
+	}
+	
 	
 	public Location getLocation() {
 		return this.location;
@@ -53,11 +75,7 @@ public class ChunkHopper {
 	}
 	
 	public String getChunkLocationString() {
-		return Utils.LocationToChunkString(this.location);
-	}
-	
-	public String getDataString() {
-		return "";
+		return Utils.ChunkToString(this.chunk);
 	}
 	
 	public void updateInventoryViewers() {
@@ -71,6 +89,14 @@ public class ChunkHopper {
 		return this.hologramLocation;
 	}
 	
+	public OfflinePlayer getHopperOwner() {
+		return this.hopperOwner;
+	}
+
+
+	public int getHopperGrade() {
+		return hopperGrade;
+	}
 	
 	
 }
