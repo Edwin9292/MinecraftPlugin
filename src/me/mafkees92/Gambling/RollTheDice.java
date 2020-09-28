@@ -24,6 +24,7 @@ import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import me.arcaniax.hdb.enums.CategoryEnum;
 import me.mafkees92.Main;
+import me.mafkees92.Files.Messages;
 import me.mafkees92.Utils.Utils;
 
 public class RollTheDice implements Listener{
@@ -90,30 +91,35 @@ public class RollTheDice implements Listener{
 	private void DisplayResult(BettingPlayer player, Inventory gameInventory, boolean hasWon, int winningNumber) {
 		for (int i = 0; i < gameInventory.getContents().length; i++) {
 			if(hasWon) {
-				gameInventory.setItem(i, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 5, Utils.colorize("&2WON"), ""));
+				gameInventory.setItem(i, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 5, Messages.wonFillItemDisplayName, Messages.wonFillItemLore));
 			}
 			else {
-				gameInventory.setItem(i, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 14, Utils.colorize("&4LOST"), ""));
+				gameInventory.setItem(i, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 14, Messages.lostFillItemDisplayName, Messages.lostFillItemLore));
 			}
 		}
 		if(hasWon) {
-			player.getPlayer().sendMessage(Utils.colorize("&2You won!! You have received &6"
-					+ NumberFormat.getCurrencyInstance().format(player.getBetValue() *6) + "&2."));
+			player.getPlayer().sendMessage(Messages.rollTheDiceWinningMessage(NumberFormat.getCurrencyInstance().format(player.getBetValue() *6)));
 			Main.econ.depositPlayer(player.getPlayer(), player.getBetValue() * 6);
 			for (int i = 0; i < 8; i++) {
-				player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_FIREWORK_TWINKLE, 50, 50);
-				player.getPlayer().getWorld().playEffect(player.getPlayer().getLocation(), Effect.MOBSPAWNER_FLAMES, 20, 20);
+				player.getPlayer().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENTITY_FIREWORK_TWINKLE, 50, 50);
+				Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+					player.getPlayer().getWorld().playEffect(player.getPlayer().getLocation(), Effect.MOBSPAWNER_FLAMES, 20, 20);
+				}, i*2);
 			}
 		}
 		else {
-			player.getPlayer().sendMessage(Utils.colorize("&cYou have lost. The winning number was: &2" + (winningNumber +1) + "&c."));
-			for (int i = 0; i < 8; i++) {
-				player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_GENERIC_BURN, 5, 10);
-				player.getPlayer().getWorld().spawnParticle(Particle.FLAME, player.getPlayer().getLocation(), 50);
+			player.getPlayer().sendMessage(Messages.rollTheDiceLostMessage(winningNumber +1));
+			player.getPlayer().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENTITY_GENERIC_BURN, 5, 10);
+			for (int i = 0; i < 10; i++) {
+				player.getPlayer().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENTITY_GENERIC_BURN, 5, 10);
+				Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+					player.getPlayer().getWorld().spawnParticle(Particle.FLAME, player.getPlayer().getLocation(), 10);
+				}, i*2);
 			}
+			player.getPlayer().getWorld().playSound(player.getPlayer().getLocation(), Sound.ENTITY_GENERIC_BURN, 5, 10);
 		}
 		Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
-			if(player.getPlayer().getOpenInventory().getTopInventory().getName().contentEquals(Utils.colorize("&6&lTOOT&e&lMC &7: &eRoll The Dice"))){
+			if(player.getPlayer().getOpenInventory().getTopInventory().getName().contentEquals(Messages.rollTheDiceGameInventoryTitle)){
 				player.getPlayer().closeInventory();
 			}
 			player.setBetting(false);
@@ -131,7 +137,7 @@ public class RollTheDice implements Listener{
 	
 	private void createPickANumberInventory() {
 		if(hdb.getHeads(CategoryEnum.ALPHABET).size() > 0) {
-			this.pickANumberInventory = Bukkit.createInventory(null, 45, Utils.colorize("&6&lTOOT&e&lMC &7: &eSelect A Number"));
+			this.pickANumberInventory = Bukkit.createInventory(null, 45, Messages.rollTheDicePickANumberInventoryTitle);
 			this.pickANumberInventory.setItem(4, Utils.setNBTTag(Utils.createCustomHeadItem("9270", Utils.colorize("&6&lNumber 1"),
 					Utils.colorize("&eClick to pick number 1")), "pickanumber", "1"));
 			this.pickANumberInventory.setItem(15, Utils.setNBTTag(Utils.createCustomHeadItem("9269", Utils.colorize("&6&lNumber 2"),
@@ -149,7 +155,7 @@ public class RollTheDice implements Listener{
 	}
 	
 	private void createPickABetInventory() {
-		this.pickABetInventory = Bukkit.createInventory(null, 54, Utils.colorize("&6&lTOOT&e&lMC &7: &eSelect Your Bet"));
+		this.pickABetInventory = Bukkit.createInventory(null, 54, Messages.rollTheDicePickABetInventoryTitle);
 		
 
 		//this.pickABetInventory.setItem(49-9, Utils.createCustomItem(Material.PAPER, 
@@ -172,7 +178,7 @@ public class RollTheDice implements Listener{
 	}
 	
 	private Inventory createGameInventory(BettingPlayer player) {
-		return Bukkit.createInventory(player.getPlayer(), gameInventorySize, Utils.colorize("&6&lTOOT&e&lMC &7: &eRoll The Dice"));
+		return Bukkit.createInventory(player.getPlayer(), gameInventorySize, Messages.rollTheDiceGameInventoryTitle);
 	}
 	
 	private void createGameInventoryContents() {
@@ -180,40 +186,40 @@ public class RollTheDice implements Listener{
 		for (int i = 0; i < 6; i++) {
 			List<ItemStack> invContents = Arrays.asList(new ItemStack[gameInventorySize]);
 			for (int j = 0; j < 5; j++) {
-				invContents.set(2 + j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "", ""));
-				invContents.set(3+ j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "", ""));
-				invContents.set(4+ j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "", ""));
-				invContents.set(5+ j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "", ""));
-				invContents.set(6+ j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "", ""));
+				invContents.set(2 + j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "&6&l" + (i + 1), ""));
+				invContents.set(3+ j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "&6&l" + (i + 1), ""));
+				invContents.set(4+ j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "&6&l" + (i + 1), ""));
+				invContents.set(5+ j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "&6&l" + (i + 1), ""));
+				invContents.set(6+ j*9, Utils.createCustomItem(Material.STAINED_GLASS_PANE, i, "&6&l" + (i + 1), ""));
 			}
 			this.bettingInventoryContents.add(invContents);
 		}
-		this.bettingInventoryContents.get(0).set(22, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
+		this.bettingInventoryContents.get(0).set(22, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l1", ""));
 		
-		this.bettingInventoryContents.get(1).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(1).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
+		this.bettingInventoryContents.get(1).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l2", ""));
+		this.bettingInventoryContents.get(1).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l2", ""));
 
-		this.bettingInventoryContents.get(2).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(2).set(22, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(2).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
+		this.bettingInventoryContents.get(2).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l3", ""));
+		this.bettingInventoryContents.get(2).set(22, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l3", ""));
+		this.bettingInventoryContents.get(2).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l3", ""));
 
-		this.bettingInventoryContents.get(3).set(12, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(3).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(3).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(3).set(32, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
+		this.bettingInventoryContents.get(3).set(12, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l4", ""));
+		this.bettingInventoryContents.get(3).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l4", ""));
+		this.bettingInventoryContents.get(3).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l4", ""));
+		this.bettingInventoryContents.get(3).set(32, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l4", ""));
 
-		this.bettingInventoryContents.get(4).set(12, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(4).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(4).set(22, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(4).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(4).set(32, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
+		this.bettingInventoryContents.get(4).set(12, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l5", ""));
+		this.bettingInventoryContents.get(4).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l5", ""));
+		this.bettingInventoryContents.get(4).set(22, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l5", ""));
+		this.bettingInventoryContents.get(4).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l5", ""));
+		this.bettingInventoryContents.get(4).set(32, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l5", ""));
 
-		this.bettingInventoryContents.get(5).set(12, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(5).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(5).set(21, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 7, "", ""));
-		this.bettingInventoryContents.get(5).set(23, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 7, "", ""));
-		this.bettingInventoryContents.get(5).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
-		this.bettingInventoryContents.get(5).set(32, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "", ""));
+		this.bettingInventoryContents.get(5).set(12, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l6", ""));
+		this.bettingInventoryContents.get(5).set(14, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l6", ""));
+		this.bettingInventoryContents.get(5).set(21, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 7, "&6&l6", ""));
+		this.bettingInventoryContents.get(5).set(23, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 7, "&6&l6", ""));
+		this.bettingInventoryContents.get(5).set(30, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l6", ""));
+		this.bettingInventoryContents.get(5).set(32, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 15, "&6&l6", ""));
 	}
 	
 	
@@ -241,7 +247,7 @@ public class RollTheDice implements Listener{
 				}
 				else {
 					if(player.isBetting()) {
-						player.getPlayer().sendMessage(Utils.colorize("&cPlease wait till your previous bet is completed"));
+						player.getPlayer().sendMessage(Messages.rollTheDiceBetNotFinishedMessage);
 						player.getPlayer().closeInventory();
 						return;
 					}else {
@@ -260,21 +266,17 @@ public class RollTheDice implements Listener{
 			int betValue = Utils.tryParseInt(tag);
 			if(betValue != -1) {
 				BettingPlayer player = bettingPlayers.stream().filter(x -> x.getPlayer().equals((Player)event.getWhoClicked())).findFirst().orElse(null);
-				if(player == null) {
-					event.getWhoClicked().sendMessage("ERROR: You havent picked a number yet");
-				}
-				else {
+				if(player != null) {
 					//check if player has balance TODO
 					if(Main.econ.getBalance(player.getPlayer()) >= betValue) {
 						player.setBetValue(betValue);
-						player.getPlayer().sendMessage(Utils.colorize("&eYou have placed your bet on number &6" + player.getNumberPicked() + "&e." ));
-						player.getPlayer().sendMessage(Utils.colorize("&eStarting your game of Roll The Dice with a bet of &6"
-						+ NumberFormat.getCurrencyInstance().format(betValue) + "&e."	));
+						player.getPlayer().sendMessage(Messages.rollTheDiceBetPlacedMessage(player.getNumberPicked()));
+						player.getPlayer().sendMessage(Messages.rollTheDiceGameStartedMessage(NumberFormat.getCurrencyInstance().format(betValue)));
 						Main.econ.withdrawPlayer((Player)event.getWhoClicked(), betValue);
 						this.RunGame(player);
 					}
 					else {
-						player.getPlayer().sendMessage(Utils.colorize("&cYou have insufficient balance to do this bet."));
+						player.getPlayer().sendMessage(Messages.gameMasterInsufficientBalance);
 					}
 				}
 				
@@ -285,7 +287,7 @@ public class RollTheDice implements Listener{
 		
 		
 		
-		if(event.getInventory().getTitle().contentEquals(Utils.colorize("&6&lTOOT&e&lMC &7: &eRoll The Dice"))) {
+		if(event.getInventory().getTitle().contentEquals(Messages.rollTheDiceGameInventoryTitle)) {
 			event.setCancelled(true);
 		}
 	}	
@@ -296,7 +298,7 @@ public class RollTheDice implements Listener{
 	public void onInventoryDrag(InventoryDragEvent event) {
 		if(event.getInventory().equals(this.pickANumberInventory) ||
 			event.getInventory().equals(this.pickABetInventory) ||
-			event.getInventory().getTitle().contentEquals(Utils.colorize("&6&lTOOT&e&lMC &7: &eRoll The Dice"))){
+			event.getInventory().getTitle().contentEquals(Messages.rollTheDiceGameInventoryTitle)){
 			event.setCancelled(true);
 		}
 	}
