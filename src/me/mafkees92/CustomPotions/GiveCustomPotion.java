@@ -1,8 +1,5 @@
 package me.mafkees92.CustomPotions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -15,6 +12,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 
+import me.mafkees92.Files.Messages;
 import me.mafkees92.Utils.Utils;
 
 public class GiveCustomPotion implements CommandExecutor {
@@ -31,16 +29,13 @@ public class GiveCustomPotion implements CommandExecutor {
 						if (args[1].equalsIgnoreCase("freeze")) {
 							ItemStack item = new ItemStack(Material.SPLASH_POTION);
 							PotionMeta meta = (PotionMeta)item.getItemMeta();
-							meta.setDisplayName(Utils.colorize("&bFreeze Potion"));
+							meta.setDisplayName(Messages.freezePotionDisplayName);
 							meta.setColor(Color.BLUE);
 							meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
 							meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 							meta.addEnchant(Enchantment.FROST_WALKER, 1, false);
 
-							List<String> lore = new ArrayList<>();
-							lore.add(Utils.colorize("&9Freeze your opponents in a 4 block Radius!"));
-							lore.add(Utils.colorize("&9Duration: 4 seconds "));
-							meta.setLore(lore);
+							meta.setLore(Messages.freezePotionLore);
 							item.setItemMeta(meta);
 							item = Utils.setNBTTag(item, "customPotions", "freezePotion");
 							
@@ -50,8 +45,8 @@ public class GiveCustomPotion implements CommandExecutor {
 								for (int i = 0; i < amount; i++) {
 									
 									if(targetPlayer.getInventory().firstEmpty() == -1) {
-										targetPlayer.sendMessage(Utils.colorize("&cYou have received a custom freeze potion. Your inventory is full, so it has been dropped on the floor"));
-										player.sendMessage(Utils.colorize("&cTarget players inventory was full. The item has been dropped on the ground at his location"));
+										targetPlayer.sendMessage(Messages.customPotionReceivedInventoryFull);
+										player.sendMessage(Messages.customPotionSendTargetInventoryFull);
 										
 										item.setAmount(amount-i);
 										targetPlayer.getWorld().dropItem(targetPlayer.getLocation(), item);
@@ -62,25 +57,25 @@ public class GiveCustomPotion implements CommandExecutor {
 								}
 								return true;
 							} catch (Exception e) {
-								player.sendMessage(Utils.colorize("&cInvalid amount entered, please try again."));
+								player.sendMessage(Messages.invalidAmount);
 								return true;
 							}
 							
 						}
 						else {
-							player.sendMessage(Utils.colorize("&cInvalid Potion type, Valid potion types are {freeze}"));
+							player.sendMessage(Messages.invalidPotionType);
 							return true;
 						}
 					} else {
-						player.sendMessage(Utils.colorize("&cTarget player is either invalid or not online"));
+						player.sendMessage(Messages.invalidTargetPlayer);
 						return true;
 					}
 				} else {
-					player.sendMessage(Utils.colorize("&cInvalid Arguments. Try /givecustompotion <playername> <potiontype> <amount>"));
+					player.sendMessage(Messages.invalidPotionArguments);
 					return true;
 				}
 			} else {
-				player.sendMessage(Utils.colorize("&cYou dont have permission to use this command"));
+				player.sendMessage(Messages.noPermission);
 				return true;
 			}
 		}
