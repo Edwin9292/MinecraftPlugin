@@ -20,12 +20,12 @@ public mafkees_island_size(Main plugin) {
 				if(ASkyBlockAPI.getInstance().inTeam(player.getUniqueId())) {
 					UUID leader = ASkyBlockAPI.getInstance().getTeamLeader(player.getUniqueId());
 					int size = ASkyBlockAPI.getInstance().getIslandOwnedBy(leader).getProtectionSize();
-					return size + "x" + size;
+					return size + " x " + size;
 				}
 				else {
 					Island is = ASkyBlockAPI.getInstance().getIslandOwnedBy(player.getUniqueId());
 					if(is != null) {
-						return is.getProtectionSize() + "x" + is.getProtectionSize();
+						return is.getProtectionSize() + " x " + is.getProtectionSize();
 					}
 				}
 			}
