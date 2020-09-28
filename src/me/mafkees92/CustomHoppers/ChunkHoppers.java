@@ -1,12 +1,10 @@
 package me.mafkees92.CustomHoppers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import me.mafkees92.Files.BaseFile;
+import me.mafkees92.Files.Messages;
+import me.mafkees92.Holograms;
+import me.mafkees92.Main;
+import me.mafkees92.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -24,11 +23,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.mafkees92.Holograms;
-import me.mafkees92.Main;
-import me.mafkees92.Files.BaseFile;
-import me.mafkees92.Files.Messages;
-import me.mafkees92.Utils.Utils;
+import java.util.*;
 
 public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 
@@ -59,7 +54,12 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 		try {
 			for (Map.Entry<String, Object> entry : map.entrySet()) {
 				ChunkHopper hopper = new ChunkHopper(entry.getKey(), (String)entry.getValue());
-				AddChunkHopper(hopper);
+				if(hopper.isChunkHopper()) {
+					AddChunkHopper(hopper);
+				}
+				else {
+					RemoveChunkHopper(hopper);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,7 +90,8 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 	
 	
 	private void addHologram(ChunkHopper hopper) {
-		Holograms.AddHologram(hopper.getHologramLocation(), new ItemStack(Material.HOPPER),  Utils.colorize("&b&lChunk Hopper"), "");
+		Holograms.AddHologram(hopper.getHologramLocation(), new ItemStack(Messages.hopperHologramMaterial),
+				Messages.hopperHologramText(hopper.getHopperGrade(), hopper.getHopperOwner()));
 	}
 	
 	private void deleteHologram(ChunkHopper hopper) {
@@ -99,25 +100,19 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 	
 	
 	private ChunkHopper getChunkHopperAt(Location location) {
-		if(this.chunkHopperList.containsKey(Utils.LocationToChunkString(location))) {
-			return this.chunkHopperList.get(Utils.LocationToChunkString(location)).stream()
+		if(this.chunkHopperList.containsKey(Utils.ChunkToString(location.getChunk()))) {
+			return this.chunkHopperList.get(Utils.ChunkToString(location.getChunk())).stream()
 			 	.filter(x -> x.getLocation().equals(location)).findFirst().orElse(null);
 		}
 		return null;
 	}
 	
-	public ItemStack createChunkHopperItemStack() {
+	public ItemStack createChunkHopperItemStack(int grade) {
 
 		ItemStack item = new ItemStack(Material.HOPPER);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(Utils.colorize("&o&3&lChunkHopper"));
-		List<String> lore = new ArrayList<>();
-		lore.add(Utils.colorize("&7When placed, this hopper will suck"));
-		lore.add(Utils.colorize("&7up every item that drops inside"));
-		lore.add(Utils.colorize("&7its chunk."));
-		lore.add(Utils.colorize("&o"));
-		lore.add(Utils.colorize("&d&lEPIC"));
-		meta.setLore(lore);
+		meta.setDisplayName(Messages.customHopperDisplayName(grade));
+		meta.setLore(Messages.customHopperLore);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.addEnchant(Enchantment.DURABILITY, 1, false);
 		item.setItemMeta(meta);
@@ -135,7 +130,6 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 	public void OnItemDrop(ItemSpawnEvent event) {
 		List<ChunkHopper> hoppers = this.chunkHopperList.get(Utils.ChunkToString(event.getLocation().getChunk()));
 		if(hoppers == null || hoppers.size() == 0) return;
-		
 		//item to add
 		ItemStack item = event.getEntity().getItemStack();
 		int maxStack = item.getMaxStackSize();
@@ -197,7 +191,7 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 		event.getEntity().getItemStack().setAmount(amountToAdd);
 	}
 	
-	@EventHandler
+	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void HopperPlaceEvent(BlockPlaceEvent event) {
 		if(event.getBlock().getType().equals(Material.HOPPER)){
 			ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
@@ -205,12 +199,12 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 			if(tag == null) return;
 			if(tag.equals("")) return;
 			
-			ChunkHopper hopper = new ChunkHopper(event.getBlock().getLocation());
+			ChunkHopper hopper = new ChunkHopper(event.getBlock().getLocation(), event.getPlayer());
 			this.AddChunkHopper(hopper);
 		}
 	}
 	
-	@EventHandler
+	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void HopperBreakEvent(BlockBreakEvent event) {
 		if(event.getBlock().getType().equals(Material.HOPPER)) {
 			ChunkHopper hopper = getChunkHopperAt(event.getBlock().getLocation());
@@ -223,20 +217,20 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 					//check if player already has the item
 					List<ItemStack> items = Arrays.asList(player.getInventory().getContents());
 					ItemStack item = items.stream().filter(x -> x != null && x.getType() != Material.AIR &&
-							x.isSimilar(this.createChunkHopperItemStack())).findFirst().orElse(null);
+							x.isSimilar(this.createChunkHopperItemStack(1))).findFirst().orElse(null);
 					//item is in inventory
 					if(item != null) {
 						//if item stack is not full, add item
 						if(item.getAmount() < item.getMaxStackSize()) {
-							player.getInventory().addItem(this.createChunkHopperItemStack());
+							player.getInventory().addItem(this.createChunkHopperItemStack(1));
 							return;
 						}
 					}
-					event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), this.createChunkHopperItemStack());
+					event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), this.createChunkHopperItemStack(1));
 					
 				}
 				else {
-					player.getInventory().addItem(this.createChunkHopperItemStack());
+					player.getInventory().addItem(this.createChunkHopperItemStack(1));
 				}
 				
 			}
@@ -270,11 +264,11 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 			int amount = Utils.tryParseInt(args[1]);
 			if(amount != -1) {
 				if(targetPlayer.getInventory().firstEmpty() != -1) {
-					ItemStack customHopper = this.createChunkHopperItemStack();
+					ItemStack customHopper = this.createChunkHopperItemStack(1);
 					customHopper.setAmount(amount);
 					targetPlayer.getInventory().addItem(customHopper);
-					targetPlayer.sendMessage("You have received a custom hopper");
-					player.sendMessage("Gave "+ targetPlayer.getName() + " " + amount + " custom hopper(s)");
+					targetPlayer.sendMessage(Messages.youReceivedCustomHopperMessage);
+					player.sendMessage(Messages.gaveHopperToPlayerMessage(targetPlayer, amount));
 					return true;
 					
 				} 
