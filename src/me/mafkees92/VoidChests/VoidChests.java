@@ -18,6 +18,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -59,8 +60,10 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("voidchests").getValues(false);
 
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
-			VoidChest chest = new VoidChest(entry.getKey(), (String)entry.getValue());
-			this.addVoidChest(chest);
+			VoidChest chest = new VoidChest(entry.getKey(), (String)entry.getValue(), this);
+			if(chest.initialize()) {
+				this.addVoidChest(chest);
+			}
 		}
 	}
 
@@ -141,7 +144,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		for (Map.Entry<UUID, Double> pair : playersToPayout.entrySet()) {
 			if(pair.getValue() <= 0d) continue;
 			Main.econ.depositPlayer(Bukkit.getPlayer(pair.getKey()), pair.getValue());
-			Bukkit.getPlayer(pair.getKey()).sendMessage(Utils.colorize("You have been payed "+ NumberFormat.getCurrencyInstance().format(pair.getValue()) + " from your voidchests."));
+			Bukkit.getPlayer(pair.getKey()).sendMessage(Utils.colorize("&7You have been payed &2"+ NumberFormat.getCurrencyInstance().format(pair.getValue()) + " &7from your voidchests."));
 		}
 	}
 
@@ -288,7 +291,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 	}
 	  
 	//void chest place event
-		@EventHandler
+		@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 		public void voidChestPlaceEvent(BlockPlaceEvent event) {
 			if(event.getBlock().getState() instanceof ShulkerBox) {
 				ItemStack placedChest = event.getPlayer().getInventory().getItemInMainHand();
@@ -296,12 +299,14 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 				if(nbt != null && !nbt.equals("")) {
 					
 					VoidChest chest = new VoidChest(event.getBlock().getLocation(), event.getPlayer(), Utils.tryParseInt(nbt));
-					if(isPlacedNextToVoidChest(chest)) {
-						event.getPlayer().sendMessage(Utils.colorize("&cYou can't place two voidchests next to eachother."));
-						event.setCancelled(true);
-						return;
+					if(chest.initialize()) {
+						if(isPlacedNextToVoidChest(chest)) {
+							event.getPlayer().sendMessage(Utils.colorize("&cYou can't place two voidchests next to eachother."));
+							event.setCancelled(true);
+							return;
+						}
+						this.addVoidChest(chest);
 					}
-					this.addVoidChest(chest);
 				}
 			}
 			
@@ -316,7 +321,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 	
 	
 	//void chest break event
-	@EventHandler
+	@EventHandler (priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void voidChestBreakEvent(BlockBreakEvent event) {
 		if(event.getBlock().getState() instanceof ShulkerBox){
 			VoidChest chest = this.getVoidChestAt(event.getBlock().getLocation());
@@ -327,7 +332,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 				double money = chest.payOut();
 				Main.econ.depositPlayer(chest.getInventoryOwner(), money);
 				if(chest.getInventoryOwner().isOnline()) {
-					chest.getInventoryOwner().getPlayer().sendMessage(Utils.colorize("You have been payed "+ NumberFormat.getCurrencyInstance().format(money) + " from a broken voidchest"));
+					chest.getInventoryOwner().getPlayer().sendMessage(Utils.colorize("&7You have been payed &2"+ NumberFormat.getCurrencyInstance().format(money) + " &7from a broken voidchest"));
 				}
 				
 				this.removeVoidChest(chest);   //remove voidchest
