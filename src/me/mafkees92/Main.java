@@ -10,6 +10,7 @@ import com.wasteofplastic.askyblock.ASkyBlock;
 import me.mafkees92.ActionBar.ActionBar;
 import me.mafkees92.ChunkLoadersNotUSED.ChunkLoaders;
 import me.mafkees92.ChunkLoadersNotUSED.GiveChunkLoader;
+import me.mafkees92.Commands.Help;
 import me.mafkees92.CustomHoppers.ChunkHoppers;
 import me.mafkees92.CustomPotions.CustomSplashPotions;
 import me.mafkees92.CustomPotions.GiveCustomPotion;
@@ -20,7 +21,6 @@ import me.mafkees92.CustomVouchers.VoucherUsageEvent;
 import me.mafkees92.Files.Messages;
 import me.mafkees92.Gambling.GameMasterHandler;
 import me.mafkees92.HologramParkour.Parkour;
-import me.mafkees92.HologramParkour.StartParkour;
 import me.mafkees92.IslandChests.IslandChests;
 import me.mafkees92.IslandChests.IslandInvSee;
 import me.mafkees92.IslandChests.OpenIslandChest;
@@ -73,16 +73,15 @@ public class Main extends JavaPlugin {
 		getCommand("givecustompotion").setExecutor(new GiveCustomPotion());
 		getCommand("givevoucher").setExecutor(new GiveVoucher());
 		getCommand("flytime").setExecutor(new GetRemainingFlyTime(this));
-		getCommand("startparkour").setExecutor(new StartParkour(this));
 		getCommand("islandchest").setExecutor(new OpenIslandChest(this));
 		getCommand("islandinvsee").setExecutor(new IslandInvSee(this));
 		getCommand("upgradeislandchestsize").setExecutor(new UpgradeIslandChestSize(this));
 		getCommand("givechunkloader").setExecutor(new GiveChunkLoader(this));
 		getCommand("givevoidchest").setExecutor(this.voidChestsInstance);
 		getCommand("givecustomhopper").setExecutor(this.chunkHoppersInstance);
-		getCommand("help").setExecutor(new OverrideHelpCommand());
+		getCommand("help").setExecutor(new Help());
 		getCommand("gamble").setExecutor(this.gamblerHandlerInstance);
-		getCommand("parkour").setExecutor(new Parkour(this));
+		getCommand("parkour").setExecutor(new Parkour(this, "Parkour/ParkourData.yml"));
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);
