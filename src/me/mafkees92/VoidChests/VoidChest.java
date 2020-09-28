@@ -24,6 +24,7 @@ import net.brcdev.shopgui.ShopGuiPlusApi;
 
 public class VoidChest {
 	
+	private VoidChests voidChestsInstance;
 	
 	private final Location location;
 	private ShulkerBox chest;
@@ -39,8 +40,9 @@ public class VoidChest {
 
 	private Vector hologramOffset;
 
-	public VoidChest(String location, String data) {
+	public VoidChest(String location, String data, VoidChests voidChestsInstance) {
 		
+		this.voidChestsInstance = voidChestsInstance;
 		this.location = Utils.StringToLocation(location);
 		
 		if(data != null && !data.equals("")) {
@@ -50,7 +52,6 @@ public class VoidChest {
 			this.moneyToPayOut = Utils.tryParseDouble(split[1]);
 			this.chestGrade = Utils.tryParseInt(split[2]);
 		}
-		initialize();
 	}
 	
 	public VoidChest(Location location, Player inventoryOwner, int chestGrade) {
@@ -58,11 +59,22 @@ public class VoidChest {
 		this.inventoryOwner = inventoryOwner;
 		this.chestGrade = chestGrade;
 		this.moneyToPayOut = 0d;
-		initialize() ;
 	}
 	
-	private void initialize() {
+	public boolean initialize() {
 		if (this.location != null) {
+
+			setSellBooster();
+			setHologramOffset();
+			
+			if(!(this.location.getBlock().getState() instanceof ShulkerBox)) {
+				Bukkit.getLogger().severe("ERROR: location X: " + this.location.getBlockX() +  
+						" Y: " + this.location.getBlockY() + " Z: " + this.location.getBlockZ() + 
+						" is not a shulkerbox, could not parse this location into a voidchest.");
+				Bukkit.getLogger().severe("The voidchest stored at this location has been removed from the config.");
+				this.voidChestsInstance.removeVoidChest(this);
+				return false;
+			}
 			this.chest = (ShulkerBox) this.location.getBlock().getState();
 			this.inventory = this.chest.getInventory();
 			this.sellTimeInterval = this.gradeToSellTime(this.chestGrade);
@@ -75,8 +87,7 @@ public class VoidChest {
 			Bukkit.getLogger().warning(Utils.colorize("FAILED PARSING DATA TO VOIDCHEST, DISABELING PLUGIN"));
 			Bukkit.getPluginManager().disablePlugin(Main.getInstance());
 		}
-		setSellBooster();
-		setHologramOffset();
+		return true;
 	}
 	
 	
