@@ -1,7 +1,6 @@
 package me.mafkees92.Gambling;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import me.mafkees92.Main;
+import me.mafkees92.Files.Messages;
 import me.mafkees92.Utils.Utils;
 
 public class GameMasterHandler implements CommandExecutor, Listener {
@@ -40,16 +40,13 @@ public class GameMasterHandler implements CommandExecutor, Listener {
 
 	private void createGameMasterInventory() {
 
-		this.gameMasterInventory = Bukkit.createInventory(null, 27,
-				Utils.colorize("&6&lTOOT&e&lMC &7: &e&lGame Master"));
+		this.gameMasterInventory = Bukkit.createInventory(null, 27, Messages.gameMasterInventoryTitle);
 
-		ItemStack rollTheDice = Utils.createCustomItem(Material.DIAMOND, "&6Roll The Dice",
-				"&eGuess the number on the dice.", "&o", "&7Pick a number between &21&7 and &26&7.",
-				"&7If it's correct, i will multiply", "&7your bet by &26 times&7!", "&7",
-				"&7If you loose, &4i will keep it all&7!");
+		ItemStack rollTheDice = Utils.createCustomItem(Messages.gameMasterRollTheDiceMaterial, Messages.gameMasterRollTheDiceDisplayName,
+				Messages.gameMasterRollTheDiceLore);
 		rollTheDice = Utils.setNBTTag(rollTheDice, "gamemaster", "rollthedice");
 
-		this.gameMasterInventory.setItem(13, rollTheDice);
+		this.gameMasterInventory.setItem(Messages.gameMasterRollTheDiceSlot, rollTheDice);
 	}
 
 	@Override
