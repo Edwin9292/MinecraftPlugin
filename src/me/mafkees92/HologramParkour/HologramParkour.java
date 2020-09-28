@@ -6,9 +6,6 @@ import java.util.Queue;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,6 +14,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.handler.PickupHandler;
 import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
+import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 
 import me.mafkees92.Main;
 import me.mafkees92.Utils.Utils;
@@ -28,34 +26,19 @@ public class HologramParkour {
 	int counter = 0;
 	BukkitTask runningTask;
 	int timer = 7;
+	private long startTime = -1;
+	private long endTime = -1;
 	
-	public HologramParkour(Player player, Main plugin) {
+	public HologramParkour(LinkedList<Location> waypoints, Player player, Main plugin) {
 		
+		this.locationsToSpawn = waypoints;
 		this.plugin = plugin;
-		
-		locationsToSpawn = new LinkedList<>();
-
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -598.5D, 73.9D, -2.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -591.5D, 70.9D, -13.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -581.5D, 70.9D, -25.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -562.5D, 70.9D, -32.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -558.5D, 71.9D, -44.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -554.5D, 71.9D, -54.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -551.5D, 69.9D, -70.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -543.5D, 68.9D, -103.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -537.5D, 73.9D, -107.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -537.5D, 74.9D, -87.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -529.5D, 73.9D, -84.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -526.5D, 73.9D, -96.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -526.5D, 85.9D, -96.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -526.5D, 93.9D, -96.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -527.5D, 100.9D, -95.5D));
-		locationsToSpawn.add(new Location(Bukkit.getWorld("SkyBlock"), -527.5D, 100.9D, -84.5D));
+		Parkour.parkourParticipants.add(player);
 		
 		//setup the hologram
 		Hologram hologram = HologramsAPI.createHologram(plugin, locationsToSpawn.poll());
-		hologram.appendTextLine(Utils.colorize("&3&lPICK THIS DIAMOND!!"));
-		ItemLine itemline = hologram.appendItemLine(new ItemStack(Material.YELLOW_GLAZED_TERRACOTTA));
+		TextLine text = hologram.appendTextLine(Utils.colorize("&3&lPICK THIS STONE!!"));
+		ItemLine itemline = hologram.appendItemLine(new ItemStack(Material.STONE));
 
 		//setup the hologram visibility
 		hologram.getVisibilityManager().setVisibleByDefault(false);
@@ -63,14 +46,40 @@ public class HologramParkour {
 		
 		//setup what happends if a hologram is picked up
 		PickupHandler handler = player1 -> {
+			if(startTime == -1)
+				startTime = System.currentTimeMillis();
 			if(runningTask != null) runningTask.cancel();
 			timer = 7;
 			counter ++;
 			Location locToTeleport = locationsToSpawn.poll();
 
+			//set the item based on the amount of items pickedup
+			if(counter >= 3  && counter < 6) {
+				itemline.setItemStack(new ItemStack(Material.GOLD_INGOT));
+				text.setText(Utils.colorize("&3&lPICK THIS GOLD_INGOT!!"));
+			}
+			else if(counter >= 6 && counter < 10) {
+				itemline.setItemStack(new ItemStack(Material.DIAMOND));
+				text.setText(Utils.colorize("&3&lPICK THIS DIAMOND!!"));
+			}
+			else if(counter >= 10 && counter < 15) {
+				itemline.setItemStack(new ItemStack(Material.EMERALD));
+				text.setText(Utils.colorize("&3&lPICK THIS EMERALD!!"));
+			}
+			else if(counter >= 15 && counter < 25) {
+				itemline.setItemStack(new ItemStack(Material.YELLOW_GLAZED_TERRACOTTA));
+				text.setText(Utils.colorize("&3&lPICK THIS VALUE BLOCK!!"));
+			}
+			else if(counter >= 25) {
+				itemline.setItemStack(new ItemStack(Material.BEACON));
+				text.setText(Utils.colorize("&3&lPICK THIS VALUE BLOCK!!"));
+			}
+			
+			
 			//if its the last waypoint, set it as a nether star
 			if(locationsToSpawn.size() == 0) {
 				itemline.setItemStack(new ItemStack(Material.NETHER_STAR));
+				text.setText(Utils.colorize("&3&lFINISH!!"));
 			}
 			//if there is no more waypoint location left it means we have finished
 			if(locToTeleport == null) {
@@ -79,6 +88,7 @@ public class HologramParkour {
 			}
 
 			hologram.teleport(locToTeleport);
+			
 			runningTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> update(player1, hologram), 0L , 20L);
 		};
 		itemline.setPickupHandler(handler);
@@ -108,9 +118,12 @@ public class HologramParkour {
 			player.sendMessage("You were to late. The parkour has ended");
 			player.sendMessage("Your final score is: "+ counter);
 		}
+		this.endTime = System.currentTimeMillis();
+		player.sendMessage("You finished the parkour in " + ((endTime - startTime) / 1000.0) + " seconds.");
 		plugin.getActionBar().removeCustomActionBar(player.getUniqueId());
 		if(runningTask != null) runningTask.cancel();
 		hologram.delete();
+		Parkour.parkourParticipants.remove(player);
 	}
 
 	
