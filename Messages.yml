@@ -151,7 +151,7 @@ HelpMenu:
     type: 'link'
     text: ' &7- &6Issues/Bugs: &ePlease report them at our discord page'
     hover: '&6&lClick to visit our discord'
-    link: 'https://discord.gg/JCHUR7'
+    link: 'https://discord.gg/jCdzawU'
   reportrulebreakers:
     type: 'command'
     text: ' &7- &6Rule breakers: &eReport rule breakers with /report'
@@ -176,7 +176,7 @@ RulesMessage:
 Discord:
   text: '&eClick this link to visit our discord page!'
   hovertext: '&eClick this link to visit our discord page!'
-  link: 'https://discord.gg/Y6G6ze'
+  link: 'https://discord.gg/EMMRmfB'
 
 
 
