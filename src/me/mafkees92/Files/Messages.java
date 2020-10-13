@@ -36,6 +36,7 @@ public class Messages extends BaseFile {
 		Messages.actionBar = Utils.colorize(config.getString("ActionBar.message"));
 		Messages.actionBarNoIsland = Utils.colorize(config.getString("ActionBar.messageNoIsland"));
 		Messages.actionBarIslandEnter = Utils.colorize(config.getString("ActionBar.islandEnter"));
+		Messages.actionBarIslandEnterOwnIsland = Utils.colorize(config.getString("ActionBar.islandEnterOwnIsland"));
 		Messages.actionBarSpawnEnter = Utils.colorize(config.getString("ActionBar.spawnEnter"));
 		
 		//custom voucher
@@ -139,6 +140,14 @@ public class Messages extends BaseFile {
     	        builder.append("\n");
     	}
     	Messages.helpMessage = builder.create();
+    	
+    	Messages.rulesMessage = Utils.colorize(config.getStringList("RulesMessage"));
+    	
+    	
+    	
+    	
+    	
+    	
 	}
 	
 	
@@ -160,6 +169,7 @@ public class Messages extends BaseFile {
 	public static String actionBar;
 	public static String actionBarNoIsland;
 	public static String actionBarIslandEnter;
+	public static String actionBarIslandEnterOwnIsland;
 	public static String actionBarSpawnEnter;
 	
 	
@@ -281,7 +291,8 @@ public class Messages extends BaseFile {
 	//custom /help
 	public static BaseComponent[] helpMessage;
 	
-	
+	//custom /rules
+	public static List<String> rulesMessage;
 	
 	
 	
