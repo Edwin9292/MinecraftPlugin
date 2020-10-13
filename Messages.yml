@@ -10,10 +10,11 @@ SetLore:
 
 #messages for the actionbar plugin
 ActionBar:
-  message: '&c %mvdw_mafkees_player_health%/100❤ &a      %askyblock_level%〣 Level     &e %mvdw_mafkees_average_island_rate%/5✰ Rating '
+  message: '&c %mvdw_mafkees_player_health%/[max_health]❤ &a      %askyblock_level%〣 Level     &e %mvdw_mafkees_average_island_rate%/5✰ Rating '
   messageNoIsland:  '&c %mvdw_mafkees_player_health%/100❤ &a &eYou have no island!'
   islandEnter:  "&7You are visiting &e[islandname]&e's &7island."
-  spawnEnter:  '&7You are visiting the &eHub village&7.'
+  islandEnterOwnIsland: "&7Welcome back to your island!"
+  spawnEnter:  '&7You are visiting the &eVillage Hub&7.'
 
   
 #Messages for the Custom Voucher plugin
@@ -50,13 +51,28 @@ CustomHoppers:
     item: 'HOPPER'
 
   hopperItemStack:
-    displayName: '&e&lChunk Hopper &7[&a{hopper_grade}〣&7]'
+    displayName: '&eChunk Hopper &7[&a{hopper_grade}〣&7]'
     lore:
       - '&7When placed, this hopper will suck'
       - '&7up every item that drops inside'
       - '&7its chunk.'
       - '&o'
       - '&d&lEPIC'
+
+CustomVoidChests:
+
+  hologramLowGrades:
+    title: '&e&lVoid Chest &7[{chestgrade} 〣&7]'
+    moneyHolding: '&7Holding: &6{money}'
+    placedBy: '&7Placed by: &b{chestOwner}'
+    hologramHDBItem: '35106'
+    
+  hologramAboveGradeFive:
+    title: '&e&lVoid Chest &7[{chestgrade} 〣&7]'
+    moneyHolding: '&7Holding: &6{money}'
+    booster: '&7Booster: &d {booster}'
+    placedBy: '&7Placed by: &b{chestOwner}'
+    hologramHDBItem: '35106'
 
 CustomPotions:
 #custom potion messages
@@ -122,7 +138,7 @@ RollTheDice:
 HelpMenu:
   header:
     type: 'hovertext'
-    text: '&6&m                         &7[&6&lTOOT&e&lMC &7: &eHelp&7]&6&m                        '
+    text: '&6&m                         &7[&6&lTOOT&e&lMC &f| &eHelp&7]&6&m                        '
     hover: '&6&lTOOT&e&lMC'
   spacer1:
     type: 'empty'
@@ -162,9 +178,15 @@ HelpMenu:
     type: 'text'
     text: '&6&m                                                                     '
     
-
-
-
+#/rules message
+RulesMessage:
+  - '&6TOOT&eMC &7Rules'
+  - '&7Rule1'
+  - '&7Rule2'
+  - '&7Rule3'
+  - '&7Rule4'
+  - '&7Rule5'
+  - '&7Rule6'
 
 
 
