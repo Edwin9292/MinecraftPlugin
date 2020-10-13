@@ -326,9 +326,18 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		if(event.getBlock().getState() instanceof ShulkerBox){
 			VoidChest chest = this.getVoidChestAt(event.getBlock().getLocation());
 			if(chest != null) {
-				Player player = event.getPlayer();
+
 				event.setDropItems(false);    //disable dropping a normal chest
+			
+				//drop contents of chest
+				ItemStack[] contents = chest.getInventory().getContents();
+				for(ItemStack item : contents) {
+					if(item == null) continue;
+					event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item);
+				}
+				
 				//pay owner of the chest the remaining money
+				Player player = event.getPlayer();
 				double money = chest.payOut();
 				Main.econ.depositPlayer(chest.getInventoryOwner(), money);
 				if(chest.getInventoryOwner().isOnline()) {
