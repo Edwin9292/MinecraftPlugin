@@ -144,7 +144,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		for (Map.Entry<UUID, Double> pair : playersToPayout.entrySet()) {
 			if(pair.getValue() <= 0d) continue;
 			Main.econ.depositPlayer(Bukkit.getPlayer(pair.getKey()), pair.getValue());
-			Bukkit.getPlayer(pair.getKey()).sendMessage(Utils.colorize("&7You have been payed &2"+ NumberFormat.getCurrencyInstance().format(pair.getValue()) + " &7from your voidchests."));
+			Bukkit.getPlayer(pair.getKey()).sendMessage(Utils.colorize("&7You have been paid &2$&a"+ NumberFormat.getCurrencyInstance().format(pair.getValue()).replace("$", "") + " &7from your voidchests."));
 		}
 	}
 
@@ -238,7 +238,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 				
 				
 				ItemMeta meta = chest.getItemMeta();
-				meta.setDisplayName(Utils.colorize("&e&lVoid Chest &7["+ this.gradeToColorCode(grade) + grade + "〣&7]"));
+				meta.setDisplayName(Utils.colorize("&eVoid Chest &7["+ this.gradeToColorCode(grade) + grade + "〣&7]"));
 				
 				List<String> lore = new ArrayList<>();
 				lore.add(Utils.colorize("&7When placed, this chest will "));
@@ -332,7 +332,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 				double money = chest.payOut();
 				Main.econ.depositPlayer(chest.getInventoryOwner(), money);
 				if(chest.getInventoryOwner().isOnline()) {
-					chest.getInventoryOwner().getPlayer().sendMessage(Utils.colorize("&7You have been payed &2"+ NumberFormat.getCurrencyInstance().format(money) + " &7from a broken voidchest"));
+					chest.getInventoryOwner().getPlayer().sendMessage(Utils.colorize("&7You have been paid &2$&a"+ NumberFormat.getCurrencyInstance().format(money).replace("$", "") + " &7from a broken voidchest."));
 				}
 				
 				this.removeVoidChest(chest);   //remove voidchest
