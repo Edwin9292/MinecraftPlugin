@@ -50,5 +50,12 @@ commands:
    parkour:
       description: show parkour information
       usage: /<command>
+   hub:
+      description: go to the hub/spawn
+      usage: /<command>
+   rules:
+      description: Display the server rules
+      usage: /<command>
+      
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
 depend: [Multiverse-Core, ProtocolLib, HolographicDisplays, HeadDatabase]
