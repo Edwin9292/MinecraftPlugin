@@ -10,8 +10,9 @@ SetLore:
 
 #messages for the actionbar plugin
 ActionBar:
-  message: '&c %mvdw_mafkees_player_health%/[max_health]❤ &a      %askyblock_level%〣 Level     &e %mvdw_mafkees_average_island_rate%/5✰ Rating '
-  messageNoIsland:  '&c %mvdw_mafkees_player_health%/100❤ &a &eYou have no island!'
+#  message: '&c {hp}/{max_hp}❤ &a      %askyblock_level%〣 Level     &e %mvdw_mafkees_average_island_rate%/5✰ Rating '
+  message: '&c {hp}/{max_hp}❤ &a      {island_level}〣 Level     &e {mana}/{max_mana}✤ Mana '
+  messageNoIsland:  '&c {hp}/{max_hp}❤            &e {mana}/{max_mana}✤ Mana    &a &eYou have no island!'
   islandEnter:  "&7You are visiting &e[islandname]&e's &7island."
   islandEnterOwnIsland: "&7Welcome back to your island!"
   spawnEnter:  '&7You are visiting the &eVillage Hub&7.'
