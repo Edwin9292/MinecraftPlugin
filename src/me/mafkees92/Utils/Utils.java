@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -203,8 +204,9 @@ public class Utils {
 		}
 		else return null;
 	}
-
-public static ItemStack createCustomItem(Material material, String displayName, String... loreLines ) {
+	
+	
+	public static ItemStack createCustomItem(Material material, String displayName, String... loreLines ) {
 		
 		ItemStack item = new ItemStack(material);
 		ItemMeta meta = item.getItemMeta();
