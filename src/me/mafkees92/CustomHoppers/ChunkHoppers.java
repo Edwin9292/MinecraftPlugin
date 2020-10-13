@@ -25,7 +25,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import bin.com.wasteofplastic.askyblock.events.IslandPreDeleteEvent;
 import me.mafkees92.Holograms;
 import me.mafkees92.Main;
 import me.mafkees92.Files.BaseFile;
@@ -217,6 +216,7 @@ public class ChunkHoppers extends BaseFile implements Listener, CommandExecutor{
 			ChunkHopper hopper = getChunkHopperAt(event.getBlock().getLocation());
 			if(hopper != null) {
 				event.setDropItems(false);
+				
 				this.RemoveChunkHopper(hopper);
 				
 				Player player = event.getPlayer();
