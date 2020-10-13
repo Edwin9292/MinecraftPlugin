@@ -10,6 +10,7 @@ import com.wasteofplastic.askyblock.ASkyBlock;
 import me.mafkees92.ActionBar.ActionBar;
 import me.mafkees92.ChunkLoadersNotUSED.ChunkLoaders;
 import me.mafkees92.ChunkLoadersNotUSED.GiveChunkLoader;
+import me.mafkees92.Commands.Discord;
 import me.mafkees92.Commands.Help;
 import me.mafkees92.Commands.Rules;
 import me.mafkees92.Commands.hub;
@@ -86,6 +87,7 @@ public class Main extends JavaPlugin {
 		getCommand("parkour").setExecutor(new Parkour(this, "Parkour/ParkourData.yml"));
 		getCommand("hub").setExecutor(new hub());
 		getCommand("rules").setExecutor(new Rules());
+		getCommand("discord").setExecutor(new Discord());
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);

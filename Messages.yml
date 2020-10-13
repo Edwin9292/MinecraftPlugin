@@ -59,21 +59,6 @@ CustomHoppers:
       - '&o'
       - '&d&lEPIC'
 
-CustomVoidChests:
-
-  hologramLowGrades:
-    title: '&e&lVoid Chest &7[{chestgrade} 〣&7]'
-    moneyHolding: '&7Holding: &6{money}'
-    placedBy: '&7Placed by: &b{chestOwner}'
-    hologramHDBItem: '35106'
-    
-  hologramAboveGradeFive:
-    title: '&e&lVoid Chest &7[{chestgrade} 〣&7]'
-    moneyHolding: '&7Holding: &6{money}'
-    booster: '&7Booster: &d {booster}'
-    placedBy: '&7Placed by: &b{chestOwner}'
-    hologramHDBItem: '35106'
-
 CustomPotions:
 #custom potion messages
   potionReceivedInventoryFull: '&cYou have received a custom potion. Your inventory is full, so it has been dropped on the floor'
@@ -188,17 +173,10 @@ RulesMessage:
   - '&7Rule5'
   - '&7Rule6'
 
-
-
-
-
-
-
-
-
-
-
-
+Discord:
+  text: '&eClick this link to visit our discord page!'
+  hovertext: '&eClick this link to visit our discord page!'
+  link: 'https://discord.gg/Y6G6ze'
 
 
 

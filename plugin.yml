@@ -56,6 +56,10 @@ commands:
    rules:
       description: Display the server rules
       usage: /<command>
+   discord:
+      description: Display a link to the discord server
+      usage: /<command>
+      aliases: [dc, disc]
       
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
 depend: [Multiverse-Core, ProtocolLib, HolographicDisplays, HeadDatabase]

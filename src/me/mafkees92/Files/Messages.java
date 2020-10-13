@@ -142,10 +142,10 @@ public class Messages extends BaseFile {
     	Messages.helpMessage = builder.create();
     	
     	Messages.rulesMessage = Utils.colorize(config.getStringList("RulesMessage"));
-    	
-    	
-    	
-    	
+
+    	Messages.discordLinkText = Utils.colorize(config.getString("Discord.text"));
+    	Messages.discordLinkHoverText = Utils.colorize(config.getString("Discord.hovertext"));
+    	Messages.discordLink = Utils.colorize(config.getString("Discord.link"));
     	
     	
 	}
@@ -295,7 +295,10 @@ public class Messages extends BaseFile {
 	public static List<String> rulesMessage;
 	
 	
-	
+	//discord command
+	public static String discordLinkText;
+	public static String discordLinkHoverText;
+	public static String discordLink;
 	
 	
 	
