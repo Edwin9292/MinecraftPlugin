@@ -11,6 +11,8 @@ import me.mafkees92.ActionBar.ActionBar;
 import me.mafkees92.ChunkLoadersNotUSED.ChunkLoaders;
 import me.mafkees92.ChunkLoadersNotUSED.GiveChunkLoader;
 import me.mafkees92.Commands.Help;
+import me.mafkees92.Commands.Rules;
+import me.mafkees92.Commands.hub;
 import me.mafkees92.CustomHoppers.ChunkHoppers;
 import me.mafkees92.CustomPotions.CustomSplashPotions;
 import me.mafkees92.CustomPotions.GiveCustomPotion;
@@ -82,6 +84,8 @@ public class Main extends JavaPlugin {
 		getCommand("help").setExecutor(new Help());
 		getCommand("gamble").setExecutor(this.gamblerHandlerInstance);
 		getCommand("parkour").setExecutor(new Parkour(this, "Parkour/ParkourData.yml"));
+		getCommand("hub").setExecutor(new hub());
+		getCommand("rules").setExecutor(new Rules());
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);
