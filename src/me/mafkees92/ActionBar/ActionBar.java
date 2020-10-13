@@ -1,8 +1,8 @@
 package me.mafkees92.ActionBar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -10,10 +10,9 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
+import com.archyx.aureliumskills.api.AureliumAPI;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import com.wasteofplastic.askyblock.Island;
 
@@ -28,23 +27,18 @@ import net.md_5.bungee.api.chat.TextComponent;
 public class ActionBar implements Listener {
 
 	Plugin plugin;
-	private List<UUID> toSend = new ArrayList<>();
 	private HashMap<UUID, String> customizedMessages = new HashMap<UUID, String>();
+	private ASkyBlockAPI api = ASkyBlockAPI.getInstance();
+	private ArrayList<String> disabledWorlds = new ArrayList<>(
+		Arrays.asList("build", "spleef", "bedwars", "event"));
+	private boolean isPlaceholderAPIEnabled = false;
 
 	public ActionBar(Main plugin) {
 		this.plugin = plugin;
 		runActionBarScheduler();
+		isPlaceholderAPIEnabled = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 	}
 
-	@EventHandler
-	public void onPlayerJoinEvent(PlayerJoinEvent event) {
-		toSend.add(event.getPlayer().getUniqueId());
-	}
-
-	@EventHandler
-	public void onPlayerQuitEvent(PlayerQuitEvent event) {
-		toSend.remove(event.getPlayer().getUniqueId());
-	}
 	
 	public void setCustomActionBar(UUID uuid, String message) {
 		this.customizedMessages.put(uuid, message);
@@ -54,39 +48,39 @@ public class ActionBar implements Listener {
 	}
 	
 	
-
 	private void runActionBarScheduler() {
 		Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+			String message;
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				
 				//disable the action bar for certain worlds
 				String worldName = player.getWorld().getName().toLowerCase();
-				if(worldName.contentEquals("build") || worldName.contentEquals("spleef") ||
-						worldName.contains("bedwars") || worldName.contentEquals("event")) {
-					return;
-				}
-				
-				if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-					try {
-						String message;
-						if(customizedMessages.containsKey(player.getUniqueId())) {
-							message = customizedMessages.get(player.getUniqueId());
+				if(!this.disabledWorlds.contains(worldName)) {
+					if (isPlaceholderAPIEnabled) {
+						UUID playerUUID = player.getUniqueId();
+						if(customizedMessages.containsKey(playerUUID)) {
+							message = customizedMessages.get(playerUUID);
 						}
-						else if(ASkyBlockAPI.getInstance().hasIsland(player.getUniqueId()) ||
-								ASkyBlockAPI.getInstance().inTeam(player.getUniqueId())) {
-							message = PlaceholderAPI.setPlaceholders(player, Messages.actionBar);
+						else if(api.hasIsland(playerUUID) || api.inTeam(playerUUID)) {
+							UUID islandLeaderUUID = Utils.getTeamOrIslandOwner(playerUUID);
+							message = Messages.actionBar
+									.replace("{island_level}", "" + api.getLongIslandLevel(islandLeaderUUID))
+									.replace("{mana}", "" + AureliumAPI.getMana(player))
+									.replace("{max_mana}", "" + AureliumAPI.getMaxMana(player))
+									.replace("{max_hp}", "" + Math.round((player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 5)))
+									.replace("{hp}", "" + (int)(Math.ceil(player.getHealth() * 5)));
 						}
 						else {
-							message = PlaceholderAPI.setPlaceholders(player, Messages.actionBarNoIsland);
+							message = Messages.actionBarNoIsland
+									.replace("{max_hp}", "" + Math.round((player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 5)))
+									.replace("{hp}", "" + (int)(Math.ceil(player.getHealth() * 5)))
+									.replace("{mana}", "" + AureliumAPI.getMana(player))
+									.replace("{max_mana}", "" + AureliumAPI.getMaxMana(player));
 						}
-						message = message.replace("[max_health]", Math.round((player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 5)) + "");
 						player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
-					} catch (Exception e) {
-						e.printStackTrace();
 					}
 				}
 			}
-		}, 10L, 10L); // will run 2x a second. Idk if it's needed to run it this often.
+		}, 10L, 5L); // will run 2x a second.
 
 	}
 
