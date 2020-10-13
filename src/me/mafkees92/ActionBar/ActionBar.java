@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +21,7 @@ import bin.com.wasteofplastic.askyblock.events.IslandEnterEvent;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.mafkees92.Main;
 import me.mafkees92.Files.Messages;
+import me.mafkees92.Utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -56,8 +58,15 @@ public class ActionBar implements Listener {
 	private void runActionBarScheduler() {
 		Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")
-						&& Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+				
+				//disable the action bar for certain worlds
+				String worldName = player.getWorld().getName().toLowerCase();
+				if(worldName.contentEquals("build") || worldName.contentEquals("spleef") ||
+						worldName.contains("bedwars") || worldName.contentEquals("event")) {
+					return;
+				}
+				
+				if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 					try {
 						String message;
 						if(customizedMessages.containsKey(player.getUniqueId())) {
@@ -70,7 +79,7 @@ public class ActionBar implements Listener {
 						else {
 							message = PlaceholderAPI.setPlaceholders(player, Messages.actionBarNoIsland);
 						}
-						
+						message = message.replace("[max_health]", Math.round((player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() * 5)) + "");
 						player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -89,8 +98,16 @@ public class ActionBar implements Listener {
 			Main.getInstance().getActionBar().setCustomActionBar(event.getPlayer(), Messages.actionBarSpawnEnter);
 		}
 		else {
-			Main.getInstance().getActionBar().setCustomActionBar(event.getPlayer(), Messages.actionBarIslandEnter.
-					replace("[islandname]", ASkyBlockAPI.getInstance().getIslandName(event.getIslandOwner())));
+			UUID teamLeader = Utils.getTeamOrIslandOwner(event.getPlayer());
+			//the player has an island(or is in a team) and his island has the same owner as the event island
+			if(teamLeader != null && teamLeader.equals(event.getIsland().getOwner())) {
+				this.setCustomActionBar(event.getPlayer(), Messages.actionBarIslandEnterOwnIsland);
+			}
+			else {
+				this.setCustomActionBar(event.getPlayer(), Messages.actionBarIslandEnter.
+						replace("[islandname]", ASkyBlockAPI.getInstance().getIslandName(event.getIslandOwner())));
+			}
+			
 		}
 		
 		//remove island visit message after 4 seconds
