@@ -138,42 +138,51 @@ public class RollTheDice implements Listener{
 	private void createPickANumberInventory() {
 		if(hdb.getHeads(CategoryEnum.ALPHABET).size() > 0) {
 			this.pickANumberInventory = Bukkit.createInventory(null, 45, Messages.rollTheDicePickANumberInventoryTitle);
-			this.pickANumberInventory.setItem(4, Utils.setNBTTag(Utils.createCustomHeadItem("9270", Utils.colorize("&6&lNumber 1"),
-					Utils.colorize("&eClick to pick number 1")), "pickanumber", "1"));
-			this.pickANumberInventory.setItem(15, Utils.setNBTTag(Utils.createCustomHeadItem("9269", Utils.colorize("&6&lNumber 2"),
-					Utils.colorize("&eClick to pick number 2")), "pickanumber", "2"));
-			this.pickANumberInventory.setItem(33, Utils.setNBTTag(Utils.createCustomHeadItem("9268", Utils.colorize("&6&lNumber 3"),
-					Utils.colorize("&eClick to pick number 3")), "pickanumber", "3"));
-			this.pickANumberInventory.setItem(40, Utils.setNBTTag(Utils.createCustomHeadItem("9267", Utils.colorize("&6&lNumber 4"),
-					Utils.colorize("&eClick to pick number 4")), "pickanumber", "4"));
-			this.pickANumberInventory.setItem(29, Utils.setNBTTag(Utils.createCustomHeadItem("9266", Utils.colorize("&6&lNumber 5"),
-					Utils.colorize("&eClick to pick number 5")), "pickanumber", "5"));
-			this.pickANumberInventory.setItem(11, Utils.setNBTTag(Utils.createCustomHeadItem("9265", Utils.colorize("&6&lNumber 6"),
-					Utils.colorize("&eClick to pick number 6")), "pickanumber", "6"));
+			
+			//fill inventory with glass panes
+			for (int i = 0; i < this.pickANumberInventory.getSize(); i++) {
+				this.pickANumberInventory.setItem(i, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 7, "&7", "&7"));
+			}
+			
+			//add the numbers
+			this.pickANumberInventory.setItem(4, Utils.setNBTTag(Utils.createCustomHeadItem("9270", Utils.colorize("&eNumber One"), "",
+					Utils.colorize("&6Click to select!")), "pickanumber", "1"));
+			this.pickANumberInventory.setItem(15, Utils.setNBTTag(Utils.createCustomHeadItem("9269", Utils.colorize("&eNumber Two"), "",
+					Utils.colorize("&6Click to select!")), "pickanumber", "2"));
+			this.pickANumberInventory.setItem(33, Utils.setNBTTag(Utils.createCustomHeadItem("9268", Utils.colorize("&eNumber Three"), "",
+					Utils.colorize("&6Click to select!")), "pickanumber", "3"));
+			this.pickANumberInventory.setItem(40, Utils.setNBTTag(Utils.createCustomHeadItem("9267", Utils.colorize("&eNumber Four"), "",
+					Utils.colorize("&6Click to select!")), "pickanumber", "4"));
+			this.pickANumberInventory.setItem(29, Utils.setNBTTag(Utils.createCustomHeadItem("9266", Utils.colorize("&eNumber Five"), "",
+					Utils.colorize("&6Click to select!")), "pickanumber", "5"));
+			this.pickANumberInventory.setItem(11, Utils.setNBTTag(Utils.createCustomHeadItem("9265", Utils.colorize("&eNumber Six"), "",
+					Utils.colorize("&6Click to select!")), "pickanumber", "6"));
 			this.pickANumbeInventoryCreated = true;
+			
+			//add the info item
+			this.pickANumberInventory.setItem(22, Utils.createCustomItem(Material.PAPER, "&eSelect a number", "", "&7Choose any number on the dice!"));
 		}
 	}
 	
 	private void createPickABetInventory() {
 		this.pickABetInventory = Bukkit.createInventory(null, 54, Messages.rollTheDicePickABetInventoryTitle);
 		
-
-		//this.pickABetInventory.setItem(49-9, Utils.createCustomItem(Material.PAPER, 
-		//		"&6Pick Your Bet", 
-		//		"&o",
-		//		"&7Choose your bet by clicking",
-		//		"&7one of the diamonds below."));
+		//fill everything with black glass panes
+		for (int i = 0; i < this.pickABetInventory.getSize(); i++) {
+			this.pickABetInventory.setItem(i, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 7, "&7", "&7"));
+		}
 		
-		this.pickABetInventory.setItem(13, Utils.setNBTTag(Utils.createCustomItem(Material.EMERALD, "&eBet &6$500,000", ""), "bet", "500000"));
-		this.pickABetInventory.setItem(21, Utils.setNBTTag(Utils.createCustomItem(Material.DIAMOND, "&eBet &6$100,000", ""), "bet", "100000"));
-		this.pickABetInventory.setItem(23, Utils.setNBTTag(Utils.createCustomItem(Material.DIAMOND, "&eBet &6$200,000", ""), "bet", "200000"));
-		this.pickABetInventory.setItem(29, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$10,000", ""), "bet", "10000"));
-		this.pickABetInventory.setItem(31, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$25,000", ""), "bet", "25000"));
-		this.pickABetInventory.setItem(33, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&eBet &6$50,000", ""), "bet", "50000"));
-		this.pickABetInventory.setItem(37, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$1,000", ""), "bet", "1000"));
-		this.pickABetInventory.setItem(39, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$2,500", ""), "bet", "2500"));
-		this.pickABetInventory.setItem(41, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$5,000", ""), "bet", "5000"));
-		this.pickABetInventory.setItem(43, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&eBet &6$7,500", ""), "bet", "7500"));
+		//setup bets
+		this.pickABetInventory.setItem(13, Utils.setNBTTag(Utils.createCustomItem(Material.EMERALD, "&ePlace a bet of: ", "&2$&a500,000", "" , "&6Click to place bet!"), "bet", "500000"));
+		this.pickABetInventory.setItem(21, Utils.setNBTTag(Utils.createCustomItem(Material.DIAMOND, "&ePlace a bet of: ", "&2$&a100,000", "" , "&6Click to place bet!"), "bet", "100000"));
+		this.pickABetInventory.setItem(23, Utils.setNBTTag(Utils.createCustomItem(Material.DIAMOND, "&ePlace a bet of: ", "&2$&a200,000", "" , "&6Click to place bet!"), "bet", "200000"));
+		this.pickABetInventory.setItem(29, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&ePlace a bet of: ", "&2$&a10,000", "" , "&6Click to place bet!"), "bet", "10000"));
+		this.pickABetInventory.setItem(31, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&ePlace a bet of: ", "&2$&a25,000", "" , "&6Click to place bet!"), "bet", "25000"));
+		this.pickABetInventory.setItem(33, Utils.setNBTTag(Utils.createCustomItem(Material.GOLD_INGOT, "&ePlace a bet of: ", "&2$&a50,000", "" , "&6Click to place bet!"), "bet", "50000"));
+		this.pickABetInventory.setItem(37, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&ePlace a bet of: ", "&2$&a1,000", "" , "&6Click to place bet!"), "bet", "1000"));
+		this.pickABetInventory.setItem(39, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&ePlace a bet of: ", "&2$&a2,500", "" , "&6Click to place bet!"), "bet", "2500"));
+		this.pickABetInventory.setItem(41, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&ePlace a bet of: ", "&2$&a5,000", "" , "&6Click to place bet!"), "bet", "5000"));
+		this.pickABetInventory.setItem(43, Utils.setNBTTag(Utils.createCustomItem(Material.IRON_INGOT, "&ePlace a bet of: ", "&2$&a7,500", "" , "&6Click to place bet!"), "bet", "7500"));
 		
 	}
 	
