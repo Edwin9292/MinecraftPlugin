@@ -1,8 +1,10 @@
 package me.mafkees92.Utils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -11,6 +13,8 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -201,7 +205,7 @@ public class Utils {
 		else if(ASkyBlockAPI.getInstance().hasIsland(player)) {
 			return player;
 		}
-		else return null;
+		return null;
 	}
 	
 	
@@ -214,6 +218,8 @@ public class Utils {
 		List<String> lore = new ArrayList<>();
 		
 		for(String loreLine : loreLines) {
+			if(loreLine.contentEquals(""))
+				continue;
 			lore.add(Utils.colorize(loreLine));
 		}
 		
@@ -243,6 +249,8 @@ public class Utils {
 		List<String> lore = new ArrayList<>();
 		
 		for(String loreLine : loreLines) {
+			if(loreLine.contentEquals(""))
+				continue;
 			lore.add(Utils.colorize(loreLine));
 		}
 		
@@ -272,6 +280,8 @@ public class Utils {
 		List<String> lore = new ArrayList<>();
 		
 		for(String loreLine : loreLines) {
+			if(loreLine.contentEquals(""))
+				continue;
 			lore.add(Utils.colorize(loreLine));
 		}
 		
@@ -305,8 +315,45 @@ public class Utils {
 	}
 	
 	
-	
-	
+	public static BaseComponent[] readConfigTextComponents(FileConfiguration config, String configSection) {
+		//Custom help
+		Set<String> keys = config.getConfigurationSection(configSection).getKeys(false);
+		ComponentBuilder builder = new ComponentBuilder("");
+		
+		Iterator<String> keysItertor = keys.iterator();
+		while(keysItertor.hasNext()) {
+		    ConfigurationSection line = config.getConfigurationSection(configSection + "." + keysItertor.next());
+	        String type = line.getString("type");
+	        switch(type) {
+
+	        case "empty":
+	        	builder.append("\n");
+				builder.event((HoverEvent)null).event((ClickEvent) null);
+	        	continue;
+	        case "text":
+	        	builder.append(Utils.colorize(line.getString("text")));
+				builder.event((HoverEvent)null).event((ClickEvent) null);
+	        	break;
+	        case "hovertext":
+	        	builder.append(Utils.colorize(line.getString("text")));
+	        	builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Utils.colorize(line.getString("hover"))).create()));
+	        	break;
+	        case "link":
+	        	builder.append(Utils.createTextComponentLink(
+	        			Utils.colorize(line.getString("text")), Utils.colorize(line.getString("hover")), line.getString("link")));
+	        	break;
+	        case "command":
+	        	builder.append(Utils.createTextComponentCommand(
+	        			Utils.colorize(line.getString("text")), Utils.colorize(line.getString("hover")), Utils.colorize(line.getString("command"))));
+	        	break;
+	        }
+	        //add an enter at the end of every line
+	        if(keysItertor.hasNext()) {
+		        builder.append("\n");
+	        }
+		}
+		return builder.create();
+	}
 	
 	
 	

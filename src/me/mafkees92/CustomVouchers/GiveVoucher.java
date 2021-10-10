@@ -1,54 +1,84 @@
 package me.mafkees92.CustomVouchers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import me.mafkees92.Files.Messages;
 import me.mafkees92.Utils.Utils;
 
 public class GiveVoucher implements CommandExecutor {
 
+	///givevoucher <playername> <vouchername>'
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!(sender instanceof Player))
+		if (!(sender instanceof Player)) {
+			if (args.length >= 2) {
+				Player targetPlayer = Bukkit.getPlayer(args[0]);
+				if (targetPlayer != null && targetPlayer.isOnline()) {
+					Voucher voucher = getCustomVoucherFromConfig(args[1]);
+					if(voucher != null) {
+						if(args.length == 3) {
+							int amount = Utils.tryParseInt(args[2]);
+							if(amount != -1) {
+								giveVoucher(targetPlayer, voucher, amount, null);
+								return true;
+							}
+							else {
+								Bukkit.getLogger().warning("Invalid arguments for giving a voucher");
+								return true;
+							}
+						}
+						else {
+							giveVoucher(targetPlayer, voucher, 1, null);
+							return true;
+						}
+					}
+					Bukkit.getLogger().warning("No voucher with the name: " + args[1] + " exists.");
+					return false;
+				}
+				Bukkit.getLogger().warning("Cannot give a voucher: Target player is not online");
+				return false;
+			}
+			Bukkit.getLogger().warning("Invalid arguments for giving a voucher");
 			return false;
+		}
+		
 		Player commandExecutor = (Player) sender;
-
 		String permission = "mafkeesplugin.givevoucher";
 		if (commandExecutor.isOp() || commandExecutor.hasPermission(permission)) {
 			if (args.length >= 2) {
 				Player targetPlayer = Bukkit.getPlayer(args[0]);
-
 				if (targetPlayer != null && targetPlayer.isOnline()) {
-					if (args[1].equalsIgnoreCase("permission")) {
-						
-						switch (args[2]) {
-						case "essentials.fly":
-							if(args.length == 5) {
-								giveFlyVoucher(targetPlayer, args[2], args[3], args[4], commandExecutor);
+					Voucher voucher = getCustomVoucherFromConfig(args[1]);
+					if(voucher != null) {
+
+						if(args.length == 3) {
+							int amount = Utils.tryParseInt(args[2]);
+							if(amount != -1) {
+								giveVoucher(targetPlayer, voucher, amount, commandExecutor);
+								return true;
 							}
 							else {
-								commandExecutor.sendMessage(Messages.invalidFlyVoucherArguments);
+								commandExecutor.sendMessage("Invalid arguments for giving a voucher");
+								return true;
 							}
-							break;
-						default:
-							break;
 						}
+						giveVoucher(targetPlayer, voucher, 1, commandExecutor);
 						return true;
 					}
-					commandExecutor.sendMessage(Messages.invalidVoucherType);
+						
+					String validPermissions = "";
+					for (Voucher tempVoucher : CustomVouchers.vouchersList) {
+						validPermissions += tempVoucher.voucherName + ", ";
+					}
+					if(validPermissions.length() > 2) {
+						validPermissions = validPermissions.substring(0, validPermissions.length() - 2);
+					}
+					commandExecutor.sendMessage(Messages.invalidVoucherType.replace("%names%", validPermissions));
 					return true;
 				}
 				commandExecutor.sendMessage(Messages.invalidTargetPlayer);
@@ -61,33 +91,25 @@ public class GiveVoucher implements CommandExecutor {
 		return true;
 	}
 	
-	private void giveFlyVoucher(Player targetPlayer, String permission, String duration, String stackable, Player commandExector) {
-		ItemStack item = new ItemStack(Material.FEATHER);
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(Messages.flyVoucherName);
-
-		List<String> lore = new ArrayList<>(Messages.flyVoucherLore);
-        for (ListIterator<String> i = lore.listIterator(); i.hasNext(); )   {
-        	String loreLine = i.next().replace("%duration%", Utils.luckPermDurationToFullDuration(duration));
-        	loreLine = loreLine.replace("%rarity%", Utils.luckPermsDurationToRarityString(duration));
-            i.set(Utils.colorize(loreLine));
-        }
+	
+	private Voucher getCustomVoucherFromConfig(String voucherName) {
+		return CustomVouchers.vouchersList.stream().filter(x -> x.voucherName.equalsIgnoreCase(voucherName)).findFirst().orElse(null);
+	}
+	
+	
+	private void giveVoucher(Player targetPlayer, Voucher voucher, int amount, Player commandExector) {
+		ItemStack item = voucher.getItemStack();
+		item.setAmount(amount);
 		
-		meta.setLore(lore);
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		meta.addEnchant(Enchantment.FROST_WALKER, 1, false);
-		item.setItemMeta(meta);
-		item = Utils.setNBTTag(item, "customVoucher", "permission");
-		item = Utils.setNBTTag(item, "permission", permission);
-		item = Utils.setNBTTag(item, "duration", duration);
-		item = Utils.setNBTTag(item, "stackable", stackable);
-		
-		if(targetPlayer.getInventory().firstEmpty() == -1) {
-			//inventory is full
+		if(targetPlayer.getInventory().firstEmpty() == -1 && commandExector != null) {
 			commandExector.sendMessage(Messages.inventoryFull(targetPlayer));
 		}
 		else {
+			if(commandExector != null) {
+				commandExector.sendMessage(Utils.colorize("The permission voucher has been given to " + targetPlayer.getDisplayName()));
+			}
 			targetPlayer.getInventory().addItem(item);
+			targetPlayer.sendMessage(Utils.colorize("&7You have been given &6" + item.getAmount() + "x &7" + item.getItemMeta().getDisplayName() +"&7!"));
 		}
 	}
 	

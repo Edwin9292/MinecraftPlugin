@@ -30,7 +30,7 @@ public class GiveCustomPotion implements CommandExecutor {
 							ItemStack item = new ItemStack(Material.SPLASH_POTION);
 							PotionMeta meta = (PotionMeta)item.getItemMeta();
 							meta.setDisplayName(Messages.freezePotionDisplayName);
-							meta.setColor(Color.BLUE);
+							meta.setColor(Color.AQUA);
 							meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
 							meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 							meta.addEnchant(Enchantment.FROST_WALKER, 1, false);

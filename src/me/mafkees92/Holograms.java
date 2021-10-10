@@ -40,6 +40,18 @@ public class Holograms {
 		return textLines;
 	}
 
+	public static Hologram AddHologram(Location location, List<String> lore) {
+		List<TextLine> textLines = new ArrayList<>();
+	
+		Hologram holo = HologramsAPI.createHologram(Main.getInstance(), location);
+		Iterator<String> it = lore.iterator();
+		while(it.hasNext()) {
+			String loreLine = it.next();
+			textLines.add(holo.appendTextLine(Utils.colorize(loreLine)));
+		}
+		return holo;
+	}
+
 	public static void RemoveHologram(Location location) {
 		HologramsAPI.getHolograms(Main.getInstance()).stream()
 				.filter(x -> x.getLocation().equals(location)).findFirst().ifPresent(Hologram::delete);

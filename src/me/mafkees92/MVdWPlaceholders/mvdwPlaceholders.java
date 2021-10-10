@@ -14,5 +14,8 @@ public class mvdwPlaceholders {
 		new mafkees_average_island_rate(plugin);
 		new mafkees_max_team_members(plugin);
 		new mafkees_island_locked(plugin);
+		new mafkees_has_island(plugin);
+		new mafkees_is_combattagged(plugin);
+		new mafkees_combattag_time(plugin);
 	}
 }

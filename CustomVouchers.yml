@@ -1,0 +1,56 @@
+CustomVoucher: 
+  vouchers:
+    'flyVoucher':
+      messages:
+        firstVoucherUsed: '&eYou have received &b%duration%&e of flight time. Check your spare flytime with &b/flytime'
+        extentionVoucherUsed: '&eYour flight time has been increased by &b%duration%&e.'
+        alreadyHasPermanent: '&cYou already have permanent fly. You do not need to use fly vouchers.'
+      material: 'FEATHER'
+      displayName: '&eFeather of Flight'
+      lore:
+        - '&7Right-click this glowing feather'
+        - '&7to activate flight for &e%duration%&7.'
+        - '&f'
+        - '%rarity%'
+      glow: true
+      permission: 'essentials.fly'
+      duration: '10m'     #use -1 for permanent
+      
+    'nickname':
+      messages:
+        firstVoucherUsed: '&eYou have received permanent access to the &d/nickname &ecommand.'
+        extentionVoucherUsed: '&eYou have received permanent access to the &d/nickname &ecommand.'
+        alreadyHasPermanent: '&eYou already have permanent access to the &d/nickname &ecommand.'
+      material: 'BOOK'
+      displayName: '&eCommand Voucher: &7/Nickname'
+      lore:
+        - '&7Upon redeeming this item, you shall receive'
+        - '&7access to the &d/nickname&7 command.'
+        - '&f'
+        - '&cThis item can only be redeemed once!'
+        - '&f'
+        - '&6&lLegendary'
+      glow: true
+      permission: 'essentials.nick'
+      duration: '10m'     #use -1 for permanent
+      
+    '4auctions':
+      messages:
+        firstVoucherUsed: '&7You have received &e7 days &7access to use &e4 auction slots&7!'
+        extentionVoucherUsed: '&7You have extended your permissions to use &e4 auction slots &7 by &e7 days&7!'
+        alreadyHasPermanent: '&7You already have permanent access to create 4 or more auctions.'
+        #always set the "areadyHasBetter" text if the permission string ends with a number!
+        alreadyHasBetter: '&cYou already have access to create %amount% auctions.'
+      material: 'NAME_TAG'
+      displayName: '&6Voucher: &9&lX4 &eAuction Slots'
+      lore:
+        - '&f'
+        - '&7Upon redeeming this item, you shall receive'
+        - '&7access to use &e4 auction slots &7for &e7 Days&7.'
+        - '&f'
+        - '&c&oThis item can only be redeemed once!'
+        - '&f'
+        - '&9&lRARE'
+      glow: true
+      permission: 'auctionmaster.limit.auctions.4'
+      duration: '7d'     #use -1 for permanent

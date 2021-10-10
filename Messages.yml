@@ -11,32 +11,23 @@ SetLore:
 #messages for the actionbar plugin
 ActionBar:
 #  message: '&c {hp}/{max_hp}❤ &a      %askyblock_level%〣 Level     &e %mvdw_mafkees_average_island_rate%/5✰ Rating '
-  message: '&c {hp}/{max_hp}❤ &a      {island_level}〣 Level     &e {mana}/{max_mana}✤ Mana '
-  messageNoIsland:  '&c {hp}/{max_hp}❤            &e {mana}/{max_mana}✤ Mana    &a &eYou have no island!'
+  message: '&c {hp}/{max_hp}❤ &a      {island_level}〣 Level     &b {mana}/{max_mana}♚ Mana '
+  messageNoIsland:  '&c {hp}/{max_hp}❤      &b {mana}/{max_mana}♚ Mana       &e You have no island!'
   islandEnter:  "&7You are visiting &e[islandname]&e's &7island."
   islandEnterOwnIsland: "&7Welcome back to your island!"
   spawnEnter:  '&7You are visiting the &eVillage Hub&7.'
+  skillExpGain: '&c {hp}/{max_hp}❤      &6+{exp} {skill} XP &7({current_exp}/{exp_to_next_level})     &b {mana}/{max_mana}♚ Mana'
 
-  
-#Messages for the Custom Voucher plugin
-CustomVoucher:
-  invalidVoucherArguments: '&cInvalid Arguments. Try /givevoucher <playername> <vouchertype> <args>'
-  invalidVoucherType: '&cInvalid Voucher type, valid voucher types are {permission}'
-  OPAlreadyHasPermissions: '&cYou already have all permissions because you are Staff.' 
-  firstVoucherUsed: '&eYou have received &b%duration%&e of flight time. Check your spare flytime with &b/flytime'
-  extentionVoucherUsed: '&eYour flight time has been increased by &b%duration%&e.'
+
+RemainingFlightTime:
   flightWontExpire: '&7You have &bpermanent &7fly! Your fly will not expire.'
-  alreadyHasPermanentFly: '&cYou already have permanent fly. You do not need fly vouchers.'
-  nonStackableFlightDuration: '&cThis item has non-stackable flight duration. You can use this when you run out of spare flight time.'
   flightExpirationTime:  '&aYour flight will expire in &e%remainingtime%'
   noFlightTimeLeft: '&cYou have no remaining flight time left.'
-  flyVoucherName:  '&eFeather of Flight' 
-  flyVoucherLore:
-   - '&7Right-click this glowing feather'
-   - '&7to activate flight for &e%duration%&7.'
-   - '&f'
-   - '%rarity%'
-  invalidFlyVoucherArguments:  '&cInvalid arguments. /givevoucher <playername> permission essentials.fly <duration(ex. 10s/m/h/d)> <stackable(true/false)>' 
+  
+CustomVoucher:
+  invalidVoucherArguments: '&cInvalid Arguments. Try /givevoucher <playername> <vouchername>'
+  invalidVoucherType: '&cInvalid Voucher name, valid voucher names are %names%.'
+  OPAlreadyHasPermissions: '&cYou already have all permissions because you are Staff.' 
 
 #Messages for the Custom Potions plugin
 CustomHoppers:
@@ -71,8 +62,12 @@ CustomPotions:
   freezePotion:
     displayName: '&bFreeze Potion'
     lore:
-      - '&9Freeze your opponents in a 4 block Radius!'
-      - '&9Duration: 4 seconds '
+      - '&7Freeze your enemies within a'
+      - '&7four block radius.'
+      - '&r'
+      - '&7Duration: &b4 seconds '
+      - '&f'
+      - '&b&lUNCOMMON'
 
 
 #Game Master
@@ -98,11 +93,11 @@ GameMaster:
 
 #Roll The Dice Game
 RollTheDice:
-  winningMessage: '&aYou won! &7You have received &a{money_won}&7.'
+  winningMessage: '&aYou won! &7You have received &2$&a{money_won}&7.'
   lostMessage: '&7You have &cunfortunately lost&7. The winning number was &b{winning_number}&7.'
   previousBetNotFinishedMessage: '&cPlease wait till your previous bet is completed' 
   betPlacedMessage: '&7You have placed your bet on number &e{picked_number}&7.'
-  startingGameMessage: '&7Starting your game of &eRoll The Dice &7with a bet of &a{betvalue}&7.'
+  startingGameMessage: '&7Starting your game of &eRoll The Dice &7with a bet of &2$&a{betvalue}&7.'
   
   pickANumberInventoryTitle: '&6&lTOOT&e&lMC &f| &eSelect a number...'
   pickABetInventoryTitle: '&6&lTOOT&e&lMC &f| &eSelect your bet...'
@@ -122,66 +117,147 @@ RollTheDice:
 
 # example
 HelpMenu:
-  header:
-    type: 'hovertext'
-    text: '&6&m                         &7[&6&lTOOT&e&lMC &f| &eHelp&7]&6&m                        '
-    hover: '&6&lTOOT&e&lMC'
   spacer1:
     type: 'empty'
+  header:
+    type: 'hovertext'
+    text: '&6&lTOOT&e&lMC SKYBLOCK'
+    hover: '&6&lTOOT&e&lMC SKYBLOCK'
   information:
     type: 'text'
-    text: '&6&nClick an option to quickly access it'
+    text: '&eClick to select an option...'
   spacer2:
-    type: 'empty'
+    type: 'text'
+    text: '&r'
   tutorial:
     type: 'command'
-    text: ' &7- &6Tutorial: &eVisit our ingame tutorial at /warps tutorial'
-    hover: '&6&lClick to go to /warp tutorial'
-    command: '/warp tutorial'
+    text: '&r  &6* &dCheckout our tutorial!'
+    hover: '&eClick to play!'
+    command: '/st play 1l'
   rules:
     type: 'command'
-    text: ' &7- &6Rules: &eFind our rules with /rules'
-    hover: '&6&lClick to go to see the rules'
+    text: '&r  &6* &dView our server rules.'
+    hover: '&eClick to view!'
     command: '/rules'
-  vote:
-    type: 'command'
-    text: ' &7- &6Vote: &eYou can find the vote links with /vote'
-    hover: '&6&lClick to go to see the voting links'
-    command: '/vote'
-  reportbugs:
-    type: 'link'
-    text: ' &7- &6Issues/Bugs: &ePlease report them at our discord page'
-    hover: '&6&lClick to visit our discord'
-    link: 'https://discord.gg/jCdzawU'
   reportrulebreakers:
     type: 'command'
-    text: ' &7- &6Rule breakers: &eReport rule breakers with /report'
-    hover: '&6&lClick to report a rulebreaker'
+    text: '&r  &6* &dReport rule breakers.'
+    hover: '&eClick to select!'
     command: '/report'
+  reportbugs:
+    type: 'link'
+    text: '&r  &6* &dFound a server issue/bug?'
+    hover: '&eClick to report!'
+    link: 'https://tootmc.net/forums/reportabug'
+  discord:
+    type: 'link'
+    text: '&r  &6* &dJoin our discord community.'
+    hover: '&eClick to join!'
+    link: 'https://discord.gg/jCdzawU'
+  vote:
+    type: 'command'
+    text: '&r  &6* &dVote for our server and receive rewards!'
+    hover: '&eClick to vote!'
+    command: '/vote'
+  buy:
+    type: 'command'
+    text: '&r  &6* &dDonate to help fund the server you love!'
+    hover: '&eClick to view!'
+    command: '/buy'
   spacer3:
-    type: 'empty'
-  footer:
     type: 'text'
-    text: '&6&m                                                                     '
+    text: '&r'
+  footer:
+    type: 'link'
+    text: '&eNeed more help? Visit &6our forums&e.'
+    hover: '&eClick to visit!'
+    link: 'https://tootmc.net/forums'
     
 #/rules message
 RulesMessage:
-  - '&6TOOT&eMC &7Rules'
-  - '&7Rule1'
-  - '&7Rule2'
-  - '&7Rule3'
-  - '&7Rule4'
-  - '&7Rule5'
-  - '&7Rule6'
+  spacer1:
+    type: 'empty'
+  forumLink:
+    type: 'link'
+    text: '&6Click to view our server rules.'
+    hover: '&eClick to visit!'
+    link: 'https://tootmc.net/forums'
 
-Discord:
-  text: '&eClick this link to visit our discord page!'
-  hovertext: '&eClick this link to visit our discord page!'
-  link: 'https://discord.gg/EMMRmfB'
+DiscordMessage:
+  spacer1:
+    type: 'empty'
+  forumLink:
+    type: 'link'
+    text: '&6Click to join our discord community!'
+    hover: '&eClick to join!'
+    link: 'https://discord.gg/EMMRmfB'
+
+ApplyMessage:
+  spacer1:
+    type: 'empty'
+  forumLink:
+    type: 'link'
+    text: '&6Click to apply for Helper!'
+    hover: '&eClick to go to the application page!'
+    link: 'https://tootmc.net/apply/'
 
 
+Parkour:
+  alreadyDoingParkour: '&7You are already in a parkour run!' 
+  existingParkours: '&7The current existing parkours are: '
+  startedParkour: '&7You have started the parkour. &dGood Luck&7!'
+  rewardPickedUp: '&7You have received &2$&a%reward% &7for reaching a &ewaypoint&7!' 
+  timeLeftTillWaypoint: '&7You have &b%timer% &7seconds left to get the next jump! &8(&d%pickedup%&8/&d%totalwaypoints%&8) '
+  failedLoadingParkour: '&cFailed loading the parkour, please contact an admin for further help'
+  pickedUpLast: '&aNice job! You got them all!'
+  timeRanOut: '&cYour time is up! You did not finish!'
+  parkourLostMessage: '&7You made &d%score% &7successful jumps with a time of &b%time% &7seconds.' 
+  parkourWonMessage: '&7You finished the parkour in &b%time% &7seconds.'
+  parkourWonBroadcastMessage: '&e%player% &7has won the &e%parkourname% &7parkour! This parkour will be available again in &e4 Hours&7.'
+  totalMoneyWon: '&7You have won a total of &2$&a%money%&7!'  #will only be displayed if the player won money.
+  parkourRecentlyWon: '&cThis parkour has recently been won! &7This parkour will be availabile again at &e%time% &7UTC.'
+  
+  info:
+    Header: '&6&m                 &e Parkour Information &6&m                 ' 
+    Message: ' &7  &e/parkour start &7<Parkour Name> &8: &eStart a specific parkour.'
+    Footer: '&6&m                                                                     '
+  
+  finishitem:
+    material: 'NETHER_STAR'
+    hologramText: '&dFinish Line!'
+    timeToPickup: 5 #use whole numbers
+    pickUpReward: 1000 #$ to payout
+  
+  items:
+    default:
+      material: 'EMERALD'
+      hologramText: '&eGrab this emerald!'
+      timeToPickup: 10 #use whole numbers
+      pickUpReward: 0 #$ to payout
+      timesToDisplay: 4  #amount of times to display this item before going to the next item. If this is the last item this amount will be ignored.
+    diamond:
+      material: 'GOLD_INGOT'
+      hologramText: '&eGrab this gold!'
+      timeToPickup: 8 #use whole numbers
+      pickUpReward: 500 #$ to payout
+      timesToDisplay: 4  #amount of times to display this item before going to the next item. If this is the last item this amount will be ignored.
+      
 
-
+SeasonHologram:
+  season-ending:
+    year: 2021
+    month: 9
+    dayofmonth: 10
+    hour: 20
+    minute: 0
+  location:
+    world: SkyBlock
+    x: -599
+    y: 75
+    z: -33
+  text:
+    - "Season #1 - Ending in: %time_till_end%"
+    - "Prices"
 
 
 

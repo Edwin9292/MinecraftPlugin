@@ -6,8 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.mafkees92.Files.Messages;
-import me.mafkees92.Utils.Utils;
-import net.md_5.bungee.api.chat.BaseComponent;
 
 public class Discord implements CommandExecutor{
 
@@ -19,13 +17,9 @@ public class Discord implements CommandExecutor{
 		Player player = (Player) sender;
 		
 		//display a link to the discord page
-		BaseComponent[] discordMessage = Utils.createTextComponentLink(Messages.discordLinkText, Messages.discordLinkHoverText, Messages.discordLink);
-		player.spigot().sendMessage(discordMessage);
+		player.spigot().sendMessage(Messages.discordMessage);
 		
 		return true;
 	}
 
-	
-	
-	
 }

@@ -1,6 +1,7 @@
 package me.mafkees92.Gambling;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,6 +43,11 @@ public class GameMasterHandler implements CommandExecutor, Listener {
 
 		this.gameMasterInventory = Bukkit.createInventory(null, 27, Messages.gameMasterInventoryTitle);
 
+		for (int i = 0; i < gameMasterInventory.getSize(); i++) {
+			this.gameMasterInventory.setItem(i, Utils.createCustomItem(Material.STAINED_GLASS_PANE, 7, "&7", ""));
+		}
+		
+		
 		ItemStack rollTheDice = Utils.createCustomItem(Messages.gameMasterRollTheDiceMaterial, Messages.gameMasterRollTheDiceDisplayName,
 				Messages.gameMasterRollTheDiceLore);
 		rollTheDice = Utils.setNBTTag(rollTheDice, "gamemaster", "rollthedice");

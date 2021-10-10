@@ -1,21 +1,20 @@
 package me.mafkees92.Files;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import me.mafkees92.Main;
+import me.mafkees92.HologramParkour.ParkourItem;
 import me.mafkees92.Utils.Utils;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
 
 public class Messages extends BaseFile {
 
@@ -38,24 +37,18 @@ public class Messages extends BaseFile {
 		Messages.actionBarIslandEnter = Utils.colorize(config.getString("ActionBar.islandEnter"));
 		Messages.actionBarIslandEnterOwnIsland = Utils.colorize(config.getString("ActionBar.islandEnterOwnIsland"));
 		Messages.actionBarSpawnEnter = Utils.colorize(config.getString("ActionBar.spawnEnter"));
+		Messages.actionBarSkillExpGained = Utils.colorize(config.getString("ActionBar.skillExpGain"));
+		
+		//flight time left messages
+		Messages.flightWontExpire = Utils.colorize(config.getString("RemainingFlightTime.flightWontExpire"));
+		Messages.flightExpirationTime = Utils.colorize(config.getString("RemainingFlightTime.flightExpirationTime"));
+		Messages.noFlightTimeLeft = Utils.colorize(config.getString("RemainingFlightTime.noFlightTimeLeft"));
 		
 		//custom voucher
 		Messages.invalidVoucherArguments = Utils.colorize(config.getString("CustomVoucher.invalidVoucherArguments"));
 		Messages.invalidVoucherType = Utils.colorize(config.getString("CustomVoucher.invalidVoucherType"));
-		Messages.alreadyHasPermanentFly = Utils.colorize(config.getString("CustomVoucher.alreadyHasPermanentFly"));
-		Messages.nonStackableFlightDuration = Utils.colorize(config.getString("CustomVoucher.nonStackableFlightDuration"));
-		Messages.firstVoucherUsed = Utils.colorize(config.getString("CustomVoucher.firstVoucherUsed"));
-		Messages.extentionVoucherUsed = Utils.colorize(config.getString("CustomVoucher.extentionVoucherUsed"));
 		Messages.OPAlreadyHasPermissions = Utils.colorize(config.getString("CustomVoucher.OPAlreadyHasPermissions"));
-		Messages.flightWontExpire = Utils.colorize(config.getString("CustomVoucher.flightWontExpire"));
-		Messages.flightExpirationTime = Utils.colorize(config.getString("CustomVoucher.flightExpirationTime"));
-		Messages.noFlightTimeLeft = Utils.colorize(config.getString("CustomVoucher.noFlightTimeLeft"));
 		
-		Messages.flyVoucherName = Utils.colorize(config.getString("CustomVoucher.flyVoucherName"));
-		Messages.flyVoucherLore = config.getStringList("CustomVoucher.flyVoucherLore");
-    	Messages.invalidFlyVoucherArguments = Utils.colorize(config.getString("CustomVoucher.invalidFlyVoucherArguments"));
-    	
-    	
     	//custom Hoppers
     	Messages.invalidChunkHopperArguments = Utils.colorize(config.getString("CustomHoppers.invalidArguments"));
     	Messages.youReceivedCustomHopperMessage = Utils.colorize(config.getString("CustomHoppers.youReceivedHopper"));
@@ -107,48 +100,72 @@ public class Messages extends BaseFile {
     	
     	
     	//Custom help
-    	Set<String> keys = config.getConfigurationSection("HelpMenu").getKeys(false);
-    	ComponentBuilder builder = new ComponentBuilder("");
+    	Messages.helpMessage = Utils.readConfigTextComponents(config, "HelpMenu");
     	
-    	for(String key : keys) {
-    	    ConfigurationSection line = config.getConfigurationSection("HelpMenu." + key);
-    	        String type = line.getString("type");
-    	        switch(type) {
+    	//Custom /rules
+    	Messages.rulesMessage = Utils.readConfigTextComponents(config, "RulesMessage");
 
-    	        case "empty":
-    	        	builder.append("\n");
-    				builder.event((HoverEvent)null).event((ClickEvent) null);
-    	        	break;
-    	        case "text":
-    	        	builder.append(Utils.colorize(line.getString("text")));
-    				builder.event((HoverEvent)null).event((ClickEvent) null);
-    	        	break;
-    	        case "hovertext":
-    	        	builder.append(Utils.colorize(line.getString("text")));
-    	        	builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(Utils.colorize(line.getString("hover"))).create()));
-    	        	break;
-    	        case "link":
-    	        	builder.append(Utils.createTextComponentLink(
-    	        			Utils.colorize(line.getString("text")), Utils.colorize(line.getString("hover")), line.getString("link")));
-    	        	break;
-    	        case "command":
-    	        	builder.append(Utils.createTextComponentCommand(
-    	        			Utils.colorize(line.getString("text")), Utils.colorize(line.getString("hover")), Utils.colorize(line.getString("command"))));
-    	        	break;
-    	        }
-    	        //add an enter at the end of every line
-    	        builder.append("\n");
+    	//Custom /discord
+    	Messages.discordMessage = Utils.readConfigTextComponents(config, "DiscordMessage");
+    	
+    	//Custom /apply
+    	Messages.applyMessage = Utils.readConfigTextComponents(config, "ApplyMessage");
+    	
+    	//Parkour messages
+    	Messages.alreadyDoingParkour = Utils.colorize(config.getString("Parkour.alreadyDoingParkour"));
+    	Messages.existingParkoursMessage = Utils.colorize(config.getString("Parkour.existingParkours"));
+    	Messages.startedParkour = Utils.colorize(config.getString("Parkour.startedParkour"));
+    	Messages.failedLoadingParkour = Utils.colorize(config.getString("Parkour.failedLoadingParkour"));
+    	Messages.parkourInfoHeader = Utils.colorize(config.getString("Parkour.info.Header"));
+    	Messages.parkourInfoMessage = Utils.colorize(config.getString("Parkour.info.Message"));
+    	Messages.parkourInfoFooter = Utils.colorize(config.getString("Parkour.info.Footer"));
+    	Messages.parkourWaypointRewardMessage = Utils.colorize(config.getString("Parkour.rewardPickedUp"));
+    	Messages.timeLeftTillWaypoint = Utils.colorize(config.getString("Parkour.timeLeftTillWaypoint"));
+    	Messages.pickedUpLastWaypoint = Utils.colorize(config.getString("Parkour.pickedUpLast"));
+    	Messages.parkourTimeRanOut = Utils.colorize(config.getString("Parkour.timeRanOut"));
+    	Messages.parkourLostMessage = Utils.colorize(config.getString("Parkour.parkourLostMessage"));
+    	Messages.parkourWonMessage = Utils.colorize(config.getString("Parkour.parkourWonMessage"));
+    	Messages.parkourWonBroadcastMessage = Utils.colorize(config.getString("Parkour.parkourWonBroadcastMessage"));
+    	Messages.totalMoneyWonMessage = Utils.colorize(config.getString("Parkour.totalMoneyWon"));
+    	Messages.parkourRecentlyWon = Utils.colorize(config.getString("Parkour.parkourRecentlyWon"));
+    	
+    	for(String key : config.getConfigurationSection("Parkour.items").getKeys(false)) {
+		    String path = "Parkour.items." + key;
+		    String hologramMessage = Utils.colorize(config.getString(path + ".hologramText"));
+		    Material material = Material.valueOf(config.getString(path + ".material"));
+		    int timeToPickup = config.getInt(path + ".timeToPickup");
+		    double reward = config.getDouble(path + ".pickUpReward");
+		    int timesToDisplay = config.getInt(path + ".timesToDisplay");
+		    
+		    Messages.parkourItems.add(new ParkourItem(hologramMessage, material, timeToPickup, reward, timesToDisplay));
     	}
-    	Messages.helpMessage = builder.create();
     	
-    	Messages.rulesMessage = Utils.colorize(config.getStringList("RulesMessage"));
 
-    	Messages.discordLinkText = Utils.colorize(config.getString("Discord.text"));
-    	Messages.discordLinkHoverText = Utils.colorize(config.getString("Discord.hovertext"));
-    	Messages.discordLink = Utils.colorize(config.getString("Discord.link"));
+    	Messages.finishItem = new ParkourItem(
+    			Utils.colorize(config.getString("Parkour.finishitem.hologramText")),
+    			Material.valueOf(config.getString("Parkour.finishitem.material")),
+    			config.getInt("Parkour.finishitem.timeToPickup"),
+    			config.getDouble("Parkour.finishitem.pickUpReward"),
+    			0
+    			);
     	
-    	
+    	String world = config.getString("SeasonHologram.location.world");
+    	double x = config.getDouble("SeasonHologram.location.x");
+    	double y = config.getDouble("SeasonHologram.location.y");
+    	double z = config.getDouble("SeasonHologram.location.z");
+    	Messages.seasonHologramLocation = new Location(Bukkit.getWorld(world), x , y , z);
+    	Messages.seasonHologramText = config.getStringList("SeasonHologram.text");
+    	int year = config.getInt("SeasonHologram.season-ending.year");
+    	int month = config.getInt("SeasonHologram.season-ending.month");
+    	int dayofmonth = config.getInt("SeasonHologram.season-ending.dayofmonth");
+    	int hour = config.getInt("SeasonHologram.season-ending.hour");
+    	int minute = config.getInt("SeasonHologram.season-ending.minute");
+    	seasonEnding = LocalDateTime.of(year, month, dayofmonth, hour, minute);
 	}
+	
+	
+	
+	
 	
 	
 	//general messages
@@ -171,38 +188,19 @@ public class Messages extends BaseFile {
 	public static String actionBarIslandEnter;
 	public static String actionBarIslandEnterOwnIsland;
 	public static String actionBarSpawnEnter;
+	public static String actionBarSkillExpGained;
 	
+	//remaining fly time messages 
+	public static String flightWontExpire;
+	private static String flightExpirationTime;
+	public static String noFlightTimeLeft;
+	public static String flightExpirationTime(String remainingTime) {
+		return Messages.flightExpirationTime.replace("%remainingtime%", remainingTime);	}
 	
 	//Custom voucher messages
 	public static String invalidVoucherArguments;
 	public static String invalidVoucherType; 
-	public static String alreadyHasPermanentFly; 
-	public static String nonStackableFlightDuration;
-	private static String firstVoucherUsed;
-	private static String extentionVoucherUsed;
 	public static String OPAlreadyHasPermissions;
-	public static String flightWontExpire;
-	private static String flightExpirationTime;
-	public static String noFlightTimeLeft;
-	public static String flyVoucherName;
-	public static List<String> flyVoucherLore;
-	public static String invalidFlyVoucherArguments;
-	
-	public static String firstVoucherUsed(String duration) {
-		return Messages.firstVoucherUsed.replace("%duration%", duration); }
-	
-	public static String extentionVoucherUsed(String duration) {
-		return Messages.extentionVoucherUsed.replace("%duration%", duration); }
-	
-	public static String flightExpirationTime(String remainingTime) {
-		return Messages.flightExpirationTime.replace("%remainingtime%", remainingTime);	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	//custom ChunkHopper messages
@@ -261,7 +259,7 @@ public class Messages extends BaseFile {
 	//messages
 	private static String rollTheDiceWinningMessage;
 	public static String rollTheDiceWinningMessage(String moneyWon) {
-		return rollTheDiceWinningMessage.replace("{money_won}", moneyWon);
+		return rollTheDiceWinningMessage.replace("{money_won}", moneyWon.replace("$", ""));
 	}
 	private static String rollTheDiceLostMessage;
 	public static String rollTheDiceLostMessage(int winningNumber) {
@@ -275,7 +273,7 @@ public class Messages extends BaseFile {
 	}
 	private static String rollTheDiceGameStartedMessage;
 	public static String rollTheDiceGameStartedMessage(String betValue) {
-		return rollTheDiceGameStartedMessage.replace("{betvalue}", betValue);
+		return rollTheDiceGameStartedMessage.replace("{betvalue}", betValue.replace("$", ""));
 	}
 	
 	public static String rollTheDicePickANumberInventoryTitle;
@@ -292,18 +290,41 @@ public class Messages extends BaseFile {
 	public static BaseComponent[] helpMessage;
 	
 	//custom /rules
-	public static List<String> rulesMessage;
-	
+	public static BaseComponent[] rulesMessage;
 	
 	//discord command
-	public static String discordLinkText;
-	public static String discordLinkHoverText;
-	public static String discordLink;
+	public static BaseComponent[] discordMessage;
+
+	//apply command
+	public static BaseComponent[] applyMessage;
 	
 	
+	//Parkour messages
+	public static String alreadyDoingParkour;
+	public static String existingParkoursMessage;
+	public static String startedParkour;
+	public static String failedLoadingParkour;
+	public static String parkourInfoHeader;
+	public static String parkourInfoMessage;
+	public static String parkourInfoFooter;
+	public static String parkourWaypointRewardMessage;
+	public static String timeLeftTillWaypoint;
+	public static String pickedUpLastWaypoint;
+	public static String parkourTimeRanOut;
+	public static String parkourLostMessage;
+	public static String parkourWonMessage;
+	public static String parkourWonBroadcastMessage;
+	public static String totalMoneyWonMessage;
+	public static String parkourRecentlyWon;
+	
+	public static List<ParkourItem> parkourItems = new ArrayList<ParkourItem>();
+	public static ParkourItem finishItem;
 	
 	
-	
+	//Season Hologram
+	public static LocalDateTime seasonEnding;
+	public static Location seasonHologramLocation;
+	public static List<String> seasonHologramText;
 	
 	
 	

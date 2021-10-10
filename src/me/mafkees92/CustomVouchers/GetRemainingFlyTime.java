@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import me.mafkees92.Main;
 import me.mafkees92.Files.Messages;
+import me.mafkees92.Utils.Utils;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.query.QueryOptions;
 
@@ -39,7 +40,7 @@ public class GetRemainingFlyTime implements CommandExecutor{
 			}
 			else{
 				long remainingTime = Objects.requireNonNull(node.getExpiryDuration()).getSeconds();
-				player.sendMessage(Messages.flightExpirationTime(secondsToTimeString(remainingTime)));
+				player.sendMessage(Utils.colorize(Messages.flightExpirationTime(secondsToTimeString(remainingTime))));
 			}
 		}
 		else {
@@ -61,8 +62,12 @@ public class GetRemainingFlyTime implements CommandExecutor{
 			sb.append(days).append(" Days, ");
 		if(sec > 3600)
 			sb.append(hours).append(" Hours, ");
-		if(sec > 60)
+		if(sec > 120) {
 			sb.append(minutes).append(" Minutes &aand&e ");
+		}
+		else if(sec > 60) {
+			sb.append(minutes).append(" Minute &aand&e ");
+		}
 		sb.append(seconds).append(" Seconds&a.");
 		
 		return sb.toString();

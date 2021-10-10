@@ -9,15 +9,20 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import com.wasteofplastic.askyblock.ASkyBlockAPI;
 
 import me.mafkees92.Main;
 import me.mafkees92.Utils.Utils;
@@ -35,12 +40,36 @@ public class CustomSplashPotions implements Listener {
 	ArrayList<Block> changedBlocks = new ArrayList<>();
 
 	@EventHandler
+	public void onFreezePotionThrow(PlayerInteractEvent e) {
+
+		
+		if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			Player player = e.getPlayer();
+			if(player.getInventory().getItemInMainHand() != null) {
+				ItemStack item = player.getInventory().getItemInMainHand();
+				if(item.getType() == Material.SPLASH_POTION) {
+					String nbt = Utils.getNBTTag(item, CustomPotionNBTKey);
+					if(nbt != null && nbt != "" && nbt.equals(freezePotionNBTTag)) {
+						if(ASkyBlockAPI.getInstance().getIslandAt(player.getLocation()).isSpawn()) {   //disable it at the spawn island
+							e.setCancelled(true);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	
+	@EventHandler
 	public void onSplashPotion(PotionSplashEvent e) {
 
 		ThrownPotion potion = e.getPotion();
 		ItemStack item = potion.getItem();
 
 		String nbtTag = Utils.getNBTTag(item, CustomPotionNBTKey);
+		
+		//freeze potions
 		if (nbtTag != null && nbtTag.equals(freezePotionNBTTag)) {
 			e.setCancelled(true);
 			PotionEffect effect = new PotionEffect(PotionEffectType.SLOW, 80, 10);
@@ -48,7 +77,6 @@ public class CustomSplashPotions implements Listener {
 				entity.addPotionEffect(effect);
 			}
 			setBlocks(e.getEntity().getLocation());
-
 		}
 	}
 

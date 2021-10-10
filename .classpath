@@ -17,5 +17,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/edwin/Desktop/custom plugin jars/MafSkyBlock.jar"/>
+	<classpathentry kind="lib" path="C:/Users/edwin/Desktop/Plugin Development/Library Plugins/WildStacker-b156.jar"/>
+	<classpathentry kind="lib" path="C:/Users/edwin/Desktop/Plugin Development/Library Plugins/CombatTagPlus.jar"/>
+	<classpathentry kind="lib" path="C:/Users/edwin/Desktop/Plugin Development/Library Plugins/JetsMinions-7.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/edwin/Desktop/Plugin Development/Library Plugins/AureliumSkills-Beta1.2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/edwin/Desktop/Plugin Development/Library Plugins/ItemJoin.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,5 +1,8 @@
 package me.mafkees92.HologramParkour;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,19 +29,19 @@ import net.md_5.bungee.api.chat.HoverEvent;
 public class Parkour extends BaseFile implements CommandExecutor{
 
 
-	private final String createParkourPermission = "mafkees.createparkour";
-	private final String startParkourPermission = "mafkees.startparkour";
+	private final String createParkourPermission = "mafkees.parkour.create";
+	private final String startParkourPermission = "mafkees.parkour.start";
+	private final String resetParkourTimerPermission = "mafkees.parkour.resettimer";
 	
 	private HashMap<Player, String> recordingPlayers = new HashMap<>();    //recorder, parkourName
 	private HashMap<Player, List<Location>> recordingParkours = new HashMap<>();  //recorder, way points
 	private HashMap<String, List<Location>> loadedParkours = new HashMap<>(); // parkourName, way points
-	public static List<Player> parkourParticipants = new ArrayList<>();
+	private HashMap<String, LocalDateTime> lastWonList = new HashMap<>();  // parkourname, datetime last won
+	public static HashMap<Player, HologramParkour> parkourParticipants = new HashMap<>();
 	
 	public Parkour(Main plugin, String fileName) {
 		super(plugin, fileName);
 		// TODO Auto-generated constructor stub
-		
-		
 	}
 
 
@@ -120,7 +123,8 @@ public class Parkour extends BaseFile implements CommandExecutor{
 				if(player.isOp()) {
 					String parkourName = args[1];
 					if(config.contains(parkourName)) {
-						config.set(parkourName, null);
+						config.set(parkourName + ".locations", null);
+						config.set(parkourName + ".lastWon", null);
 						this.save();
 						player.sendMessage("Deleted parkour" + parkourName + " from the save files");
 					}
@@ -132,10 +136,31 @@ public class Parkour extends BaseFile implements CommandExecutor{
 				break;
 
 			case "start":
-				if(Parkour.parkourParticipants.contains(player)) {
-					player.sendMessage(Utils.colorize("&cYou are already doing a parkour!"));
+				if(Parkour.parkourParticipants.containsKey(player)) {
+					player.sendMessage(Messages.alreadyDoingParkour);
 					return true;
 				}
+				
+				LocalDateTime lastWon; 
+				
+				if(this.lastWonList.containsKey(args[1])){
+					lastWon = this.lastWonList.get(args[1]);
+				}
+				else {
+					lastWon = LocalDateTime.parse(config.getString(args[1] + ".lastWon"));
+					this.lastWonList.put(args[1], lastWon);
+				}
+				
+				if(lastWon.isAfter(LocalDateTime.MIN)) {
+					if(lastWon.isAfter(LocalDateTime.now(ZoneOffset.UTC).minusHours(4))){
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+						String formattedDateTime = lastWon.plusHours(4).format(formatter);
+						
+						player.sendMessage(Messages.parkourRecentlyWon.replace("%time%", formattedDateTime));
+						return true;
+					}
+				}
+				
 				if(player.hasPermission(this.startParkourPermission)){
 					this.startParkour(player, args[1]);
 				}
@@ -146,7 +171,7 @@ public class Parkour extends BaseFile implements CommandExecutor{
 				
 			case "list":
 				if(player.isOp()) {
-					player.sendMessage(Utils.colorize("&aThe current existing parkours are:"));
+					player.sendMessage(Utils.colorize(Messages.existingParkoursMessage));
 					Set<String> keys = config.getKeys(false);
 					Iterator<String> it = keys.iterator();
 
@@ -175,10 +200,36 @@ public class Parkour extends BaseFile implements CommandExecutor{
 					player.sendMessage(Utils.colorize("&6" + message));
 				}
 				else {
-					player.sendMessage(Utils.colorize("&cYou dont have permission to execute this command"));
+					player.sendMessage(Messages.noPermission);
 				}
 				break;
-			
+				
+			case "resettimer":
+				if(player.isOp() || player.hasPermission(this.resetParkourTimerPermission)) {
+					if(args.length < 2 || args.length > 2) {
+						player.sendMessage(Utils.colorize("&cInvalid arguments. Please type /parkour resettimer <parkourname>."));
+						break;
+					}
+					String parkourName = args[1];
+					if(parkourName == null || parkourName == "") {
+						player.sendMessage(Utils.colorize("&cInvalid arguments. Please type /parkour resettimer <parkourname>."));
+						break;
+					}
+					
+					if(this.config.contains(parkourName)) {
+						this.setLastWon(parkourName, LocalDateTime.MIN);
+						player.sendMessage(Utils.colorize("&aThe last won timer of parkour &e" + parkourName + "&a has been reset."));
+					}
+					else {
+						player.sendMessage(Utils.colorize("&cYou have entered an invalid parkour name. Type /parkour list to see all available parkours."));
+					}
+					
+				}
+				else {
+					player.sendMessage(Messages.noPermission);
+				}
+				break;
+				
 			default:
 				this.sendInformationMessage(player);
 				break;
@@ -245,7 +296,7 @@ public class Parkour extends BaseFile implements CommandExecutor{
 			wayPoints.add(this.locationToString(loc));
 		}
 		
-		config.set(parkourName, wayPoints);
+		config.set(parkourName + ".locations", wayPoints);
 		this.save();
 		player.sendMessage(Utils.colorize("&6Succesfully saved the parkour. You are no longer recording."));
 		this.recordingPlayers.remove(player);
@@ -254,7 +305,7 @@ public class Parkour extends BaseFile implements CommandExecutor{
 	
 	
 	private void loadParkour(String parkourName) {
-		List<String> temp = config.getStringList(parkourName);
+		List<String> temp = config.getStringList(parkourName + ".locations");
 		if(temp == null ||temp.size() == 0) {
 			Bukkit.getLogger().warning("Failed loading parkour data of parkour: " + parkourName);
 			return;
@@ -277,40 +328,29 @@ public class Parkour extends BaseFile implements CommandExecutor{
 		}
 		//savety check to see if loading the parkour went fine
 		if(this.loadedParkours.containsKey(parkourName)) {
-			player.sendMessage(Utils.colorize("&eYou have started the parkour. Good Luck!"));
-			new HologramParkour(new LinkedList<>(loadedParkours.get(parkourName)), player, plugin);
+			player.sendMessage(Messages.startedParkour);
+			new HologramParkour(this, parkourName, new LinkedList<>(loadedParkours.get(parkourName)), player, plugin);
 			
 		}
 		else {
-			player.sendMessage(Utils.colorize("&cFailed loading the parkour, please contact an admin for further help"));
+			player.sendMessage(Messages.failedLoadingParkour);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	private boolean isRecording(Player player) {
 		return this.recordingPlayers.containsKey(player);
 	}
 	
-	
+	public void setLastWon(String parkourName, LocalDateTime dateTime) {
+		this.lastWonList.put(parkourName, dateTime);
+		config.set(parkourName + ".lastWon", dateTime.toString());
+		save();
+	}
 	
 	private void sendInformationMessage(Player player) {
 
 		ComponentBuilder builder = new ComponentBuilder("")
-		.append(Utils.colorize("&6&m              &7[&6&lTOOT&e&lMC &7: &eParkour Information&7]&6&m              "))
+		.append(Messages.parkourInfoHeader)
 		.append("\n\n");
 		
 		if(player.isOp() || player.hasPermission(this.createParkourPermission)) {
@@ -321,15 +361,17 @@ public class Parkour extends BaseFile implements CommandExecutor{
 			builder.append("\n");
 			builder.event((HoverEvent)null).event((ClickEvent) null);
 			
-			
-			builder.append(Utils.colorize(" &7- &6Create <parkourName>: &eCreate a new Parkour"));
+
+			builder.append(Utils.colorize(" &7- &6/parkour Create <parkourName>: &eCreate a new Parkour"));
+			builder.append("\n");
+			builder.append(Utils.colorize(" &7- &6/parkour ResetTimer <parkourName>: &eReset a parkour timer"));
 			builder.append("\n");
 		}
 		
-		builder.append(Utils.colorize(" &7- &6Start <parkourName>: &eStart a specific parkour"));
+		builder.append(Messages.parkourInfoMessage);
 		
 		builder.append("\n\n");
-		builder.append(Utils.colorize("&6&m                                                                     "));
+		builder.append(Messages.parkourInfoFooter);
 
 		BaseComponent[] message = builder.create();
 		player.spigot().sendMessage(message);

@@ -9,7 +9,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Hopper;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.util.Vector;
 
 import me.mafkees92.Utils.Utils;
@@ -43,11 +42,11 @@ public class ChunkHopper {
 		this.hopperGrade = 1;
 	}
 	
+	
 	public boolean isChunkHopper() {
 		return this.location.getBlock().getState() instanceof Hopper;
 	}
 	
-
 	public String getDataString() {
 
 		return this.hopperOwner.getUniqueId().toString();
@@ -61,15 +60,7 @@ public class ChunkHopper {
 	public Chunk getChunk() {
 		return this.chunk;
 	}
-	
-	public Hopper getHopper() {
-		return (Hopper) location.getBlock().getState();
-	}
-	
-	public Inventory getInventory() {
-		return this.getHopper().getInventory();
-	}
-	
+
 	public String getLocationString() {
 		return Utils.LocationToString(this.location);
 	}
@@ -78,8 +69,8 @@ public class ChunkHopper {
 		return Utils.ChunkToString(this.chunk);
 	}
 	
-	public void updateInventoryViewers() {
-		for (HumanEntity entity : getInventory().getViewers()) {
+	public void updateInventoryViewers(Hopper hopper) {
+		for (HumanEntity entity : hopper.getInventory().getViewers()) {
 			Player p = (Player)entity;
 			p.updateInventory();
 		}

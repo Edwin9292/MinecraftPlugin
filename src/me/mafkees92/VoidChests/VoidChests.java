@@ -48,7 +48,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 		
 		loadVoidChests();
 
-		Bukkit.getScheduler().runTaskTimer(plugin, this::payOutAllVoidChests, 100L, 600L);
+		Bukkit.getScheduler().runTaskTimer(plugin, this::payOutAllVoidChests, 100L, 6000L);
 	}
 	
 	//load void chests from config
@@ -388,11 +388,7 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 	// /givevoidchest <player> <amount>
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] args) {
-		if(!(sender instanceof Player))
-			return false;
-		
-		Player player = (Player) sender;
-		if(player.isOp() || player.hasPermission("mafkeesplugin.voidchest.give")) {
+		if(!(sender instanceof Player)) {
 			if(args.length == 3) {
 				Player targetPlayer = Bukkit.getPlayer(args[0]);
 				if(targetPlayer != null) {
@@ -404,24 +400,53 @@ public class VoidChests extends BaseFile implements Listener, CommandExecutor{
 								targetPlayer.getInventory().addItem(this.createVoidChestItemStack(amount, grade));  //give the targetplayer the itemstack
 								return true;
 							}
-							player.sendMessage(Messages.inventoryFull(targetPlayer));
+							targetPlayer.getLocation().getWorld().dropItemNaturally(targetPlayer.getLocation(), 
+									this.createVoidChestItemStack(amount, grade));
+							targetPlayer.sendMessage(Utils.colorize("&cYour inventory was full. Your VoidChest(s) has/have been dropped on the floor."));
 							return true;
 						}
-						player.sendMessage(Utils.colorize("&cINVALID ITEM GRADE, try /givevoidchest <player> <grade> <amount>"));
+						Bukkit.getLogger().warning(Utils.colorize("&cINVALID ITEM GRADE, try /givevoidchest <player> <grade> <amount>"));
 					}
-					player.sendMessage(Messages.invalidAmount);
+					Bukkit.getLogger().warning(Messages.invalidAmount);
 					return true;
 				}
-				player.sendMessage(Messages.invalidTargetPlayer);
+				Bukkit.getLogger().warning(Messages.invalidTargetPlayer);
 				return true;
 			}
-			player.sendMessage(Utils.colorize("&cINVALID ARGUMENTS, TRY /givevoidchest <player> <grade> <amount>"));
+			Bukkit.getLogger().warning(Utils.colorize("&cINVALID ARGUMENTS, TRY /givevoidchest <player> <grade> <amount>"));
 			return true;
 		}
-		player.sendMessage(Messages.noPermission);
-		return true;
+		else {
+			Player player = (Player) sender;
+			if(player.isOp() || player.hasPermission("mafkeesplugin.voidchest.give")) {
+				if(args.length == 3) {
+					Player targetPlayer = Bukkit.getPlayer(args[0]);
+					if(targetPlayer != null) {
+						int amount = Utils.tryParseInt(args[2]);
+						if(amount != -1) {
+							int grade = Utils.tryParseInt(args[1]);
+							if(grade != -1) {
+								if(targetPlayer.getInventory().firstEmpty() != -1) {
+									targetPlayer.getInventory().addItem(this.createVoidChestItemStack(amount, grade));  //give the targetplayer the itemstack
+									return true;
+								}
+								player.sendMessage(Messages.inventoryFull(targetPlayer));
+								return true;
+							}
+							player.sendMessage(Utils.colorize("&cINVALID ITEM GRADE, try /givevoidchest <player> <grade> <amount>"));
+						}
+						player.sendMessage(Messages.invalidAmount);
+						return true;
+					}
+					player.sendMessage(Messages.invalidTargetPlayer);
+					return true;
+				}
+				player.sendMessage(Utils.colorize("&cINVALID ARGUMENTS, TRY /givevoidchest <player> <grade> <amount>"));
+				return true;
+			}
+			player.sendMessage(Messages.noPermission);
+			return true;
+		}
 	}
-	
-	
 }
 

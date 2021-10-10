@@ -1,11 +1,13 @@
 package me.mafkees92.HologramParkour;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,28 +19,38 @@ import com.gmail.filoghost.holographicdisplays.api.line.ItemLine;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 
 import me.mafkees92.Main;
-import me.mafkees92.Utils.Utils;
+import me.mafkees92.Files.Messages;
 
 public class HologramParkour {
 	
 	Main plugin;
 	Queue<Location> locationsToSpawn;
+	public Location previousLocation;
+	public Location twoStepsBack = null;
+	private Location locToTeleport;
 	int counter = 0;
+	int itemDisplayedCounter = 0;
 	BukkitTask runningTask;
-	int timer = 7;
+	int timer = 0;
 	private long startTime = -1;
 	private long endTime = -1;
+	double moneyWon = 0;
 	
-	public HologramParkour(LinkedList<Location> waypoints, Player player, Main plugin) {
+	ParkourItem itemToDisplay;
+	
+	public HologramParkour(Parkour parkour, String parkourName, LinkedList<Location> waypoints, Player player, Main plugin) {
 		
 		this.locationsToSpawn = waypoints;
 		this.plugin = plugin;
-		Parkour.parkourParticipants.add(player);
+		Iterator<ParkourItem> it = Messages.parkourItems.iterator();
+		itemToDisplay = it.next();
+		timer = itemToDisplay.timeToPickup;
 		
 		//setup the hologram
-		Hologram hologram = HologramsAPI.createHologram(plugin, locationsToSpawn.poll());
-		TextLine text = hologram.appendTextLine(Utils.colorize("&3&lPICK THIS STONE!!"));
-		ItemLine itemline = hologram.appendItemLine(new ItemStack(Material.STONE));
+		Parkour.parkourParticipants.put(player, this);
+		Hologram hologram = HologramsAPI.createHologram(plugin, previousLocation = locationsToSpawn.poll());
+		TextLine text = hologram.appendTextLine(itemToDisplay.hologramMessage);
+		ItemLine itemline = hologram.appendItemLine(new ItemStack(itemToDisplay.material));
 
 		//setup the hologram visibility
 		hologram.getVisibilityManager().setVisibleByDefault(false);
@@ -49,81 +61,94 @@ public class HologramParkour {
 			if(startTime == -1)
 				startTime = System.currentTimeMillis();
 			if(runningTask != null) runningTask.cancel();
-			timer = 7;
 			counter ++;
-			Location locToTeleport = locationsToSpawn.poll();
-
-			//set the item based on the amount of items pickedup
-			if(counter >= 3  && counter < 6) {
-				itemline.setItemStack(new ItemStack(Material.GOLD_INGOT));
-				text.setText(Utils.colorize("&3&lPICK THIS GOLD_INGOT!!"));
-			}
-			else if(counter >= 6 && counter < 10) {
-				itemline.setItemStack(new ItemStack(Material.DIAMOND));
-				text.setText(Utils.colorize("&3&lPICK THIS DIAMOND!!"));
-			}
-			else if(counter >= 10 && counter < 15) {
-				itemline.setItemStack(new ItemStack(Material.EMERALD));
-				text.setText(Utils.colorize("&3&lPICK THIS EMERALD!!"));
-			}
-			else if(counter >= 15 && counter < 25) {
-				itemline.setItemStack(new ItemStack(Material.YELLOW_GLAZED_TERRACOTTA));
-				text.setText(Utils.colorize("&3&lPICK THIS VALUE BLOCK!!"));
-			}
-			else if(counter >= 25) {
-				itemline.setItemStack(new ItemStack(Material.BEACON));
-				text.setText(Utils.colorize("&3&lPICK THIS VALUE BLOCK!!"));
+			itemDisplayedCounter++;
+			
+			if(locToTeleport != null) {
+				twoStepsBack = previousLocation;
+				previousLocation = locToTeleport;
 			}
 			
+			locToTeleport = locationsToSpawn.poll();
+
+			//pay the reward if there is any
+			if(itemToDisplay.pickUpReward > 0) {
+				Main.econ.depositPlayer(player, itemToDisplay.pickUpReward);
+				player.sendMessage(Messages.parkourWaypointRewardMessage.replace("%reward%", ""+ (int)itemToDisplay.pickUpReward));
+				this.moneyWon += itemToDisplay.pickUpReward;
+			}
+			
+			
+			//set the item based on the amount of items pickedup
+			if(itemDisplayedCounter >= itemToDisplay.timesToDisplay && it.hasNext()) {
+				itemDisplayedCounter = 0;
+				itemToDisplay = it.next();
+				itemline.setItemStack(new ItemStack(itemToDisplay.material));
+				text.setText(itemToDisplay.hologramMessage);
+			}
 			
 			//if its the last waypoint, set it as a nether star
 			if(locationsToSpawn.size() == 0) {
-				itemline.setItemStack(new ItemStack(Material.NETHER_STAR));
-				text.setText(Utils.colorize("&3&lFINISH!!"));
+				itemToDisplay = Messages.finishItem;
+				itemline.setItemStack(new ItemStack(Messages.finishItem.material));
+				text.setText(Messages.finishItem.hologramMessage);
 			}
+			
 			//if there is no more waypoint location left it means we have finished
 			if(locToTeleport == null) {
-				endParkour(player1, hologram, true);
+				endParkour(player1, parkourName, hologram, true);
+				parkour.setLastWon(parkourName, LocalDateTime.now(ZoneOffset.UTC));
 				return;
 			}
-
+			
+			timer = itemToDisplay.timeToPickup;
 			hologram.teleport(locToTeleport);
 			
-			runningTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> update(player1, hologram), 0L , 20L);
+			runningTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> update(player1, parkourName, hologram), 0L , 20L);
 		};
 		itemline.setPickupHandler(handler);
 	}
 	
-	private void update(Player player, Hologram hologram) {
+	private void update(Player player, String parkourName, Hologram hologram) {
 		if(!player.isOnline()) {
 			if(runningTask!=null) runningTask.cancel();
 			return;
 		}
 		if(timer > 0) {
 			plugin.getActionBar().setCustomActionBar(player.getUniqueId(), 
-					Utils.colorize("&e&lYou have &c&l" + timer + 
-							"&e&l seconds left to find the next waypoint ("+ counter +"/" + (locationsToSpawn.size()+counter +1) + ")"));
+					Messages.timeLeftTillWaypoint.replace("%timer%", "" + timer)
+						.replace("%pickedup%", ""+counter)
+						.replace("%totalwaypoints%", ""+(locationsToSpawn.size()+counter +1))
+					,20);
 			timer--;
 		}
 		else {
-			endParkour(player, hologram, false);
+			endParkour(player, parkourName, hologram, false);
 		}
 	}
 	
-	private void endParkour(Player player, Hologram hologram, boolean finished) {
+	private void endParkour(Player player, String parkourName, Hologram hologram, boolean finished) {
+		this.endTime = System.currentTimeMillis();
 		if(finished) {
-			player.sendMessage("You got them all!");
+			
+			player.sendMessage(Messages.pickedUpLastWaypoint);
+			player.sendMessage(Messages.parkourWonMessage.replace("%time%", ""+(endTime - startTime) / 1000.0));
+			Bukkit.broadcastMessage(Messages.parkourWonBroadcastMessage
+					.replace("%player%", player.getName())
+					.replace("%parkourname%", parkourName));
 		}
 		else {
-			player.sendMessage("You were to late. The parkour has ended");
-			player.sendMessage("Your final score is: "+ counter);
+			player.sendMessage(Messages.parkourTimeRanOut);
+			player.sendMessage(Messages.parkourLostMessage.replace("%score%", ""+counter)
+					.replace("%time%", ""+(endTime - startTime) / 1000.0));
 		}
-		this.endTime = System.currentTimeMillis();
-		player.sendMessage("You finished the parkour in " + ((endTime - startTime) / 1000.0) + " seconds.");
-		plugin.getActionBar().removeCustomActionBar(player.getUniqueId());
+		if(moneyWon > 0) {
+			player.sendMessage(Messages.totalMoneyWonMessage.replace("%money%", ""+ (int)moneyWon));
+		}
+		
 		if(runningTask != null) runningTask.cancel();
 		hologram.delete();
-		Parkour.parkourParticipants.remove(player);
+		Parkour.parkourParticipants.remove(player, this);
 	}
 
 	

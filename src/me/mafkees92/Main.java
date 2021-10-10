@@ -8,15 +8,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.wasteofplastic.askyblock.ASkyBlock;
 
 import me.mafkees92.ActionBar.ActionBar;
-import me.mafkees92.ChunkLoadersNotUSED.ChunkLoaders;
-import me.mafkees92.ChunkLoadersNotUSED.GiveChunkLoader;
+import me.mafkees92.Commands.Apply;
 import me.mafkees92.Commands.Discord;
 import me.mafkees92.Commands.Help;
+import me.mafkees92.Commands.RepairHand;
 import me.mafkees92.Commands.Rules;
 import me.mafkees92.Commands.hub;
 import me.mafkees92.CustomHoppers.ChunkHoppers;
 import me.mafkees92.CustomPotions.CustomSplashPotions;
 import me.mafkees92.CustomPotions.GiveCustomPotion;
+import me.mafkees92.CustomVouchers.CustomVouchers;
 import me.mafkees92.CustomVouchers.FlyExpirationListener;
 import me.mafkees92.CustomVouchers.GetRemainingFlyTime;
 import me.mafkees92.CustomVouchers.GiveVoucher;
@@ -28,9 +29,16 @@ import me.mafkees92.IslandChests.IslandChests;
 import me.mafkees92.IslandChests.IslandInvSee;
 import me.mafkees92.IslandChests.OpenIslandChest;
 import me.mafkees92.IslandChests.UpgradeIslandChestSize;
+import me.mafkees92.Listeners.BlockBreakListeners;
+import me.mafkees92.Listeners.BlockDispenseListener;
+import me.mafkees92.Listeners.BlockPlaceListener;
+import me.mafkees92.Listeners.PlayerLoginListener;
+import me.mafkees92.Listeners.PlayerPortalEventListener;
+import me.mafkees92.Listeners.PlayerTeleportListener;
 import me.mafkees92.MVdWPlaceholders.mvdwPlaceholders;
 import me.mafkees92.RenameItems.RenameItem;
 import me.mafkees92.RenameItems.SetLore;
+import me.mafkees92.SeasonHologram.SeasonHologram;
 import me.mafkees92.VoidChests.VoidChests;
 import me.mafkees92.VoidTeleportation.VoidDamage;
 import net.luckperms.api.LuckPerms;
@@ -44,7 +52,6 @@ public class Main extends JavaPlugin {
 	private ActionBar actionBar;
 	private IslandChests isChests;
 	private VoidChests voidChestsInstance;
-	private ChunkLoaders chunkLoadersInstance;
 	private ChunkHoppers chunkHoppersInstance;
 	private GameMasterHandler gamblerHandlerInstance;
 
@@ -59,6 +66,7 @@ public class Main extends JavaPlugin {
 		//chunkLoadersInstance = new ChunkLoaders(this);
 		this.voidChestsInstance = new VoidChests(this, "VoidChests.yml");
 		this.chunkHoppersInstance = new ChunkHoppers(this, "HopperData.yml");
+		new CustomVouchers(this, "CustomVouchers.yml");
 		this.gamblerHandlerInstance = new GameMasterHandler(this);
 
 		getServer().getPluginManager().registerEvents(new VoidDamage(this), this);
@@ -70,7 +78,14 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(this.voidChestsInstance, this);
 		getServer().getPluginManager().registerEvents(this.chunkHoppersInstance, this);
 		getServer().getPluginManager().registerEvents(this.gamblerHandlerInstance, this);
+		getServer().getPluginManager().registerEvents(new PlayerPortalEventListener(), this);
+		getServer().getPluginManager().registerEvents(new PlayerLoginListener(), this);
 		//getServer().getPluginManager().registerEvents(new ChunkLoaderEvents(this), this);
+		getServer().getPluginManager().registerEvents(new BlockBreakListeners(), this );
+		getServer().getPluginManager().registerEvents(new BlockDispenseListener(), this );
+		getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this );
+		getServer().getPluginManager().registerEvents(new PlayerTeleportListener(), this );
+		
 		getCommand("rename").setExecutor(new RenameItem());
 		getCommand("setlore").setExecutor(new SetLore());
 		getCommand("givecustompotion").setExecutor(new GiveCustomPotion());
@@ -79,7 +94,6 @@ public class Main extends JavaPlugin {
 		getCommand("islandchest").setExecutor(new OpenIslandChest(this));
 		getCommand("islandinvsee").setExecutor(new IslandInvSee(this));
 		getCommand("upgradeislandchestsize").setExecutor(new UpgradeIslandChestSize(this));
-		getCommand("givechunkloader").setExecutor(new GiveChunkLoader(this));
 		getCommand("givevoidchest").setExecutor(this.voidChestsInstance);
 		getCommand("givecustomhopper").setExecutor(this.chunkHoppersInstance);
 		getCommand("help").setExecutor(new Help());
@@ -88,6 +102,10 @@ public class Main extends JavaPlugin {
 		getCommand("hub").setExecutor(new hub());
 		getCommand("rules").setExecutor(new Rules());
 		getCommand("discord").setExecutor(new Discord());
+		getCommand("repairhand").setExecutor(new RepairHand());
+		getCommand("Apply").setExecutor(new Apply());
+
+		new SeasonHologram(this);
 
 		if (getServer().getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
 			new mvdwPlaceholders(this);
@@ -116,7 +134,8 @@ public class Main extends JavaPlugin {
 			System.out.println("Timeout > You need HeadDatabase in order to use this plugin");
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
-
+		
+		
 	}
 
 	public void onDisable() {
@@ -148,10 +167,6 @@ public class Main extends JavaPlugin {
 
 	public IslandChests getIslandChests() {
 		return this.isChests;
-	}
-
-	public ChunkLoaders getChunkLoadersInstance() {
-		return this.chunkLoadersInstance;
 	}
 
 }

@@ -16,8 +16,7 @@ public class Rules implements CommandExecutor{
 		
 		Player player = (Player) sender;
 		
-		player.sendMessage(Messages.rulesMessage.toArray(new String[0]));
-		
+		player.spigot().sendMessage(Messages.rulesMessage);
 		return true;
 	}
 

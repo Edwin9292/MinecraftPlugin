@@ -60,6 +60,12 @@ commands:
       description: Display a link to the discord server
       usage: /<command>
       aliases: [dc, disc]
+   repairhand:
+      description: Repairs the item in a players hand, does not work with air
+      usage: /<command>
+   apply:
+      description: display information about how to apply for staff
+      usage: /<command>
       
 softdepends: [MVdWPlaceholderAPI, PlaceholderAPI, Vault]
-depend: [Multiverse-Core, ProtocolLib, HolographicDisplays, HeadDatabase]
+depend: [CombatTagPlus, Multiverse-Core, ProtocolLib, HolographicDisplays, HeadDatabase]
